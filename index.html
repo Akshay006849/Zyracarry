@@ -190,13 +190,15 @@ ul { list-style: none; }
 .sec-div { width: 40px; height: 1px; background: var(--sand); margin: 0.9rem auto 0; }
 
 /* ── HERO ── */
-.hero { margin-top: 68px; position: relative; height: 88vh; min-height: 500px; overflow: hidden; background: var(--blush); }
+.hero { margin-top: 68px; position: relative; height: 88vh; min-height: 500px; overflow: hidden; background: linear-gradient(135deg,var(--blush),var(--cream)); }
 .hero-slides { display: flex; height: 100%; transition: transform 0.85s cubic-bezier(0.77,0,0.175,1); }
-.hero-slide { min-width: 100%; height: 100%; position: relative; overflow: hidden; background: var(--blush); }
-.hero-slide img { display: block; }
-.hero-slide img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform 7s ease; }
-.hero-slide.active img { transform: scale(1.04); }
-.hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(42,36,33,0.52) 0%, rgba(42,36,33,0.08) 65%, transparent 100%); }
+.hero-slide { min-width: 100%; height: 100%; position: relative; overflow: hidden; background: linear-gradient(135deg,var(--blush),var(--cream)); display:flex; align-items:center; justify-content:center; }
+.hero-slide img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center center; transition: transform 7s ease; }
+.hero-slide.active img { transform: scale(1.03); }
+@media(max-width:768px){
+  .hero-slide img { object-fit: cover; object-position: center center; }
+}
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(42,36,33,0.65) 0%, rgba(42,36,33,0.2) 50%, rgba(42,36,33,0.05) 100%); }
 .hero-content { position: absolute; bottom: clamp(3rem,8vh,6rem); left: clamp(1.5rem,6vw,6rem); color: white; max-width: 520px; }
 .hero-eye { font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.85; margin-bottom: 0.9rem; }
 .hero-title { font-family: var(--fd); font-size: clamp(2rem,5vw,4.2rem); font-weight: 300; line-height: 1.12; margin-bottom: 1.1rem; letter-spacing: 0.02em; }
@@ -212,9 +214,17 @@ ul { list-style: none; }
 .hero-dot.active { background: white; width: 22px; border-radius: 3px; }
 
 /* ── BRAND STRIP ── */
-.brand-strip { background: var(--charcoal); padding: 1.1rem clamp(1rem,4vw,3rem); display: flex; align-items: center; justify-content: center; gap: clamp(1rem,4vw,4rem); flex-wrap: wrap; }
-.strip-item { display: flex; align-items: center; gap: 0.55rem; color: var(--sand); font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; }
+/* Brand strip - animated marquee */
+.brand-strip { background: var(--charcoal); overflow: hidden; padding: 0; position: relative; }
+.brand-strip::before, .brand-strip::after { content: ''; position: absolute; top: 0; width: 80px; height: 100%; z-index: 2; }
+.brand-strip::before { left: 0; background: linear-gradient(to right, var(--charcoal), transparent); }
+.brand-strip::after { right: 0; background: linear-gradient(to left, var(--charcoal), transparent); }
+.strip-track { display: flex; width: max-content; animation: stripMarquee 18s linear infinite; padding: 1rem 0; }
+.strip-track:hover { animation-play-state: paused; }
+@keyframes stripMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.strip-item { display: flex; align-items: center; gap: 0.55rem; color: var(--sand); font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; white-space: nowrap; padding: 0 2.5rem; flex-shrink: 0; }
 .strip-item svg { color: var(--rose); flex-shrink: 0; }
+.strip-sep { color: rgba(200,176,154,0.3); font-size: 1rem; padding: 0 0.25rem; flex-shrink: 0; }
 
 /* ── MARQUEE ── */
 .marquee-wrap { overflow: hidden; background: var(--blush); padding: 0.9rem 0; border-top: 1px solid rgba(200,176,154,0.3); border-bottom: 1px solid rgba(200,176,154,0.3); }
@@ -493,7 +503,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
   .footer-inner{grid-template-columns:1fr}
   .cart-layout{padding:1rem}
   .cart-item{grid-template-columns:75px 1fr;gap:0.75rem}
-  .brand-strip{flex-direction:column;align-items:flex-start;gap:0.6rem;padding:1rem 1.5rem}
+  .brand-strip{ /* marquee - no override needed */ }
   .admin-stats{grid-template-columns:1fr 1fr}
   .admin-table{display:block;overflow-x:auto;white-space:nowrap}
 }
@@ -678,12 +688,24 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
     </div>
   </div>
 
-  <!-- BRAND STRIP -->
+  <!-- BRAND STRIP - Animated Marquee -->
   <div class="brand-strip">
-    <div class="strip-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Handcrafted Quality</div>
-    <div class="strip-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Eco-Friendly</div>
-    <div class="strip-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span style="text-decoration:line-through;opacity:0.5">₹70</span>&nbsp;FREE Delivery</div>
-    <div class="strip-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Easy Returns</div>
+    <div class="strip-track">
+      
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Handcrafted Quality</div><span class="strip-sep">✦</span>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Eco-Friendly</div><span class="strip-sep">✦</span>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span style="text-decoration:line-through;opacity:0.4">₹70</span>&nbsp;FREE Delivery</div><span class="strip-sep">✦</span>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Easy Returns</div><span class="strip-sep">✦</span>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>Made with Love</div><span class="strip-sep">✦</span>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ships in 1–2 Days</div><span class="strip-sep">✦</span>
+      
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Handcrafted Quality</div><span class="strip-sep">✦</span>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Eco-Friendly</div><span class="strip-sep">✦</span>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span style="text-decoration:line-through;opacity:0.4">₹70</span>&nbsp;FREE Delivery</div><span class="strip-sep">✦</span>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Easy Returns</div><span class="strip-sep">✦</span>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>Made with Love</div><span class="strip-sep">✦</span>
+    <div class="strip-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ships in 1–2 Days</div><span class="strip-sep">✦</span>
+    </div>
   </div>
 
   <!-- MARQUEE -->
@@ -826,6 +848,19 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
           <h3 class="story-title">A Bag Worth Keeping</h3>
           <p class="story-body">We promise you a tote that gets better with time. Stronger with use. More beautiful as it carries your stories. If for any reason you're not satisfied, we'll make it right — no questions asked within 3 days of delivery.</p>
         </div>
+      </div>
+    </div>
+    <!-- Instagram Follow Section -->
+    <div style="background:linear-gradient(135deg,var(--blush),var(--cream));padding:clamp(3rem,6vw,5rem) clamp(1rem,4vw,3rem);text-align:center">
+      <div style="max-width:600px;margin:0 auto">
+        <div style="font-size:2.5rem;margin-bottom:1rem">📸</div>
+        <h3 style="font-family:var(--fd);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;color:var(--charcoal);margin-bottom:0.9rem">Follow Us on Instagram</h3>
+        <p style="font-size:0.88rem;color:var(--taupe);line-height:1.85;margin-bottom:2rem">Stay inspired! Follow <strong>@zyracarry.shop</strong> for behind-the-scenes craftsmanship, new arrivals, styling ideas, and the stories behind every tote we make.</p>
+        <a href="https://www.instagram.com/zyracarry.shop" target="_blank" rel="noopener"
+           style="display:inline-flex;align-items:center;gap:0.75rem;padding:0.9rem 2.2rem;background:var(--charcoal);color:white;border-radius:40px;font-size:0.72rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;transition:all 0.3s">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          Follow @zyracarry.shop
+        </a>
       </div>
     </div>
   </div>
@@ -1043,43 +1078,104 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
       <div class="admin-sec" id="adm-addprod">
         <h2 class="admin-heading" id="apHead">Add Product</h2>
         <input type="hidden" id="apId">
-        <div class="adm-card">
-          <div class="adm-card-title">Product Details</div>
-          <div class="fg"><label class="fl">Product Name *</label><input class="fi" id="apName" placeholder="e.g. The Sahara Tote"></div>
-          <div class="fg2">
-            <div class="fg"><label class="fl">Price (₹) *</label><input class="fi" id="apPrice" type="number" placeholder="1299"></div>
-            <div class="fg"><label class="fl">Original Price (₹) — for discount</label><input class="fi" id="apOrig" type="number" placeholder="Leave blank if no discount"></div>
-          </div>
-          <div class="fg2">
-            <div class="fg"><label class="fl">Stock *</label><input class="fi" id="apStock" type="number" placeholder="50"></div>
-            <div class="fg"><label class="fl">Badge</label>
-              <select class="fi" id="apBadge"><option value="">None</option><option value="new">New</option><option value="sale">Sale</option></select>
-            </div>
-          </div>
-          <div class="fg"><label class="fl">Short Description (shown on card)</label><input class="fi" id="apShort" placeholder="One-line teaser shown on product card…"></div>
-          <div class="fg"><label class="fl">Full Description</label><textarea class="fi" id="apDesc" rows="4" placeholder="Detailed description shown on product page…"></textarea></div>
+
+        <!-- Step indicator -->
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap">
+          <span style="background:var(--charcoal);color:white;padding:0.35rem 1rem;border-radius:20px;font-size:0.72rem;font-weight:600">1. Details</span>
+          <span style="color:var(--taupe);padding:0.35rem 1rem;font-size:0.72rem">→</span>
+          <span style="background:var(--charcoal);color:white;padding:0.35rem 1rem;border-radius:20px;font-size:0.72rem;font-weight:600">2. Images</span>
+          <span style="color:var(--taupe);padding:0.35rem 1rem;font-size:0.72rem">→</span>
+          <span style="background:var(--charcoal);color:white;padding:0.35rem 1rem;border-radius:20px;font-size:0.72rem;font-weight:600">3. Save</span>
         </div>
 
         <div class="adm-card">
-          <div class="adm-card-title">Product Images</div>
-          <div class="img-hint">
-            <strong>How to add images:</strong><br>
-            1. Type the exact filename below (e.g. <strong>sahara-tote.png</strong>)<br>
-            2. Rename your actual image file to that exact name<br>
-            3. Upload the image file to Netlify/GitHub <strong>in the same folder as index.html</strong><br>
-            4. The image will appear automatically on the website
+          <div class="adm-card-title">📝 Product Details</div>
+
+          <div class="fg">
+            <label class="fl">Product Name *</label>
+            <input class="fi" id="apName" placeholder="e.g. The Sahara Tote">
           </div>
-          <div id="apImgList"></div>
-          <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap">
-            <input class="fi" id="apImgName" type="text" placeholder="filename.png (e.g. sahara-tote.png)" style="flex:1;min-width:200px">
-            <button class="adm-btn adm-btn-p" onclick="addProdImg()">+ Add Image</button>
+
+          <div class="fg2">
+            <div class="fg">
+              <label class="fl">Selling Price (₹) *</label>
+              <input class="fi" id="apPrice" type="number" placeholder="1299">
+            </div>
+            <div class="fg">
+              <label class="fl">Original Price (₹) — shows as strikethrough</label>
+              <input class="fi" id="apOrig" type="number" placeholder="Leave blank if no discount">
+            </div>
           </div>
-          <div class="uimgs" id="apImgPreview" style="margin-top:1rem;display:flex;flex-wrap:wrap;gap:0.75rem"></div>
+
+          <div class="fg2">
+            <div class="fg">
+              <label class="fl">Stock Quantity *</label>
+              <input class="fi" id="apStock" type="number" placeholder="50">
+            </div>
+            <div class="fg">
+              <label class="fl">Badge Label</label>
+              <select class="fi" id="apBadge">
+                <option value="">No Badge</option>
+                <option value="new">NEW</option>
+                <option value="sale">SALE</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Short Description — shown on product card</label>
+            <input class="fi" id="apShort" placeholder="e.g. Natural jute & organic cotton blend">
+          </div>
+
+          <div class="fg">
+            <label class="fl">Full Description — shown on product detail page</label>
+            <textarea class="fi" id="apDesc" rows="5" placeholder="Write a detailed, beautiful description of this bag — materials, size, use, feel…"></textarea>
+          </div>
+
+          <div class="fg2">
+            <div class="fg">
+              <label class="fl">Material</label>
+              <input class="fi" id="apMaterial" placeholder="e.g. Organic Cotton Canvas">
+            </div>
+            <div class="fg">
+              <label class="fl">Care Instructions</label>
+              <input class="fi" id="apCare" placeholder="e.g. Spot clean, air dry">
+            </div>
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title">🖼 Product Images</div>
+
+          <div class="img-hint" style="border-left:3px solid var(--rose-deep)">
+            <strong>How images work:</strong><br>
+            1. Enter the filename below (e.g. <strong>sahara-tote.png</strong>)<br>
+            2. Rename your actual photo to that exact name<br>
+            3. When uploading to Netlify — add the image file <strong>in the same folder as index.html</strong><br>
+            4. Image appears on website automatically ✅<br><br>
+            <strong>Tip:</strong> First image added = main product image shown on cards
+          </div>
+
+          <div id="apImgList" style="margin-bottom:0.75rem"></div>
+
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:flex-end">
+            <div style="flex:1;min-width:200px">
+              <label class="fl">Image Filename</label>
+              <input class="fi" id="apImgName" type="text" placeholder="e.g. sahara-tote-front.png">
+            </div>
+            <button class="adm-btn adm-btn-p" onclick="addProdImg()" style="padding:0.65rem 1.25rem;flex-shrink:0">+ Add Image</button>
+          </div>
+
+          <div id="apImgPreview" style="margin-top:1rem;display:flex;flex-wrap:wrap;gap:0.75rem"></div>
         </div>
 
         <div style="display:flex;gap:1rem;flex-wrap:wrap">
-          <button class="adm-btn adm-btn-p" onclick="saveProd()" style="padding:0.65rem 2rem">Save Product</button>
-          <button class="adm-btn" onclick="admTab('products',null)" style="background:var(--blush);color:var(--charcoal);padding:0.65rem 2rem">Cancel</button>
+          <button class="adm-btn adm-btn-p" onclick="saveProd()" style="padding:0.75rem 2.5rem;font-size:0.82rem">
+            💾 Save Product
+          </button>
+          <button class="adm-btn" onclick="admTab('products',null)" style="background:var(--blush);color:var(--charcoal);padding:0.75rem 1.5rem">
+            Cancel
+          </button>
         </div>
       </div>
 
@@ -1121,6 +1217,15 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
   </div>
 </div>
 
+
+<!-- POLICY MODALS -->
+<div class="modal-overlay" id="policyModal">
+  <div class="modal" style="max-width:600px;width:100%">
+    <div class="modal-close" onclick="closeMod('policyModal')">✕</div>
+    <div id="policyContent"></div>
+  </div>
+</div>
+
 <!-- ══ FOOTER ══ -->
 <footer id="mainFooter">
   <div class="footer-inner">
@@ -1134,9 +1239,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
         <a href="mailto:zyracarry.shop@gmail.com" class="footer-social" title="Email">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         </a>
-        <a href="tel:+918867572282" class="footer-social" title="Phone">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        </a>
+
       </div>
     </div>
     <div class="footer-col">
@@ -1156,7 +1259,6 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
     <div class="footer-col">
       <div class="footer-col-title">Contact</div>
       <a href="mailto:zyracarry.shop@gmail.com">zyracarry.shop@gmail.com</a>
-      <a href="tel:+918867572282">+91 8867 572282</a>
       <a href="https://www.instagram.com/zyracarry.shop" target="_blank">Instagram</a>
       <a href="https://razorpay.me/@zyracarry" target="_blank">Pay via Razorpay</a>
     </div>
@@ -2233,7 +2335,7 @@ async function printInvoice(docId) {
     </div>
     <div class="foot">
       Thank you for shopping with ZYRA CARRY<br>
-      zyracarry.shop@gmail.com &nbsp;|&nbsp; +91 8867 572282 &nbsp;|&nbsp; zyracarry.shop
+      zyracarry.shop@gmail.com &nbsp;|&nbsp; zyracarry.shop &nbsp;|&nbsp; @zyracarry.shop
     </div>
     <script>window.onload=()=>window.print()<\/script>
     </body></html>`);
@@ -2314,6 +2416,10 @@ function editProd(id) {
   document.getElementById('apShort').value       = p.shortDesc   || '';
   document.getElementById('apDesc').value        = p.description || '';
   document.getElementById('apBadge').value       = p.badge       || '';
+  const matEl = document.getElementById('apMaterial');
+  const careEl = document.getElementById('apCare');
+  if (matEl)  matEl.value  = p.material || '';
+  if (careEl) careEl.value = p.care     || '';
   prodImgs = p.images ? [...p.images] : [];
   renderProdImgPreview();
 }
@@ -2366,6 +2472,8 @@ async function saveProd() {
     shortDesc:     document.getElementById('apShort').value.trim(),
     description:   document.getElementById('apDesc').value.trim(),
     badge:         document.getElementById('apBadge').value,
+    material:      (document.getElementById('apMaterial') || {value:''}).value.trim(),
+    care:          (document.getElementById('apCare') || {value:''}).value.trim(),
     images:        [...prodImgs]
   };
 
@@ -2399,6 +2507,160 @@ async function delProd(id) {
   allProds = allProds.filter(p => p.id !== id);
   loadAdminProds();
   toast('Product deleted', 'info');
+}
+
+
+// ══════════════════════════════════════════════
+// POLICY PAGES
+// ══════════════════════════════════════════════
+const POLICIES = {
+  shipping: {
+    title: 'Shipping Policy',
+    content: `
+      <h3 style="font-family:var(--fd);font-size:1.6rem;color:var(--charcoal);margin-bottom:0.5rem">Shipping Policy</h3>
+      <p style="font-size:0.72rem;color:var(--taupe);letter-spacing:0.1em;margin-bottom:1.75rem">Last updated: January 2025</p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">FREE DELIVERY ON ALL ORDERS</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:1.25rem">We offer completely free delivery on every order across India. No minimum order value required. The ₹70 delivery charge is entirely covered by ZYRA CARRY as our gift to you.</p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">DELIVERY TIMELINE</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:1.25rem">
+        • <strong>Metro cities</strong> (Mumbai, Delhi, Bangalore, Chennai, Hyderabad, Pune): 3–5 business days<br>
+        • <strong>Other cities & towns</strong>: 5–7 business days<br>
+        • <strong>Remote areas</strong>: 7–10 business days<br>
+        Orders are dispatched within 1–2 business days of placement.
+      </p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">ORDER TRACKING</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:1.25rem">Once your order is shipped, you will receive an email with tracking details. You can also track your order anytime from the <em>My Orders</em> section of your account.</p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">PACKAGING</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:0">All orders are packed in eco-friendly, recycled packaging that reflects our commitment to sustainability. Your bag arrives gift-ready.</p>
+    `
+  },
+  returns: {
+    title: 'Return Policy',
+    content: `
+      <h3 style="font-family:var(--fd);font-size:1.6rem;color:var(--charcoal);margin-bottom:0.5rem">Return Policy</h3>
+      <p style="font-size:0.72rem;color:var(--taupe);letter-spacing:0.1em;margin-bottom:1.75rem">Last updated: January 2025</p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">3-DAY RETURN WINDOW</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:1.25rem">We accept returns within <strong>3 days</strong> of delivery. If you are not completely satisfied with your purchase, you may request a return through your account under <em>My Orders</em>.</p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">ELIGIBLE REASONS FOR RETURN</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:1.25rem">
+        ✓ Wrong product delivered<br>
+        ✓ Product is damaged or defective<br>
+        ✓ Product is significantly different from description<br>
+        ✗ Change of mind (not eligible for return)<br>
+        ✗ Customised or personalised items
+      </p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">RETURN PROCESS</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:1.25rem">
+        1. Go to <em>My Orders</em> in your account<br>
+        2. Click <em>Request Return</em> on the delivered order<br>
+        3. Select your reason and submit<br>
+        4. Our team will contact you within 24–48 hours<br>
+        5. Once approved, pickup will be arranged at no cost to you
+      </p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">REFUNDS</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:0">Refunds are processed within 5–7 business days after the returned product is received and inspected. Refunds will be issued to the original payment method.</p>
+    `
+  },
+  faq: {
+    title: 'Frequently Asked Questions',
+    content: `
+      <h3 style="font-family:var(--fd);font-size:1.6rem;color:var(--charcoal);margin-bottom:1.75rem">Frequently Asked Questions</h3>
+
+      <div style="margin-bottom:1.25rem">
+        <h4 style="font-size:0.85rem;font-weight:600;color:var(--charcoal);margin-bottom:0.4rem">Are your bags genuinely handmade?</h4>
+        <p style="font-size:0.83rem;color:var(--taupe);line-height:1.8">Yes! Every ZYRA CARRY bag is hand-stitched by skilled artisans. Because of this, slight variations in texture or stitching are a mark of authenticity, not a defect.</p>
+      </div>
+
+      <div style="margin-bottom:1.25rem">
+        <h4 style="font-size:0.85rem;font-weight:600;color:var(--charcoal);margin-bottom:0.4rem">What materials do you use?</h4>
+        <p style="font-size:0.83rem;color:var(--taupe);line-height:1.8">We use organic cotton, natural jute, and sustainably sourced fabrics. All dyes are eco-friendly and safe. No synthetic materials unless explicitly stated on the product page.</p>
+      </div>
+
+      <div style="margin-bottom:1.25rem">
+        <h4 style="font-size:0.85rem;font-weight:600;color:var(--charcoal);margin-bottom:0.4rem">How do I care for my tote bag?</h4>
+        <p style="font-size:0.83rem;color:var(--taupe);line-height:1.8">Spot clean with a damp cloth and mild soap. Air dry away from direct sunlight. Do not machine wash or tumble dry. Avoid prolonged exposure to water.</p>
+      </div>
+
+      <div style="margin-bottom:1.25rem">
+        <h4 style="font-size:0.85rem;font-weight:600;color:var(--charcoal);margin-bottom:0.4rem">Is delivery really free?</h4>
+        <p style="font-size:0.83rem;color:var(--taupe);line-height:1.8">Yes! We offer FREE delivery on all orders across India. The ₹70 delivery charge is fully covered by us — no minimum order, no hidden fees.</p>
+      </div>
+
+      <div style="margin-bottom:1.25rem">
+        <h4 style="font-size:0.85rem;font-weight:600;color:var(--charcoal);margin-bottom:0.4rem">Can I return my order?</h4>
+        <p style="font-size:0.83rem;color:var(--taupe);line-height:1.8">Yes, within 3 days of delivery for eligible reasons (wrong product, damage, or defect). Please see our Return Policy for details.</p>
+      </div>
+
+      <div style="margin-bottom:1.25rem">
+        <h4 style="font-size:0.85rem;font-weight:600;color:var(--charcoal);margin-bottom:0.4rem">Is online payment safe?</h4>
+        <p style="font-size:0.83rem;color:var(--taupe);line-height:1.8">Absolutely. We use Razorpay — one of India's most trusted payment gateways — which supports UPI, cards, and net banking with bank-grade encryption.</p>
+      </div>
+
+      <div style="margin-bottom:0">
+        <h4 style="font-size:0.85rem;font-weight:600;color:var(--charcoal);margin-bottom:0.4rem">How do I contact you?</h4>
+        <p style="font-size:0.83rem;color:var(--taupe);line-height:1.8">Email us at <a href="mailto:zyracarry.shop@gmail.com" style="color:var(--rose-deep)">zyracarry.shop@gmail.com</a> or DM us on Instagram <a href="https://instagram.com/zyracarry.shop" target="_blank" style="color:var(--rose-deep)">@zyracarry.shop</a>. We respond within 24 hours.</p>
+      </div>
+    `
+  },
+  sustainability: {
+    title: 'Our Sustainability Commitment',
+    content: `
+      <h3 style="font-family:var(--fd);font-size:1.6rem;color:var(--charcoal);margin-bottom:0.5rem">Our Sustainability Commitment</h3>
+      <p style="font-size:0.72rem;color:var(--taupe);letter-spacing:0.1em;margin-bottom:1.75rem">Because the planet deserves better fashion choices</p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">MATERIALS</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:1.25rem">We source only organic cotton, natural jute, and sustainably harvested textiles. All fabrics are free from harmful chemicals and certified eco-friendly. We refuse to use synthetic materials that harm the environment.</p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">PACKAGING</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:1.25rem">All orders are shipped in 100% recycled and compostable packaging. No plastic, no waste. Even our tissue paper and tags are made from recycled materials.</p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">ARTISAN COMMUNITIES</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:1.25rem">We work directly with weaver communities across India, providing fair wages and safe working conditions. Our goal is to preserve India's textile heritage while creating sustainable livelihoods.</p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem;letter-spacing:0.05em">DESIGN PHILOSOPHY</h4>
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.85;margin-bottom:0">We design for longevity, not trends. Every ZYRA CARRY bag is built to last years and age beautifully. The most sustainable product is the one you never have to replace.</p>
+    `
+  },
+  careers: {
+    title: 'Careers at ZYRA CARRY',
+    content: `
+      <h3 style="font-family:var(--fd);font-size:1.6rem;color:var(--charcoal);margin-bottom:0.5rem">Careers at ZYRA CARRY</h3>
+      <p style="font-size:0.72rem;color:var(--taupe);letter-spacing:0.1em;margin-bottom:1.75rem">Join our growing family</p>
+
+      <p style="font-size:0.88rem;color:var(--taupe);line-height:1.9;margin-bottom:1.5rem">At ZYRA CARRY, we are building more than a brand — we are building a movement toward conscious, purposeful living. We welcome people who share our passion for craftsmanship, sustainability, and celebrating women.</p>
+
+      <h4 style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.75rem;letter-spacing:0.05em">OPEN ROLES</h4>
+      <div style="background:var(--blush);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:0.75rem">
+        <div style="font-size:0.85rem;font-weight:600;color:var(--charcoal)">Social Media & Content Creator</div>
+        <div style="font-size:0.78rem;color:var(--taupe);margin-top:0.25rem">Part-time / Remote — Share our story through beautiful content</div>
+      </div>
+      <div style="background:var(--blush);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:0.75rem">
+        <div style="font-size:0.85rem;font-weight:600;color:var(--charcoal)">Brand Ambassador</div>
+        <div style="font-size:0.78rem;color:var(--taupe);margin-top:0.25rem">Flexible — Represent ZYRA CARRY in your city</div>
+      </div>
+      <div style="background:var(--blush);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1.5rem">
+        <div style="font-size:0.85rem;font-weight:600;color:var(--charcoal)">Customer Experience Associate</div>
+        <div style="font-size:0.78rem;color:var(--taupe);margin-top:0.25rem">Part-time / Remote — Help our customers feel valued</div>
+      </div>
+
+      <p style="font-size:0.85rem;color:var(--taupe);line-height:1.8">To apply or explore opportunities, write to us at <a href="mailto:zyracarry.shop@gmail.com" style="color:var(--rose-deep);font-weight:600">zyracarry.shop@gmail.com</a> with the subject line <em>"Careers — [Role Name]"</em>.</p>
+    `
+  }
+};
+
+function openPolicy(type) {
+  const policy = POLICIES[type];
+  if (!policy) return;
+  document.getElementById('policyContent').innerHTML = policy.content;
+  openMod('policyModal');
 }
 
 // ══════════════════════════════════════════════
