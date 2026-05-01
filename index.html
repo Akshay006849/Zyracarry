@@ -191,15 +191,12 @@ ul { list-style: none; }
 
 /* ── HERO ── */
 .hero { margin-top: 68px; position: relative; height: 88vh; min-height: 500px; overflow: hidden; background: linear-gradient(135deg,var(--blush),var(--cream)); }
-.hero-slides { display: flex; height: 100%; transition: transform 0.85s cubic-bezier(0.77,0,0.175,1); }
-.hero-slide { min-width: 100%; height: 100%; position: relative; overflow: hidden; background: linear-gradient(135deg,var(--blush),var(--cream)); display:flex; align-items:center; justify-content:center; }
-.hero-slide img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center center; transition: transform 7s ease; }
+.hero-slides { display: flex; height: 100%; width: 100%; transition: transform 0.85s cubic-bezier(0.77,0,0.175,1); }
+.hero-slide { min-width: 100%; height: 100%; position: relative; overflow: hidden; background: linear-gradient(135deg,var(--blush),var(--cream)); }
+.hero-slide img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center; transition: transform 7s ease; display: block; }
 .hero-slide.active img { transform: scale(1.03); }
-@media(max-width:768px){
-  .hero-slide img { object-fit: cover; object-position: center center; }
-}
-.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(42,36,33,0.65) 0%, rgba(42,36,33,0.2) 50%, rgba(42,36,33,0.05) 100%); }
-.hero-content { position: absolute; bottom: clamp(3rem,8vh,6rem); left: clamp(1.5rem,6vw,6rem); color: white; max-width: 520px; }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(42,36,33,0.65) 0%, rgba(42,36,33,0.2) 50%, rgba(42,36,33,0.05) 100%); z-index: 2; }
+.hero-content { position: absolute; bottom: clamp(3rem,8vh,6rem); left: clamp(1.5rem,6vw,6rem); color: white; max-width: 520px; z-index: 3; }
 .hero-eye { font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.85; margin-bottom: 0.9rem; }
 .hero-title { font-family: var(--fd); font-size: clamp(2rem,5vw,4.2rem); font-weight: 300; line-height: 1.12; margin-bottom: 1.1rem; letter-spacing: 0.02em; }
 .hero-sub { font-size: 0.85rem; opacity: 0.88; letter-spacing: 0.04em; margin-bottom: 2rem; max-width: 360px; line-height: 1.7; }
@@ -586,7 +583,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
   <div class="nav-inner">
     <div class="nav-brand" onclick="goTo('home')">
       <div class="nav-logo">
-        <img src="logo.png" alt="ZYRA CARRY" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'font-family:var(--fd);font-size:1rem;color:var(--rose-deep);font-weight:500\'>ZC</span>'">
+        <img src="logo.jpg" alt="ZYRA CARRY" onerror="this.src='logo.png';this.onerror=function(){this.style.display='none';this.parentElement.innerHTML='<span style=\"font-family:var(--fd);font-size:1rem;color:var(--rose-deep);font-weight:500\">ZC</span>'}">
       </div>
       <div>
         <span class="nav-brand-name" style="font-size:1.1rem;letter-spacing:0.1em">ZYRA CARRY</span>
@@ -638,7 +635,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
   <div class="hero">
     <div class="hero-slides" id="heroSlides">
       <div class="hero-slide active">
-        <img src="hero1.png" alt="ZYRA CARRY" onerror="this.style.opacity='0'">
+        <img src="hero1.jpg" alt="ZYRA CARRY" onerror="this.src='hero1.png';this.onerror=function(){this.style.opacity='0'}">
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <p class="hero-eye">ZYRA CARRY — Handcrafted Luxury</p>
@@ -648,7 +645,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
         </div>
       </div>
       <div class="hero-slide">
-        <img src="hero2.png" alt="ZYRA CARRY" onerror="this.style.opacity='0'">
+        <img src="hero2.jpg" alt="ZYRA CARRY" onerror="this.src='hero2.png';this.onerror=function(){this.style.opacity='0'}">
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <p class="hero-eye">ZYRA CARRY — Eco Friendly</p>
@@ -658,7 +655,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
         </div>
       </div>
       <div class="hero-slide">
-        <img src="hero3.png" alt="ZYRA CARRY" onerror="this.style.opacity='0'">
+        <img src="hero3.jpg" alt="ZYRA CARRY" onerror="this.src='hero3.png';this.onerror=function(){this.style.opacity='0'}">
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <p class="hero-eye">ZYRA CARRY — Made with Love</p>
@@ -668,7 +665,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
         </div>
       </div>
       <div class="hero-slide">
-        <img src="hero4.png" alt="ZYRA CARRY" onerror="this.style.opacity='0'">
+        <img src="hero4.jpg" alt="ZYRA CARRY" onerror="this.src='hero4.png';this.onerror=function(){this.style.opacity='0'}">
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <p class="hero-eye">ZYRA CARRY — New Collection</p>
@@ -749,7 +746,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
 
       <div class="story-block">
         <div class="story-img">
-          <img src="about1.png" alt="Craftsmanship" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'">
+          <img src="about1.jpg" alt="Craftsmanship" loading="lazy" onerror="this.src='about1.png';this.onerror=function(){this.parentElement.style.background='var(--blush)'}">
         </div>
         <div class="story-text">
           <div class="story-num">01</div>
@@ -761,7 +758,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
 
       <div class="story-block rev" style="margin-top:clamp(4rem,8vw,7rem)">
         <div class="story-img">
-          <img src="about2.png" alt="Eco Friendly" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'">
+          <img src="about2.jpg" alt="Eco Friendly" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'">
         </div>
         <div class="story-text">
           <div class="story-num">02</div>
@@ -773,7 +770,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
 
       <div class="story-block" style="margin-top:clamp(4rem,8vw,7rem)">
         <div class="story-img">
-          <img src="about3.png" alt="Handmade" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'">
+          <img src="about3.jpg" alt="Handmade" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'">
         </div>
         <div class="story-text">
           <div class="story-num">03</div>
@@ -826,7 +823,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
     </div>
     <div class="story-inner" style="padding-top:clamp(4rem,8vw,7rem);padding-bottom:clamp(4rem,8vw,7rem)">
       <div class="story-block">
-        <div class="story-img"><img src="about1.png" alt="About ZYRA CARRY" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>
+        <div class="story-img"><img src="about1.jpg" alt="About ZYRA CARRY" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>
         <div class="story-text">
           <div class="story-num">Our Mission</div>
           <h3 class="story-title">Luxury That Gives Back</h3>
@@ -834,7 +831,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
         </div>
       </div>
       <div class="story-block rev" style="margin-top:clamp(4rem,8vw,7rem)">
-        <div class="story-img"><img src="about2.png" alt="Sustainability" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>
+        <div class="story-img"><img src="about2.jpg" alt="Sustainability" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>
         <div class="story-text">
           <div class="story-num">Our Values</div>
           <h3 class="story-title">Sustainability Is Not Optional</h3>
@@ -842,7 +839,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
         </div>
       </div>
       <div class="story-block" style="margin-top:clamp(4rem,8vw,7rem)">
-        <div class="story-img"><img src="about3.png" alt="Handmade" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>
+        <div class="story-img"><img src="about3.jpg" alt="Handmade" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>
         <div class="story-text">
           <div class="story-num">Our Promise</div>
           <h3 class="story-title">A Bag Worth Keeping</h3>
@@ -1538,7 +1535,7 @@ const SAMPLE_PRODUCTS = [
     originalPrice: null,
     shortDesc: 'Natural cotton canvas, spacious & structured',
     description: 'The Ivory Tote is your perfect everyday companion. Crafted from natural cotton canvas with reinforced stitching, it carries everything you need while keeping you effortlessly elegant. Roomy enough for your laptop, essentials, and more.',
-    images: ['product1.png'],
+    images: ['product1.jpg'],
     badge: 'new',
     stock: 20,
     material: 'Organic Cotton Canvas',
@@ -1551,7 +1548,7 @@ const SAMPLE_PRODUCTS = [
     originalPrice: 1799,
     shortDesc: 'Floral jute with cotton lining',
     description: 'Inspired by blooming gardens, this tote weaves together jute and cotton in a timeless floral pattern. Lightweight yet sturdy, it moves with you from morning errands to evening strolls.',
-    images: ['product2.png'],
+    images: ['product2.jpg'],
     badge: 'sale',
     stock: 15,
     material: 'Natural Jute & Cotton',
