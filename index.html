@@ -1,0 +1,2430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ZYRA CARRY – Premium handmade eco-friendly tote bags for women. Luxury minimal design meets sustainable craftsmanship.">
+<meta name="keywords" content="tote bags, handmade bags, eco friendly bags, women bags, luxury totes, India">
+<title>ZYRA CARRY – Handcrafted Luxury Tote Bags</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDBjBGjgFoEgMP7DUv2OwY9RAiQdeXkvJA",
+  authDomain: "zyracarry-58e4b.firebaseapp.com",
+  projectId: "zyracarry-58e4b",
+  storageBucket: "zyracarry-58e4b.firebasestorage.app",
+  messagingSenderId: "888864418825",
+  appId: "1:888864418825:web:e8c3d5a647f602b4315cd8",
+  measurementId: "G-P1HPQ73CJP"
+};
+
+const app = initializeApp(firebaseConfig);
+window._fb = {
+  auth: getAuth(app),
+  db: getFirestore(app),
+  storage: getStorage(app),
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged, updateProfile,
+  collection, doc, setDoc, getDoc, getDocs,
+  addDoc, updateDoc, deleteDoc,
+  query, orderBy, where, serverTimestamp,
+  ref, uploadBytes, getDownloadURL, deleteObject
+};
+</script>
+
+<style>
+/* ── VARIABLES ── */
+:root {
+  --cream: #FAF7F2;
+  --blush: #F2E8E0;
+  --rose: #D4A89A;
+  --rose-deep: #B8866F;
+  --charcoal: #2A2421;
+  --taupe: #7A6A5A;
+  --sand: #C8B09A;
+  --ivory: #F5F0E8;
+  --warm-white: #FEFCFA;
+  --green: #7DAA6B;
+  --shadow: rgba(100,70,50,0.1);
+  --tr: all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+  --tr-fast: all 0.18s ease;
+  --fd: 'Cormorant Garamond', serif;
+  --fb: 'Jost', sans-serif;
+  --r: 14px;
+  --rs: 8px;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--fb); background: var(--warm-white); color: var(--charcoal); overflow-x: hidden; line-height: 1.7; }
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, textarea, select { font-family: inherit; }
+ul { list-style: none; }
+
+/* ── PAGES ── */
+.page { display: none !important; }
+.page.active { display: block !important; }
+#page-success.active { display: flex !important; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; text-align: center; padding: 5rem 2rem; }
+#page-admin.active { display: flex !important; }
+
+/* ── LOADING ── */
+#loading {
+  position: fixed; inset: 0; background: var(--cream);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+#loading.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+.load-brand { font-family: var(--fd); font-size: clamp(2rem,5vw,3.5rem); font-weight: 300; letter-spacing: 0.3em; color: var(--charcoal); animation: fadeUp 0.8s ease forwards; }
+.load-tag { font-size: 0.72rem; letter-spacing: 0.25em; color: var(--taupe); margin-top: 0.5rem; text-transform: uppercase; animation: fadeUp 0.8s 0.2s ease both; }
+.load-bar { width: 120px; height: 1px; background: var(--sand); margin-top: 2rem; position: relative; overflow: hidden; animation: fadeUp 0.8s 0.4s ease both; }
+.load-bar::after { content: ''; position: absolute; left: -100%; top: 0; width: 100%; height: 100%; background: var(--rose-deep); animation: barSlide 1.4s 0.6s ease forwards; }
+@keyframes barSlide { to { left: 100%; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── NAVBAR ── */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(250,247,242,0.96);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(200,176,154,0.25);
+  transition: var(--tr);
+  padding: 0 clamp(1rem,4vw,3rem);
+}
+#navbar.scrolled { box-shadow: 0 4px 24px var(--shadow); }
+.nav-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 68px; }
+
+/* Brand */
+.nav-brand { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
+.nav-logo { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--sand); background: var(--blush); flex-shrink: 0; transition: var(--tr-fast); }
+.nav-logo:hover { border-color: var(--rose-deep); }
+.nav-logo img { width: 100%; height: 100%; object-fit: cover; }
+.nav-brand-name { font-family: var(--fd); font-size: 1.1rem; font-weight: 600; letter-spacing: 0.1em; color: var(--charcoal); display: block; white-space: nowrap; }
+.nav-brand-tag { font-size: 0.58rem; letter-spacing: 0.2em; color: var(--taupe); text-transform: uppercase; display: block; }
+
+/* Desktop links */
+.nav-links { display: flex; align-items: center; gap: 2rem; }
+.nav-links a { font-size: 0.73rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--taupe); position: relative; transition: var(--tr-fast); cursor: pointer; }
+.nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--rose-deep); transition: var(--tr); }
+.nav-links a:hover { color: var(--charcoal); }
+.nav-links a:hover::after { width: 100%; }
+
+/* Nav actions */
+.nav-actions { display: flex; align-items: center; gap: 0.5rem; }
+.nav-btn { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--taupe); transition: var(--tr-fast); cursor: pointer; position: relative; }
+.nav-btn:hover { background: var(--blush); color: var(--charcoal); }
+.cart-badge { position: absolute; top: -3px; right: -3px; width: 17px; height: 17px; border-radius: 50%; background: var(--rose-deep); color: white; font-size: 0.58rem; font-weight: 700; display: none; align-items: center; justify-content: center; }
+.cart-badge.show { display: flex; }
+.hamburger { display: none; flex-direction: column; gap: 5px; width: 38px; height: 38px; align-items: center; justify-content: center; border-radius: 50%; transition: var(--tr-fast); cursor: pointer; }
+.hamburger:hover { background: var(--blush); }
+.hamburger span { display: block; width: 20px; height: 1.5px; background: var(--charcoal); transition: var(--tr); }
+
+/* Account dropdown */
+.acc-wrap { position: relative; }
+.acc-drop { position: absolute; top: calc(100% + 10px); right: 0; background: var(--warm-white); border: 1px solid rgba(200,176,154,0.3); border-radius: var(--r); padding: 0.4rem; min-width: 185px; box-shadow: 0 20px 50px var(--shadow); opacity: 0; visibility: hidden; transform: translateY(-8px); transition: var(--tr); z-index: 200; }
+.acc-drop.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.acc-drop a { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.9rem; border-radius: var(--rs); font-size: 0.78rem; color: var(--taupe); transition: var(--tr-fast); cursor: pointer; }
+.acc-drop a:hover { background: var(--blush); color: var(--charcoal); }
+.acc-divider { height: 1px; background: rgba(200,176,154,0.3); margin: 0.3rem 0; }
+
+/* Drawer */
+.drawer-overlay { position: fixed; inset: 0; background: rgba(42,36,33,0.35); z-index: 1998; opacity: 0; visibility: hidden; transition: var(--tr); }
+.drawer-overlay.open { opacity: 1; visibility: visible; }
+.drawer { position: fixed; top: 0; right: -100%; width: min(310px,88vw); height: 100dvh; background: var(--warm-white); z-index: 1999; padding: 2rem 1.5rem; box-shadow: -20px 0 60px var(--shadow); transition: right 0.4s cubic-bezier(0.25,0.46,0.45,0.94); overflow-y: auto; }
+.drawer.open { right: 0; }
+.drawer-close { position: absolute; top: 1.25rem; right: 1.25rem; font-size: 1.2rem; color: var(--taupe); cursor: pointer; }
+.drawer-brand { font-family: var(--fd); font-size: 1.4rem; font-weight: 500; letter-spacing: 0.15em; margin-bottom: 2rem; padding-top: 0.5rem; }
+.drawer-links a { display: block; padding: 0.85rem 0; border-bottom: 1px solid rgba(200,176,154,0.2); font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--taupe); transition: var(--tr-fast); cursor: pointer; }
+.drawer-links a:hover { color: var(--charcoal); padding-left: 0.4rem; }
+
+/* Search overlay */
+.search-overlay { position: fixed; inset: 0; background: rgba(250,247,242,0.97); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: var(--tr); padding: 2rem; }
+.search-overlay.open { opacity: 1; visibility: visible; }
+.search-box { width: min(580px,100%); }
+.search-box input { width: 100%; background: none; border: none; border-bottom: 2px solid var(--charcoal); outline: none; font-family: var(--fd); font-size: clamp(1.5rem,4vw,2.5rem); font-weight: 300; color: var(--charcoal); padding: 0.5rem 0; }
+.search-box input::placeholder { color: var(--sand); }
+.search-results { margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 1rem; }
+
+/* Auth modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(42,36,33,0.5); backdrop-filter: blur(8px); z-index: 3000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: var(--tr); padding: 1rem; }
+.modal-overlay.open { opacity: 1; visibility: visible; }
+.modal { background: var(--warm-white); border-radius: 22px; padding: clamp(1.75rem,5vw,2.75rem); width: min(440px,100%); transform: scale(0.95) translateY(20px); transition: var(--tr); max-height: 90dvh; overflow-y: auto; position: relative; }
+.modal-overlay.open .modal { transform: scale(1) translateY(0); }
+.modal-close { position: absolute; top: 1rem; right: 1rem; width: 30px; height: 30px; border-radius: 50%; background: var(--blush); display: flex; align-items: center; justify-content: center; color: var(--taupe); cursor: pointer; font-size: 0.85rem; transition: var(--tr-fast); }
+.modal-close:hover { background: var(--charcoal); color: white; }
+.modal-title { font-family: var(--fd); font-size: 1.75rem; color: var(--charcoal); margin-bottom: 0.4rem; }
+.modal-sub { font-size: 0.78rem; color: var(--taupe); margin-bottom: 1.75rem; }
+.modal-tabs { display: flex; border-bottom: 1px solid rgba(200,176,154,0.3); margin-bottom: 1.75rem; gap: 1.25rem; }
+.modal-tab { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--taupe); padding-bottom: 0.7rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: var(--tr-fast); }
+.modal-tab.active { color: var(--charcoal); border-color: var(--charcoal); }
+
+/* Forms */
+.fg { margin-bottom: 1.15rem; }
+.fl { display: block; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--taupe); margin-bottom: 0.45rem; }
+.fi { width: 100%; padding: 0.82rem 1rem; border: 1.5px solid rgba(200,176,154,0.4); border-radius: var(--rs); background: white; font-size: 0.86rem; color: var(--charcoal); outline: none; transition: var(--tr-fast); }
+.fi:focus { border-color: var(--rose-deep); }
+.fg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+/* Buttons */
+.btn-primary { padding: 0.7rem 1.25rem; background: var(--charcoal); color: white; border-radius: 40px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; transition: var(--tr); text-align: center; cursor: pointer; border: none; display: inline-block; }
+.btn-primary:hover { background: var(--rose-deep); transform: scale(1.02); }
+.btn-outline { padding: 0.7rem 1.25rem; background: transparent; color: var(--charcoal); border: 1.5px solid var(--sand); border-radius: 40px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; transition: var(--tr); text-align: center; cursor: pointer; display: inline-block; }
+.btn-outline:hover { border-color: var(--charcoal); background: var(--charcoal); color: white; }
+.btn-ghost { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--charcoal); border-bottom: 1.5px solid var(--charcoal); padding-bottom: 0.1rem; transition: var(--tr-fast); cursor: pointer; }
+.btn-ghost:hover { color: var(--rose-deep); border-color: var(--rose-deep); }
+
+/* Section headers */
+.sec-head { text-align: center; margin-bottom: clamp(2.5rem,5vw,4rem); }
+.sec-eye { font-size: 0.63rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--rose-deep); margin-bottom: 0.7rem; display: block; }
+.sec-title { font-family: var(--fd); font-size: clamp(1.8rem,3.5vw,3rem); font-weight: 300; color: var(--charcoal); letter-spacing: 0.03em; }
+.sec-div { width: 40px; height: 1px; background: var(--sand); margin: 0.9rem auto 0; }
+
+/* ── HERO ── */
+.hero { margin-top: 68px; position: relative; height: 88vh; min-height: 500px; overflow: hidden; background: var(--blush); }
+.hero-slides { display: flex; height: 100%; transition: transform 0.85s cubic-bezier(0.77,0,0.175,1); }
+.hero-slide { min-width: 100%; height: 100%; position: relative; overflow: hidden; background: var(--blush); }
+.hero-slide img { display: block; }
+.hero-slide img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform 7s ease; }
+.hero-slide.active img { transform: scale(1.04); }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(42,36,33,0.52) 0%, rgba(42,36,33,0.08) 65%, transparent 100%); }
+.hero-content { position: absolute; bottom: clamp(3rem,8vh,6rem); left: clamp(1.5rem,6vw,6rem); color: white; max-width: 520px; }
+.hero-eye { font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.85; margin-bottom: 0.9rem; }
+.hero-title { font-family: var(--fd); font-size: clamp(2rem,5vw,4.2rem); font-weight: 300; line-height: 1.12; margin-bottom: 1.1rem; letter-spacing: 0.02em; }
+.hero-sub { font-size: 0.85rem; opacity: 0.88; letter-spacing: 0.04em; margin-bottom: 2rem; max-width: 360px; line-height: 1.7; }
+.hero-cta { display: inline-flex; align-items: center; gap: 0.7rem; padding: 0.88rem 2rem; background: white; color: var(--charcoal); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; border-radius: 40px; transition: var(--tr); border: 1.5px solid white; cursor: pointer; }
+.hero-cta:hover { background: transparent; color: white; }
+.hero-arr { position: absolute; top: 50%; transform: translateY(-50%); width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.14); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); color: white; display: flex; align-items: center; justify-content: center; transition: var(--tr-fast); z-index: 10; cursor: pointer; font-size: 1.1rem; }
+.hero-arr:hover { background: rgba(255,255,255,0.28); }
+.hero-arr-l { left: 1rem; }
+.hero-arr-r { right: 1rem; }
+.hero-dots { position: absolute; bottom: 1.5rem; right: 2rem; display: flex; gap: 0.45rem; align-items: center; }
+.hero-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); transition: var(--tr); cursor: pointer; }
+.hero-dot.active { background: white; width: 22px; border-radius: 3px; }
+
+/* ── BRAND STRIP ── */
+.brand-strip { background: var(--charcoal); padding: 1.1rem clamp(1rem,4vw,3rem); display: flex; align-items: center; justify-content: center; gap: clamp(1rem,4vw,4rem); flex-wrap: wrap; }
+.strip-item { display: flex; align-items: center; gap: 0.55rem; color: var(--sand); font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; }
+.strip-item svg { color: var(--rose); flex-shrink: 0; }
+
+/* ── MARQUEE ── */
+.marquee-wrap { overflow: hidden; background: var(--blush); padding: 0.9rem 0; border-top: 1px solid rgba(200,176,154,0.3); border-bottom: 1px solid rgba(200,176,154,0.3); }
+.marquee-track { display: flex; gap: 3rem; animation: marquee 22s linear infinite; width: max-content; }
+.marquee-track:hover { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee-item { display: flex; align-items: center; gap: 1rem; font-family: var(--fd); font-size: 0.95rem; font-style: italic; color: var(--taupe); white-space: nowrap; }
+.marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--rose); }
+
+/* ── PRODUCTS GRID ── */
+.products-sec { padding: clamp(4rem,8vw,7rem) clamp(1rem,4vw,3rem); max-width: 1400px; margin: 0 auto; }
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px,1fr)); gap: 1.75rem; }
+
+/* Product card */
+.pcard { background: var(--warm-white); border-radius: var(--r); overflow: hidden; border: 1px solid rgba(200,176,154,0.2); transition: var(--tr); cursor: pointer; }
+.pcard:hover { transform: translateY(-5px); box-shadow: 0 28px 55px var(--shadow); border-color: transparent; }
+.pcard-img { position: relative; overflow: hidden; aspect-ratio: 3/4; background: var(--blush); }
+.pcard-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+.pcard:hover .pcard-img img { transform: scale(1.06); }
+.pcard-badges { position: absolute; top: 0.9rem; left: 0.9rem; display: flex; flex-direction: column; gap: 0.35rem; z-index: 2; }
+.badge { font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.28rem 0.65rem; border-radius: 20px; font-weight: 700; }
+.badge-new { background: var(--charcoal); color: white; }
+.badge-sale { background: var(--rose-deep); color: white; }
+.wl-btn { position: absolute; top: 0.9rem; right: 0.9rem; width: 34px; height: 34px; border-radius: 50%; background: rgba(250,247,242,0.92); border: 1px solid rgba(200,176,154,0.3); display: flex; align-items: center; justify-content: center; color: var(--taupe); font-size: 0.85rem; transition: var(--tr-fast); cursor: pointer; z-index: 2; }
+.wl-btn:hover, .wl-btn.active { background: var(--rose-deep); color: white; border-color: var(--rose-deep); }
+.pcard-body { padding: 1.2rem; }
+.pcard-name { font-family: var(--fd); font-size: 1.1rem; color: var(--charcoal); margin-bottom: 0.25rem; line-height: 1.3; }
+.pcard-desc { font-size: 0.73rem; color: var(--taupe); margin-bottom: 0.7rem; line-height: 1.5; }
+.pcard-price { font-family: var(--fd); font-size: 1.1rem; color: var(--charcoal); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+.pcard-price .orig { font-size: 0.82rem; color: var(--sand); text-decoration: line-through; }
+.pcard-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
+.pcard-actions button { padding: 0.6rem; border-radius: 40px; font-size: 0.67rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; transition: var(--tr); cursor: pointer; border: none; }
+.btn-add { background: var(--charcoal); color: white; }
+.btn-add:hover { background: var(--rose-deep); }
+.btn-buy { background: transparent; color: var(--charcoal); border: 1.5px solid var(--sand) !important; }
+.btn-buy:hover { background: var(--charcoal); color: white; border-color: var(--charcoal) !important; }
+
+/* Skeleton */
+.skeleton { background: linear-gradient(90deg, var(--blush) 25%, var(--ivory) 50%, var(--blush) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--rs); }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* ── STORY SECTION ── */
+.story-sec { padding: clamp(4rem,8vw,7rem) 0; background: var(--blush); }
+.story-inner { max-width: 1400px; margin: 0 auto; padding: 0 clamp(1rem,4vw,3rem); }
+.story-block { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem,5vw,5rem); align-items: center; margin-bottom: clamp(4rem,8vw,7rem); }
+.story-block:last-child { margin-bottom: 0; }
+.story-block.rev { direction: rtl; }
+.story-block.rev > * { direction: ltr; }
+.story-img { border-radius: var(--r); overflow: hidden; aspect-ratio: 4/5; background: var(--blush); }
+.story-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+.story-img:hover img { transform: scale(1.04); }
+.story-num { font-family: var(--fd); font-size: 3.5rem; font-weight: 300; color: var(--sand); line-height: 1; margin-bottom: 0.85rem; }
+.story-title { font-family: var(--fd); font-size: clamp(1.5rem,2.8vw,2.1rem); font-weight: 400; color: var(--charcoal); margin-bottom: 0.9rem; line-height: 1.3; }
+.story-body { font-size: 0.88rem; color: var(--taupe); line-height: 1.95; margin-bottom: 1.4rem; }
+
+/* ── SUBSCRIBE ── */
+.sub-sec { background: var(--cream); padding: clamp(4rem,7vw,6rem) clamp(1rem,4vw,3rem); text-align: center; }
+.sub-inner { max-width: 500px; margin: 0 auto; }
+.sub-title { font-family: var(--fd); font-size: clamp(1.7rem,3.5vw,2.6rem); font-weight: 300; color: var(--charcoal); margin-bottom: 0.7rem; }
+.sub-body { font-size: 0.84rem; color: var(--taupe); margin-bottom: 2rem; line-height: 1.75; }
+.sub-form { display: flex; border-radius: 40px; overflow: hidden; border: 1.5px solid var(--sand); background: white; }
+.sub-form input { flex: 1; padding: 0.85rem 1.4rem; border: none; outline: none; background: transparent; font-size: 0.84rem; color: var(--charcoal); }
+.sub-form input::placeholder { color: var(--sand); }
+.sub-form button { padding: 0.85rem 1.6rem; background: var(--charcoal); color: white; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; transition: var(--tr-fast); cursor: pointer; border: none; }
+.sub-form button:hover { background: var(--rose-deep); }
+
+/* ── FOOTER ── */
+footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: clamp(3rem,6vw,5rem) clamp(1rem,4vw,3rem) 1.5rem; }
+.footer-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+.footer-brand-name { font-family: var(--fd); font-size: 1.45rem; font-weight: 400; letter-spacing: 0.15em; color: white; margin-bottom: 0.7rem; }
+.footer-brand-desc { font-size: 0.78rem; line-height: 1.85; color: rgba(255,255,255,0.45); margin-bottom: 1.4rem; }
+.footer-socials { display: flex; gap: 0.65rem; }
+.footer-social { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 0.82rem; color: rgba(255,255,255,0.5); transition: var(--tr-fast); text-decoration: none; }
+.footer-social:hover { border-color: var(--rose); color: var(--rose); }
+.footer-col-title { font-size: 0.63rem; letter-spacing: 0.25em; text-transform: uppercase; color: white; margin-bottom: 1.2rem; font-weight: 600; }
+.footer-col a { display: block; font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-bottom: 0.6rem; transition: var(--tr-fast); cursor: pointer; }
+.footer-col a:hover { color: var(--rose); }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.4rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: 0.68rem; color: rgba(255,255,255,0.3); max-width: 1400px; margin: 0 auto; }
+
+/* ── CART ── */
+.cart-layout { max-width: 1100px; margin: 0 auto; padding: 2rem clamp(1rem,4vw,3rem); display: grid; grid-template-columns: 1fr 320px; gap: 2rem; align-items: start; }
+.cart-item { display: grid; grid-template-columns: 92px 1fr auto; gap: 1.1rem; align-items: center; padding: 1.2rem 0; border-bottom: 1px solid rgba(200,176,154,0.2); }
+.cart-item-img { width: 92px; height: 115px; border-radius: var(--rs); overflow: hidden; background: var(--blush); }
+.cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+.cart-item-name { font-family: var(--fd); font-size: 1rem; margin-bottom: 0.2rem; }
+.cart-item-price { font-size: 0.8rem; color: var(--taupe); }
+.cart-qty { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; }
+.cart-qty-btn { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--sand); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: var(--taupe); transition: var(--tr-fast); cursor: pointer; }
+.cart-qty-btn:hover { border-color: var(--charcoal); color: var(--charcoal); }
+.cart-item-total { font-family: var(--fd); font-size: 1rem; font-weight: 500; text-align: right; white-space: nowrap; }
+.cart-remove { font-size: 0.63rem; color: var(--sand); letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; display: block; text-align: right; margin-top: 0.35rem; transition: var(--tr-fast); }
+.cart-remove:hover { color: #B55353; }
+.cart-summary { background: var(--blush); border-radius: var(--r); padding: 1.6rem; position: sticky; top: 80px; }
+.cart-summary-title { font-family: var(--fd); font-size: 1.25rem; margin-bottom: 1.4rem; }
+.sum-row { display: flex; justify-content: space-between; font-size: 0.83rem; color: var(--taupe); margin-bottom: 0.7rem; align-items: center; }
+.sum-row.total { border-top: 1px solid rgba(200,176,154,0.4); padding-top: 0.7rem; margin-top: 0.7rem; font-weight: 600; color: var(--charcoal); font-family: var(--fd); font-size: 1.1rem; }
+.delivery-note { background: #E8F5E9; border-radius: var(--rs); padding: 0.6rem 0.9rem; font-size: 0.75rem; color: #2E7D32; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
+.cart-checkout-btn { width: 100%; padding: 0.95rem; background: var(--charcoal); color: white; border-radius: 40px; font-size: 0.73rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 1.4rem; transition: var(--tr); cursor: pointer; border: none; }
+.cart-checkout-btn:hover { background: var(--rose-deep); }
+
+/* ── CHECKOUT ── */
+.checkout-layout { max-width: 1000px; margin: 0 auto; padding: 2rem clamp(1rem,4vw,3rem); display: grid; grid-template-columns: 1fr 340px; gap: 2.5rem; align-items: start; }
+.pay-option { border: 1.5px solid rgba(200,176,154,0.4); border-radius: var(--rs); padding: 1rem 1.2rem; margin-bottom: 0.7rem; cursor: pointer; transition: var(--tr-fast); display: flex; align-items: center; gap: 1rem; }
+.pay-option.sel { border-color: var(--charcoal); background: var(--blush); }
+.pay-radio { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--sand); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: var(--tr-fast); }
+.pay-option.sel .pay-radio { border-color: var(--charcoal); }
+.pay-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--charcoal); opacity: 0; transition: var(--tr-fast); }
+.pay-option.sel .pay-radio::after { opacity: 1; }
+.pay-name { font-size: 0.85rem; font-weight: 500; }
+.pay-desc { font-size: 0.7rem; color: var(--taupe); }
+.place-btn { width: 100%; padding: 1rem; background: var(--charcoal); color: white; border-radius: 40px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 2rem; transition: var(--tr); cursor: pointer; border: none; }
+.place-btn:hover { background: var(--rose-deep); }
+
+/* ── SUCCESS PAGE ── */
+.suc-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--blush); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--rose-deep); margin: 0 auto 2rem; border: 2px solid var(--rose); }
+.suc-title { font-family: var(--fd); font-size: clamp(1.9rem,4vw,3rem); font-weight: 300; color: var(--charcoal); margin-bottom: 0.9rem; }
+.suc-sub { font-size: 0.86rem; color: var(--taupe); max-width: 420px; line-height: 1.85; margin-bottom: 1.4rem; }
+.suc-oid-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--taupe); margin-bottom: 0.4rem; }
+.suc-oid { font-family: var(--fd); font-size: 1.4rem; color: var(--charcoal); margin-bottom: 2rem; }
+.suc-details { background: var(--blush); border-radius: var(--r); padding: 1.25rem 1.75rem; margin-bottom: 2rem; text-align: left; min-width: min(300px,90vw); }
+.suc-row { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.45rem; }
+.suc-label { color: var(--taupe); }
+.suc-val { font-weight: 500; }
+
+/* ── PRODUCT DETAIL ── */
+.pd-layout { max-width: 1200px; margin: 0 auto; padding: clamp(2rem,4vw,4rem) clamp(1rem,4vw,3rem); display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem,5vw,5rem); align-items: start; }
+.pd-gallery { position: sticky; top: 80px; }
+.pd-main-img { border-radius: var(--r); overflow: hidden; aspect-ratio: 3/4; background: var(--blush); margin-bottom: 0.7rem; cursor: zoom-in; }
+.pd-main-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.pd-main-img:hover img { transform: scale(1.05); }
+.pd-thumbs { display: flex; gap: 0.45rem; overflow-x: auto; scrollbar-width: none; }
+.pd-thumbs::-webkit-scrollbar { display: none; }
+.pd-thumb { width: 68px; height: 85px; flex-shrink: 0; border-radius: var(--rs); overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: var(--tr-fast); background: var(--blush); }
+.pd-thumb.active { border-color: var(--charcoal); }
+.pd-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.pd-name { font-family: var(--fd); font-size: clamp(1.75rem,3vw,2.4rem); font-weight: 400; color: var(--charcoal); line-height: 1.2; margin-bottom: 0.7rem; }
+.pd-price { font-family: var(--fd); font-size: 1.45rem; color: var(--charcoal); margin-bottom: 0.4rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+.pd-stock { font-size: 0.73rem; color: var(--taupe); letter-spacing: 0.1em; margin-bottom: 1.4rem; }
+.pd-stock .in-stock { color: var(--green); }
+.pd-desc { font-size: 0.87rem; color: var(--taupe); line-height: 1.95; margin-bottom: 2rem; border-bottom: 1px solid rgba(200,176,154,0.3); padding-bottom: 2rem; }
+.qty-wrap { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.4rem; }
+.qty-label { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--taupe); }
+.qty-ctrl { display: flex; align-items: center; border: 1.5px solid var(--sand); border-radius: 40px; overflow: hidden; }
+.qty-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; color: var(--taupe); transition: var(--tr-fast); cursor: pointer; }
+.qty-btn:hover { background: var(--blush); color: var(--charcoal); }
+.qty-val { width: 44px; text-align: center; border: none; background: none; outline: none; font-size: 0.9rem; font-weight: 500; }
+.pd-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1.4rem; }
+.pd-btn { padding: 0.88rem 1rem; border-radius: 40px; font-size: 0.73rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; transition: var(--tr); cursor: pointer; border: none; }
+.pd-btn-p { background: var(--charcoal); color: white; }
+.pd-btn-p:hover { background: var(--rose-deep); }
+.pd-btn-o { border: 1.5px solid var(--charcoal); color: var(--charcoal); background: transparent; }
+.pd-btn-o:hover { background: var(--charcoal); color: white; }
+
+/* Reviews */
+.reviews-sec { max-width: 1200px; margin: 0 auto; padding: 4rem clamp(1rem,4vw,3rem); }
+.reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1.4rem; margin-top: 2rem; }
+.review-card { background: var(--warm-white); border: 1px solid rgba(200,176,154,0.2); border-radius: var(--r); padding: 1.4rem; transition: var(--tr); }
+.review-card:hover { box-shadow: 0 10px 35px var(--shadow); }
+.review-stars { color: var(--rose-deep); font-size: 0.82rem; margin-bottom: 0.7rem; }
+.review-text { font-size: 0.83rem; color: var(--taupe); line-height: 1.8; margin-bottom: 0.9rem; }
+.review-author { display: flex; align-items: center; gap: 0.7rem; }
+.review-av { width: 34px; height: 34px; border-radius: 50%; background: var(--blush); display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-size: 0.88rem; color: var(--rose-deep); font-weight: 500; }
+.review-name { font-size: 0.78rem; font-weight: 600; color: var(--charcoal); }
+.review-date { font-size: 0.68rem; color: var(--sand); }
+
+/* ── PROFILE ── */
+.profile-layout { max-width: 1000px; margin: 0 auto; padding: 2rem clamp(1rem,4vw,3rem); display: grid; grid-template-columns: 240px 1fr; gap: 2rem; align-items: start; }
+.profile-sidebar { background: var(--blush); border-radius: var(--r); padding: 1.75rem; }
+.profile-av { width: 68px; height: 68px; border-radius: 50%; background: var(--sand); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-size: 1.8rem; color: white; }
+.profile-name { font-family: var(--fd); text-align: center; font-size: 1.1rem; color: var(--charcoal); margin-bottom: 0.25rem; }
+.profile-email-txt { font-size: 0.72rem; color: var(--taupe); text-align: center; margin-bottom: 1.75rem; }
+.profile-nav a { display: block; padding: 0.65rem 0.9rem; border-radius: var(--rs); font-size: 0.78rem; color: var(--taupe); transition: var(--tr-fast); margin-bottom: 0.2rem; cursor: pointer; }
+.profile-nav a.active, .profile-nav a:hover { background: white; color: var(--charcoal); }
+.profile-content { background: white; border-radius: var(--r); padding: 1.75rem; border: 1px solid rgba(200,176,154,0.2); }
+.profile-sec-title { font-family: var(--fd); font-size: 1.35rem; color: var(--charcoal); margin-bottom: 1.4rem; padding-bottom: 0.9rem; border-bottom: 1px solid rgba(200,176,154,0.2); }
+
+/* Order rows */
+.order-row { padding: 1.1rem 0; border-bottom: 1px solid rgba(200,176,154,0.15); display: flex; flex-direction: column; gap: 0.5rem; }
+.order-top { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
+.order-id-txt { font-size: 0.72rem; color: var(--taupe); font-weight: 600; }
+.order-items-txt { font-size: 0.83rem; color: var(--charcoal); flex: 1; min-width: 120px; }
+.order-amt { font-family: var(--fd); font-size: 1rem; }
+.ostatus { font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.28rem 0.7rem; border-radius: 20px; font-weight: 700; }
+.os-pending { background: #FFF3CD; color: #856404; }
+.os-processing { background: #CCE5FF; color: #004085; }
+.os-shipped { background: #D1ECF1; color: #0C5460; }
+.os-delivered { background: #D4EDDA; color: #155724; }
+.os-return_requested { background: #F8D7DA; color: #721c24; }
+.return-btn { padding: 0.35rem 0.9rem; border: 1.5px solid #B55353; border-radius: 20px; font-size: 0.68rem; color: #B55353; background: none; cursor: pointer; letter-spacing: 0.08em; transition: var(--tr-fast); }
+.return-btn:hover { background: #B55353; color: white; }
+
+/* ── ADMIN ── */
+#page-admin { display: none !important; }
+#page-admin.active { display: flex !important; flex-direction: column; }
+.admin-layout { display: flex; flex: 1; min-height: calc(100dvh - 68px); }
+.admin-sidebar { width: 220px; flex-shrink: 0; background: var(--charcoal); overflow-y: auto; }
+.admin-logo-txt { padding: 1.5rem; font-family: var(--fd); font-size: 1rem; letter-spacing: 0.2em; color: var(--sand); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.admin-nav a { display: flex; align-items: center; gap: 0.65rem; padding: 0.7rem 1.4rem; font-size: 0.76rem; letter-spacing: 0.07em; color: rgba(255,255,255,0.5); transition: var(--tr-fast); cursor: pointer; border-left: 2px solid transparent; }
+.admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,0.06); color: white; border-left-color: var(--rose); }
+.admin-main { flex: 1; padding: 2rem; background: #F4F1EE; overflow-x: auto; }
+.admin-sec { display: none; }
+.admin-sec.active { display: block; }
+.admin-heading { font-family: var(--fd); font-size: 1.75rem; color: var(--charcoal); margin-bottom: 1.4rem; }
+
+/* Admin stats */
+.admin-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+.stat-card { background: white; border-radius: var(--r); padding: 1.4rem; border: 1px solid rgba(200,176,154,0.2); }
+.stat-label { font-size: 0.67rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--taupe); margin-bottom: 0.45rem; }
+.stat-val { font-family: var(--fd); font-size: 1.9rem; color: var(--charcoal); }
+
+/* Admin table */
+.admin-table { width: 100%; border-collapse: collapse; background: white; border-radius: var(--r); overflow: hidden; box-shadow: 0 2px 18px var(--shadow); }
+.admin-table th { padding: 0.78rem 1rem; text-align: left; font-size: 0.63rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--taupe); background: var(--blush); border-bottom: 1px solid rgba(200,176,154,0.3); }
+.admin-table td { padding: 0.78rem 1rem; font-size: 0.8rem; border-bottom: 1px solid rgba(200,176,154,0.14); color: var(--charcoal); vertical-align: middle; }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: var(--cream); }
+.adm-btn { padding: 0.38rem 0.9rem; border-radius: 18px; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; transition: var(--tr-fast); cursor: pointer; border: none; }
+.adm-btn-p { background: var(--charcoal); color: white; }
+.adm-btn-p:hover { background: var(--rose-deep); }
+.adm-btn-d { background: #FCE8E8; color: #B55353; }
+.adm-btn-d:hover { background: #B55353; color: white; }
+.adm-btn-s { background: #E8F5E9; color: #2E7D32; }
+.adm-card { background: white; border-radius: var(--r); padding: 1.75rem; border: 1px solid rgba(200,176,154,0.2); margin-bottom: 1.4rem; }
+.adm-card-title { font-family: var(--fd); font-size: 1.15rem; color: var(--charcoal); margin-bottom: 1.4rem; padding-bottom: 0.9rem; border-bottom: 1px solid rgba(200,176,154,0.2); }
+.img-hint { background: var(--blush); border-radius: var(--rs); padding: 0.7rem 1rem; font-size: 0.78rem; color: var(--taupe); margin-bottom: 1rem; line-height: 1.6; }
+.img-hint strong { color: var(--charcoal); }
+
+/* ── TOAST ── */
+.toast-con { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9000; display: flex; flex-direction: column; gap: 0.65rem; pointer-events: none; }
+.toast { background: var(--charcoal); color: white; border-radius: var(--rs); padding: 0.85rem 1.4rem; font-size: 0.8rem; box-shadow: 0 8px 28px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 0.65rem; animation: toastIn 0.4s ease, toastOut 0.4s 2.6s ease forwards; max-width: 300px; }
+.toast.success { border-left: 3px solid var(--green); }
+.toast.error { border-left: 3px solid #B55353; }
+.toast.info { border-left: 3px solid var(--rose); }
+@keyframes toastIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+@keyframes toastOut { to { opacity:0; transform:translateX(20px); } }
+
+/* ── REVEAL ── */
+.rev { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.rev.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media(min-width:1200px){ .products-grid{ grid-template-columns:repeat(4,1fr); } }
+@media(max-width:1024px){
+  .footer-inner{grid-template-columns:1fr 1fr}
+  .cart-layout{grid-template-columns:1fr} .cart-summary{position:static}
+  .checkout-layout{grid-template-columns:1fr}
+  .profile-layout{grid-template-columns:1fr}
+  .admin-layout{flex-direction:column}
+  .admin-sidebar{width:100%;display:flex;flex-wrap:wrap;padding:0.5rem}
+  .admin-logo-txt{display:none}
+  .admin-nav{display:flex;flex-wrap:wrap;width:100%}
+  .admin-nav a{padding:0.5rem 0.75rem;font-size:0.7rem;border-left:none!important}
+  .story-block{grid-template-columns:1fr;gap:2rem}
+  .story-block.rev{direction:ltr}
+  .pd-layout{grid-template-columns:1fr} .pd-gallery{position:static}
+  .products-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:768px){
+  .nav-links{display:none} .hamburger{display:flex}
+  .nav-inner{height:62px} .hero{margin-top:62px;height:88vh}
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:0.75rem}
+  .pcard-actions{grid-template-columns:1fr}
+  .fg2{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr 1fr}
+  .sub-form{flex-direction:column;border-radius:var(--r)}
+  .sub-form input{border-radius:var(--r) var(--r) 0 0}
+  .sub-form button{border-radius:0 0 var(--r) var(--r)}
+  .pd-btns{grid-template-columns:1fr 1fr}
+  .hero-content{left:1.5rem;bottom:4rem;max-width:88vw}
+  .hero-title{font-size:clamp(1.8rem,6vw,2.8rem)}
+  .toast-con{left:1rem;right:1rem} .toast{max-width:100%}
+  .admin-main{padding:1rem}
+}
+@media(max-width:480px){
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:0.6rem}
+  .footer-inner{grid-template-columns:1fr}
+  .cart-layout{padding:1rem}
+  .cart-item{grid-template-columns:75px 1fr;gap:0.75rem}
+  .brand-strip{flex-direction:column;align-items:flex-start;gap:0.6rem;padding:1rem 1.5rem}
+  .admin-stats{grid-template-columns:1fr 1fr}
+  .admin-table{display:block;overflow-x:auto;white-space:nowrap}
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast-con" id="toastCon"></div>
+
+<!-- LOCAL FILE WARNING -->
+<div id="localWarning" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#2A2421;color:white;padding:0.75rem 1.5rem;font-size:0.78rem;z-index:99999;text-align:center;line-height:1.6">
+  ⚠️ You are opening this file directly. <strong>Images and sign-in will not work here.</strong>
+  Please upload to <strong>Netlify</strong> and open <strong>zyracarry.shop</strong> for full functionality.
+  <span onclick="document.getElementById('localWarning').style.display='none'" style="margin-left:1.5rem;cursor:pointer;opacity:0.6;font-size:1rem">✕</span>
+</div>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="load-brand">ZYRA CARRY</div>
+  <div class="load-tag">Handcrafted Luxury Totes</div>
+  <div class="load-bar"></div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOv">
+  <div class="search-box">
+    <span style="font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--taupe);display:block;margin-bottom:1rem">Search Products</span>
+    <input type="text" id="searchInput" placeholder="Search tote bags…" autocomplete="off">
+    <button onclick="closeSearch()" style="position:absolute;top:1rem;right:2rem;font-size:1.3rem;color:var(--taupe);cursor:pointer">✕</button>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- MOBILE DRAWER -->
+<div class="drawer-overlay" id="drawerOv" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <span class="drawer-close" onclick="closeDrawer()">✕</span>
+  <div class="drawer-brand">ZYRA CARRY</div>
+  <div class="drawer-links">
+    <a onclick="goTo('home');closeDrawer()">Home</a>
+    <a onclick="goTo('shop');closeDrawer()">Shop</a>
+    <a onclick="goTo('about');closeDrawer()">About</a>
+    <a onclick="goTo('profile');closeDrawer()">My Account</a>
+    <a onclick="goTo('orders');closeDrawer()">My Orders</a>
+    <a onclick="goTo('cart');closeDrawer()">Cart</a>
+    <a onclick="goTo('wishlist');closeDrawer()">Wishlist</a>
+    <a onclick="goTo('track');closeDrawer()">Track Order</a>
+    <a id="drawer-auth" onclick="drawerAuth();closeDrawer()">Sign In</a>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <div class="modal-close" onclick="closeMod('authModal')">✕</div>
+    <div class="modal-title">Welcome</div>
+    <div class="modal-sub">Sign in to your ZYRA CARRY account</div>
+    <div class="modal-tabs">
+      <span class="modal-tab active" onclick="authTab('login',this)">Sign In</span>
+      <span class="modal-tab" onclick="authTab('reg',this)">Create Account</span>
+    </div>
+    <div id="loginForm">
+      <div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="lEmail" placeholder="your@email.com"></div>
+      <div class="fg"><label class="fl">Password</label><input class="fi" type="password" id="lPass" placeholder="••••••••"></div>
+      <button class="btn-primary" style="width:100%;margin-top:1rem;padding:0.9rem" onclick="doLogin()">Sign In</button>
+    </div>
+    <div id="regForm" style="display:none">
+      <div class="fg"><label class="fl">Full Name</label><input class="fi" type="text" id="rName" placeholder="Your full name"></div>
+      <div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="rEmail" placeholder="your@email.com"></div>
+      <div class="fg"><label class="fl">Phone</label><input class="fi" type="tel" id="rPhone" placeholder="+91 XXXXX XXXXX"></div>
+      <div class="fg"><label class="fl">Password</label><input class="fi" type="password" id="rPass" placeholder="Min 6 characters"></div>
+      <button class="btn-primary" style="width:100%;margin-top:1rem;padding:0.9rem" onclick="doReg()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-brand" onclick="goTo('home')">
+      <div class="nav-logo">
+        <img src="logo.png" alt="ZYRA CARRY" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'font-family:var(--fd);font-size:1rem;color:var(--rose-deep);font-weight:500\'>ZC</span>'">
+      </div>
+      <div>
+        <span class="nav-brand-name" style="font-size:1.1rem;letter-spacing:0.1em">ZYRA CARRY</span>
+        <span class="nav-brand-tag">Handcrafted Luxury</span>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a onclick="goTo('home')">Home</a>
+      <a onclick="goTo('shop')">Shop</a>
+      <a onclick="goTo('about')">About</a>
+      <a onclick="openSearch()">Search</a>
+    </div>
+
+    <div class="nav-actions">
+      <div class="acc-wrap">
+        <div class="nav-btn" onclick="toggleAcc()" title="Account">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <div class="acc-drop" id="accDrop">
+          <a onclick="goTo('profile');closeAcc()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg> My Profile</a>
+          <a onclick="goTo('orders');closeAcc()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg> My Orders</a>
+          <a onclick="goTo('wishlist');closeAcc()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg> Wishlist</a>
+          <a onclick="goTo('track');closeAcc()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Track Order</a>
+          <div class="acc-divider"></div>
+          <a id="authNavLink" onclick="authNavClick();closeAcc()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+            <span id="authNavTxt">Sign In</span>
+          </a>
+        </div>
+      </div>
+      <div class="nav-btn" onclick="goTo('wishlist')" title="Wishlist">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <div class="nav-btn" onclick="goTo('cart')" title="Cart" style="position:relative">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </div>
+      <div class="hamburger nav-btn" onclick="openDrawer()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HOME PAGE ══ -->
+<div class="page active" id="page-home">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-slides" id="heroSlides">
+      <div class="hero-slide active">
+        <img src="hero1.png" alt="ZYRA CARRY" onerror="this.style.opacity='0'">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="hero-eye">ZYRA CARRY — Handcrafted Luxury</p>
+          <h1 class="hero-title">The Art of Carrying</h1>
+          <p class="hero-sub">Handcrafted totes for the conscious woman</p>
+          <button class="hero-cta" onclick="goTo('shop')">Shop Now &rarr;</button>
+        </div>
+      </div>
+      <div class="hero-slide">
+        <img src="hero2.png" alt="ZYRA CARRY" onerror="this.style.opacity='0'">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="hero-eye">ZYRA CARRY — Eco Friendly</p>
+          <h1 class="hero-title">Woven with Intention</h1>
+          <p class="hero-sub">Premium eco-friendly materials, ethically sourced</p>
+          <button class="hero-cta" onclick="goTo('shop')">Explore Collection &rarr;</button>
+        </div>
+      </div>
+      <div class="hero-slide">
+        <img src="hero3.png" alt="ZYRA CARRY" onerror="this.style.opacity='0'">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="hero-eye">ZYRA CARRY — Made with Love</p>
+          <h1 class="hero-title">Made by Hand, One at a Time</h1>
+          <p class="hero-sub">Every stitch tells a story of craftsmanship</p>
+          <button class="hero-cta" onclick="goTo('shop')">Shop Now &rarr;</button>
+        </div>
+      </div>
+      <div class="hero-slide">
+        <img src="hero4.png" alt="ZYRA CARRY" onerror="this.style.opacity='0'">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="hero-eye">ZYRA CARRY — New Collection</p>
+          <h1 class="hero-title">Made for the Modern Woman</h1>
+          <p class="hero-sub">Timeless elegance for everyday life</p>
+          <button class="hero-cta" onclick="goTo('shop')">New Arrivals &rarr;</button>
+        </div>
+      </div>
+    </div>
+    <button class="hero-arr hero-arr-l" onclick="slideHero(-1)">&#8249;</button>
+    <button class="hero-arr hero-arr-r" onclick="slideHero(1)">&#8250;</button>
+    <div class="hero-dots" id="heroDots">
+      <div class="hero-dot active" onclick="goSlide(0)"></div>
+      <div class="hero-dot" onclick="goSlide(1)"></div>
+      <div class="hero-dot" onclick="goSlide(2)"></div>
+      <div class="hero-dot" onclick="goSlide(3)"></div>
+    </div>
+  </div>
+
+  <!-- BRAND STRIP -->
+  <div class="brand-strip">
+    <div class="strip-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Handcrafted Quality</div>
+    <div class="strip-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Eco-Friendly</div>
+    <div class="strip-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span style="text-decoration:line-through;opacity:0.5">₹70</span>&nbsp;FREE Delivery</div>
+    <div class="strip-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Easy Returns</div>
+  </div>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="marquee-item">Luxury Tote Bags<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Handcrafted with Love<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Eco-Conscious Design<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Premium Natural Fabrics<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Made for Women<span class="marquee-dot"></span></div>
+      <div class="marquee-item">ZYRA CARRY<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Free Delivery on All Orders<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Luxury Tote Bags<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Handcrafted with Love<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Eco-Conscious Design<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Premium Natural Fabrics<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Made for Women<span class="marquee-dot"></span></div>
+      <div class="marquee-item">ZYRA CARRY<span class="marquee-dot"></span></div>
+      <div class="marquee-item">Free Delivery on All Orders<span class="marquee-dot"></span></div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <section class="products-sec">
+    <div class="sec-head rev"><span class="sec-eye">New Arrivals</span><h2 class="sec-title">Curated for You</h2><div class="sec-div"></div></div>
+    <div class="products-grid" id="homeGrid">
+      <div class="pcard"><div class="pcard-img skeleton" style="aspect-ratio:3/4"></div><div style="padding:1.2rem"><div class="skeleton" style="height:18px;margin-bottom:0.5rem"></div><div class="skeleton" style="height:12px;width:65%"></div></div></div>
+      <div class="pcard"><div class="pcard-img skeleton" style="aspect-ratio:3/4"></div><div style="padding:1.2rem"><div class="skeleton" style="height:18px;margin-bottom:0.5rem"></div><div class="skeleton" style="height:12px;width:65%"></div></div></div>
+      <div class="pcard"><div class="pcard-img skeleton" style="aspect-ratio:3/4"></div><div style="padding:1.2rem"><div class="skeleton" style="height:18px;margin-bottom:0.5rem"></div><div class="skeleton" style="height:12px;width:65%"></div></div></div>
+      <div class="pcard"><div class="pcard-img skeleton" style="aspect-ratio:3/4"></div><div style="padding:1.2rem"><div class="skeleton" style="height:18px;margin-bottom:0.5rem"></div><div class="skeleton" style="height:12px;width:65%"></div></div></div>
+    </div>
+    <div style="text-align:center;margin-top:3rem">
+      <button class="btn-outline" onclick="goTo('shop')" style="padding:0.9rem 2.5rem">View All Products</button>
+    </div>
+  </section>
+
+  <!-- STORY SECTION -->
+  <section class="story-sec">
+    <div class="story-inner">
+      <div class="sec-head rev" style="margin-bottom:4rem"><span class="sec-eye">Our Craft</span><h2 class="sec-title">Woven with Intention</h2><div class="sec-div"></div></div>
+
+      <div class="story-block">
+        <div class="story-img">
+          <img src="about1.png" alt="Craftsmanship" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'">
+        </div>
+        <div class="story-text">
+          <div class="story-num">01</div>
+          <h3 class="story-title">Made for the Woman Who Carries It All</h3>
+          <p class="story-body">A woman's bag isn't just an accessory — it's her world. ZYRA CARRY was born for women who deserve a tote that matches their strength, grace, and conscious lifestyle. Spacious enough for daily life, beautiful enough for every occasion.</p>
+          <span class="btn-ghost" onclick="goTo('about')">Our Story &rarr;</span>
+        </div>
+      </div>
+
+      <div class="story-block rev" style="margin-top:clamp(4rem,8vw,7rem)">
+        <div class="story-img">
+          <img src="about2.png" alt="Eco Friendly" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'">
+        </div>
+        <div class="story-text">
+          <div class="story-num">02</div>
+          <h3 class="story-title">Eco-Friendly from the First Thread</h3>
+          <p class="story-body">Every ZYRA CARRY tote is made from organic cotton, natural jute, and sustainably harvested fabrics. We believe fashion and responsibility belong together — so we refuse to compromise on either. Each purchase plants a seed for a better tomorrow.</p>
+          <span class="btn-ghost" onclick="goTo('shop')">Shop Collection &rarr;</span>
+        </div>
+      </div>
+
+      <div class="story-block" style="margin-top:clamp(4rem,8vw,7rem)">
+        <div class="story-img">
+          <img src="about3.png" alt="Handmade" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'">
+        </div>
+        <div class="story-text">
+          <div class="story-num">03</div>
+          <h3 class="story-title">Handstitched, Not Mass-Produced</h3>
+          <p class="story-body">No two ZYRA CARRY bags are exactly alike. Each one is hand-stitched by skilled artisans, bringing decades of weaving tradition into every seam. You're not buying a bag — you're carrying a piece of living art made with purpose and pride.</p>
+          <span class="btn-ghost" onclick="goTo('shop')">Explore Styles &rarr;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBSCRIBE -->
+  <div class="sub-sec">
+    <div class="sub-inner rev">
+      <h2 class="sub-title">Join the Inner Circle</h2>
+      <p class="sub-body">Be the first to know about new collections, exclusive offers, and the story behind each creation.</p>
+      <div class="sub-form">
+        <input type="email" id="subEmail" placeholder="Enter your email address">
+        <button onclick="doSubscribe()">Subscribe</button>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-home -->
+
+<!-- ══ SHOP PAGE ══ -->
+<div class="page" id="page-shop">
+  <div style="padding-top:80px">
+    <div style="max-width:1400px;margin:0 auto;padding:2rem clamp(1rem,4vw,3rem)">
+      <div class="sec-head"><span class="sec-eye">Collections</span><h1 class="sec-title">All Products</h1><div class="sec-div"></div></div>
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">
+        <span style="font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--taupe)">Sort by:</span>
+        <select id="sortSel" onchange="sortProds()" style="padding:0.5rem 1rem;border:1.5px solid var(--sand);border-radius:20px;background:white;font-size:0.8rem;outline:none;color:var(--charcoal)">
+          <option value="newest">Newest</option>
+          <option value="low">Price: Low to High</option>
+          <option value="high">Price: High to Low</option>
+        </select>
+      </div>
+      <div class="products-grid" id="shopGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ABOUT PAGE ══ -->
+<div class="page" id="page-about">
+  <div style="padding-top:68px">
+    <div style="background:var(--blush);padding:clamp(4rem,8vw,7rem) clamp(1rem,4vw,3rem);text-align:center">
+      <span class="sec-eye">Our Story</span>
+      <h1 style="font-family:var(--fd);font-size:clamp(2.5rem,6vw,5rem);font-weight:300;color:var(--charcoal);margin-bottom:1.5rem">Crafted for Her</h1>
+      <p style="max-width:620px;margin:0 auto;font-size:0.9rem;color:var(--taupe);line-height:2">ZYRA CARRY was born from a simple truth: women deserve bags that are as capable, beautiful, and purposeful as they are. Every tote we create is a love letter to the modern woman.</p>
+    </div>
+    <div class="story-inner" style="padding-top:clamp(4rem,8vw,7rem);padding-bottom:clamp(4rem,8vw,7rem)">
+      <div class="story-block">
+        <div class="story-img"><img src="about1.png" alt="About ZYRA CARRY" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>
+        <div class="story-text">
+          <div class="story-num">Our Mission</div>
+          <h3 class="story-title">Luxury That Gives Back</h3>
+          <p class="story-body">We partner with artisan communities across India — women weavers and craft families who have honed their skills over generations. Every ZYRA CARRY purchase supports fair wages, safe working conditions, and the preservation of India's textile heritage.</p>
+        </div>
+      </div>
+      <div class="story-block rev" style="margin-top:clamp(4rem,8vw,7rem)">
+        <div class="story-img"><img src="about2.png" alt="Sustainability" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>
+        <div class="story-text">
+          <div class="story-num">Our Values</div>
+          <h3 class="story-title">Sustainability Is Not Optional</h3>
+          <p class="story-body">From natural dyes to compostable packaging, every decision we make is guided by responsibility. We design totes that last years, not seasons — because the most sustainable bag is the one you keep forever.</p>
+        </div>
+      </div>
+      <div class="story-block" style="margin-top:clamp(4rem,8vw,7rem)">
+        <div class="story-img"><img src="about3.png" alt="Handmade" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>
+        <div class="story-text">
+          <div class="story-num">Our Promise</div>
+          <h3 class="story-title">A Bag Worth Keeping</h3>
+          <p class="story-body">We promise you a tote that gets better with time. Stronger with use. More beautiful as it carries your stories. If for any reason you're not satisfied, we'll make it right — no questions asked within 3 days of delivery.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PRODUCT DETAIL ══ -->
+<div class="page" id="page-product">
+  <div style="padding-top:68px">
+    <div class="pd-layout" id="pdLayout"></div>
+    <div class="reviews-sec">
+      <div class="sec-head"><span class="sec-eye">Customer Love</span><h2 class="sec-title">Reviews</h2><div class="sec-div"></div></div>
+      <div class="reviews-grid" id="reviewsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CART ══ -->
+<div class="page" id="page-cart">
+  <div style="padding-top:80px">
+    <div class="cart-layout" id="cartLayout"></div>
+  </div>
+</div>
+
+<!-- ══ CHECKOUT ══ -->
+<div class="page" id="page-checkout">
+  <div style="padding-top:80px">
+    <div class="checkout-layout">
+      <div>
+        <h2 style="font-family:var(--fd);font-size:1.75rem;font-weight:400;color:var(--charcoal);margin-bottom:2rem">Delivery Details</h2>
+        <div id="loginAlert" style="display:none;background:#FFF3CD;border:1px solid #FFD700;border-radius:var(--rs);padding:0.9rem 1rem;margin-bottom:1.5rem;font-size:0.8rem;color:#856404">
+          ⚠️ Please <strong style="cursor:pointer;text-decoration:underline" onclick="openMod('authModal')">sign in</strong> to track your order after purchase.
+        </div>
+        <div class="fg2">
+          <div class="fg"><label class="fl">Full Name *</label><input class="fi" id="coName" type="text" placeholder="Your full name"></div>
+          <div class="fg"><label class="fl">Phone *</label><input class="fi" id="coPhone" type="tel" placeholder="+91 XXXXX XXXXX"></div>
+        </div>
+        <div class="fg"><label class="fl">Email *</label><input class="fi" id="coEmail" type="email" placeholder="your@email.com"></div>
+        <div class="fg"><label class="fl">Address *</label><textarea class="fi" id="coAddr" rows="2" placeholder="Street, building, apartment no."></textarea></div>
+        <div class="fg"><label class="fl">Landmark</label><input class="fi" id="coLand" placeholder="Near…"></div>
+        <div class="fg2">
+          <div class="fg"><label class="fl">City *</label><input class="fi" id="coCity" placeholder="City"></div>
+          <div class="fg"><label class="fl">State *</label><input class="fi" id="coState" placeholder="State"></div>
+        </div>
+        <div class="fg"><label class="fl">Pincode *</label><input class="fi" id="coPin" placeholder="6-digit pincode" maxlength="6" style="max-width:200px"></div>
+
+        <h3 style="font-family:var(--fd);font-size:1.25rem;margin:2rem 0 1rem;color:var(--charcoal)">Payment Method</h3>
+        <div class="pay-option sel" id="payCOD" onclick="selPay('cod')">
+          <div class="pay-radio"></div>
+          <div><div class="pay-name">💵 Cash on Delivery</div><div class="pay-desc">Pay when your order arrives at your door</div></div>
+        </div>
+        <div class="pay-option" id="payOnline" onclick="selPay('online')">
+          <div class="pay-radio"></div>
+          <div><div class="pay-name">💳 Pay Online (Razorpay)</div><div class="pay-desc">UPI, Cards, Net Banking — Safe & Instant</div></div>
+        </div>
+
+        <div style="background:#E8F5E9;border-radius:var(--rs);padding:0.75rem 1rem;margin-top:1rem;font-size:0.78rem;color:#2E7D32;display:flex;align-items:center;gap:0.5rem">
+          🎁 <span>Delivery charges: <s style="opacity:0.6">₹70</s> → <strong>FREE</strong> on this order!</span>
+        </div>
+        <button class="place-btn" onclick="placeOrder()">Place Order →</button>
+      </div>
+
+      <!-- Order summary -->
+      <div>
+        <div style="background:var(--blush);border-radius:var(--r);padding:1.6rem;position:sticky;top:80px">
+          <h3 style="font-family:var(--fd);font-size:1.25rem;color:var(--charcoal);margin-bottom:1.4rem">Order Summary</h3>
+          <div id="coItemsList"></div>
+          <div style="height:1px;background:rgba(200,176,154,0.4);margin:1.4rem 0"></div>
+          <div class="sum-row"><span>Subtotal</span><span id="coSubtotal">₹0</span></div>
+          <div class="sum-row"><span>Delivery</span><span><s style="color:var(--sand);font-size:0.8rem">₹70</s> <span style="color:#7DAA6B;font-weight:600">FREE</span></span></div>
+          <div class="sum-row total"><span>Total</span><span id="coTotal">₹0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SUCCESS ══ -->
+<div class="page" id="page-success">
+  <div class="suc-icon">✓</div>
+  <h1 class="suc-title">Order Placed!</h1>
+  <p class="suc-sub">Thank you! Your confirmation has been sent to your email. Your handcrafted tote is being prepared with love.</p>
+  <div class="suc-oid-label">Order ID</div>
+  <div class="suc-oid" id="sucOid">—</div>
+  <div class="suc-details">
+    <div class="suc-row"><span class="suc-label">Customer</span><span class="suc-val" id="sucName">—</span></div>
+    <div class="suc-row"><span class="suc-label">Total</span><span class="suc-val" id="sucTotal">—</span></div>
+    <div class="suc-row"><span class="suc-label">Payment</span><span class="suc-val" id="sucPay">—</span></div>
+    <div class="suc-row"><span class="suc-label">Delivery</span><span class="suc-val" style="color:#7DAA6B"><s style="color:var(--sand);font-weight:400">₹70</s> FREE 🎁</span></div>
+  </div>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
+    <button class="btn-primary" onclick="goTo('orders')" style="padding:0.9rem 2rem">View My Orders</button>
+    <button class="btn-outline" onclick="goTo('home')" style="padding:0.9rem 2rem">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- ══ MY ORDERS ══ -->
+<div class="page" id="page-orders">
+  <div style="padding-top:80px;max-width:1000px;margin:0 auto;padding:4rem clamp(1rem,4vw,3rem)">
+    <div class="sec-head"><span class="sec-eye">Account</span><h2 class="sec-title">My Orders</h2><div class="sec-div"></div></div>
+    <div id="ordersListMain" style="margin-top:2rem"><p style="color:var(--taupe);font-size:0.85rem">Loading orders…</p></div>
+  </div>
+</div>
+
+<!-- ══ PROFILE ══ -->
+<div class="page" id="page-profile">
+  <div style="padding-top:80px">
+    <div class="profile-layout">
+      <div class="profile-sidebar">
+        <div class="profile-av" id="profAv">U</div>
+        <div class="profile-name" id="profName">—</div>
+        <div class="profile-email-txt" id="profEmail">—</div>
+        <nav class="profile-nav">
+          <a class="active" onclick="profTab('info',this)">My Profile</a>
+          <a onclick="profTab('orders',this)">My Orders</a>
+          <a onclick="profTab('track',this)">Track Order</a>
+          <a onclick="doLogout()">Logout</a>
+        </nav>
+      </div>
+      <div class="profile-content">
+        <div id="ptab-info">
+          <div class="profile-sec-title">Personal Information</div>
+          <div class="fg"><label class="fl">Full Name</label><input class="fi" id="pName" type="text"></div>
+          <div class="fg"><label class="fl">Email</label><input class="fi" id="pEmail" type="email" readonly style="background:var(--cream);cursor:not-allowed"></div>
+          <div class="fg"><label class="fl">Phone</label><input class="fi" id="pPhone" type="tel"></div>
+          <button class="btn-primary" onclick="saveProfile()" style="padding:0.75rem 2rem;margin-top:0.5rem">Save Changes</button>
+        </div>
+        <div id="ptab-orders" style="display:none">
+          <div class="profile-sec-title">My Orders</div>
+          <div id="profOrdersList"><p style="color:var(--taupe);font-size:0.85rem">Loading…</p></div>
+        </div>
+        <div id="ptab-track" style="display:none">
+          <div class="profile-sec-title">Track Order</div>
+          <div class="fg"><label class="fl">Order ID</label><input class="fi" id="trkId" type="text" placeholder="Enter Order ID e.g. ZC1234567890"></div>
+          <button class="btn-primary" onclick="doTrack()" style="padding:0.75rem 2rem">Track</button>
+          <div id="trkResult" style="margin-top:1.5rem"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WISHLIST ══ -->
+<div class="page" id="page-wishlist">
+  <div style="padding-top:80px;max-width:1400px;margin:0 auto;padding:4rem clamp(1rem,4vw,3rem)">
+    <div class="sec-head"><span class="sec-eye">Saved</span><h2 class="sec-title">My Wishlist</h2><div class="sec-div"></div></div>
+    <div class="products-grid" id="wlGrid" style="margin-top:2rem">
+      <p style="color:var(--taupe);font-size:0.85rem;grid-column:1/-1">Your wishlist is empty. Start adding products you love!</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TRACK ══ -->
+<div class="page" id="page-track">
+  <div style="padding-top:80px;max-width:600px;margin:0 auto;padding:4rem clamp(1rem,4vw,3rem);text-align:center">
+    <div class="sec-head"><span class="sec-eye">Status</span><h2 class="sec-title">Track Your Order</h2><div class="sec-div"></div></div>
+    <div style="margin-top:2rem">
+      <div class="fg"><input class="fi" type="text" id="pubTrkId" placeholder="Enter Order ID e.g. ZC1234567890"></div>
+      <button class="btn-primary" onclick="pubTrack()" style="width:100%;padding:0.95rem;margin-top:0.5rem">Track Order</button>
+      <div id="pubTrkRes" style="margin-top:2rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN PANEL ══ -->
+<div class="page" id="page-admin">
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-logo-txt">⬡ ZYRA Admin</div>
+      <nav class="admin-nav">
+        <a class="active" onclick="admTab('dash',this)">📊 Dashboard</a>
+        <a onclick="admTab('products',this)">🛍 Products</a>
+        <a onclick="admTab('addprod',this)">➕ Add Product</a>
+        <a onclick="admTab('orders',this)">📦 Orders</a>
+        <a onclick="admTab('users',this)">👥 Users</a>
+        <a onclick="admTab('subs',this)">📧 Subscribers</a>
+        <a onclick="goTo('home')" style="color:rgba(255,255,255,0.28);margin-top:1rem">← Back to Site</a>
+      </nav>
+    </aside>
+    <main class="admin-main">
+
+      <!-- DASHBOARD -->
+      <div class="admin-sec active" id="adm-dash">
+        <h2 class="admin-heading">Dashboard</h2>
+        <div class="admin-stats">
+          <div class="stat-card"><div class="stat-label">Total Orders</div><div class="stat-val" id="stOrders">—</div></div>
+          <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-val" id="stRev">—</div></div>
+          <div class="stat-card"><div class="stat-label">Products</div><div class="stat-val" id="stProds">—</div></div>
+          <div class="stat-card"><div class="stat-label">Users</div><div class="stat-val" id="stUsers">—</div></div>
+          <div class="stat-card"><div class="stat-label">Subscribers</div><div class="stat-val" id="stSubs">—</div></div>
+        </div>
+        <div class="adm-card">
+          <div class="adm-card-title">Recent Orders</div>
+          <div style="overflow-x:auto">
+            <table class="admin-table">
+              <thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Amount</th><th>Payment</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="dashOrders"><tr><td colspan="7" style="color:var(--taupe)">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS LIST -->
+      <div class="admin-sec" id="adm-products">
+        <h2 class="admin-heading">Products</h2>
+        <button class="adm-btn adm-btn-p" style="margin-bottom:1.2rem;padding:0.55rem 1.5rem" onclick="admTab('addprod',null);resetProdForm()">+ Add New Product</button>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>Image</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+            <tbody id="admProdList"><tr><td colspan="5" style="color:var(--taupe)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ADD/EDIT PRODUCT -->
+      <div class="admin-sec" id="adm-addprod">
+        <h2 class="admin-heading" id="apHead">Add Product</h2>
+        <input type="hidden" id="apId">
+        <div class="adm-card">
+          <div class="adm-card-title">Product Details</div>
+          <div class="fg"><label class="fl">Product Name *</label><input class="fi" id="apName" placeholder="e.g. The Sahara Tote"></div>
+          <div class="fg2">
+            <div class="fg"><label class="fl">Price (₹) *</label><input class="fi" id="apPrice" type="number" placeholder="1299"></div>
+            <div class="fg"><label class="fl">Original Price (₹) — for discount</label><input class="fi" id="apOrig" type="number" placeholder="Leave blank if no discount"></div>
+          </div>
+          <div class="fg2">
+            <div class="fg"><label class="fl">Stock *</label><input class="fi" id="apStock" type="number" placeholder="50"></div>
+            <div class="fg"><label class="fl">Badge</label>
+              <select class="fi" id="apBadge"><option value="">None</option><option value="new">New</option><option value="sale">Sale</option></select>
+            </div>
+          </div>
+          <div class="fg"><label class="fl">Short Description (shown on card)</label><input class="fi" id="apShort" placeholder="One-line teaser shown on product card…"></div>
+          <div class="fg"><label class="fl">Full Description</label><textarea class="fi" id="apDesc" rows="4" placeholder="Detailed description shown on product page…"></textarea></div>
+        </div>
+
+        <div class="adm-card">
+          <div class="adm-card-title">Product Images</div>
+          <div class="img-hint">
+            <strong>How to add images:</strong><br>
+            1. Type the exact filename below (e.g. <strong>sahara-tote.png</strong>)<br>
+            2. Rename your actual image file to that exact name<br>
+            3. Upload the image file to Netlify/GitHub <strong>in the same folder as index.html</strong><br>
+            4. The image will appear automatically on the website
+          </div>
+          <div id="apImgList"></div>
+          <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap">
+            <input class="fi" id="apImgName" type="text" placeholder="filename.png (e.g. sahara-tote.png)" style="flex:1;min-width:200px">
+            <button class="adm-btn adm-btn-p" onclick="addProdImg()">+ Add Image</button>
+          </div>
+          <div class="uimgs" id="apImgPreview" style="margin-top:1rem;display:flex;flex-wrap:wrap;gap:0.75rem"></div>
+        </div>
+
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+          <button class="adm-btn adm-btn-p" onclick="saveProd()" style="padding:0.65rem 2rem">Save Product</button>
+          <button class="adm-btn" onclick="admTab('products',null)" style="background:var(--blush);color:var(--charcoal);padding:0.65rem 2rem">Cancel</button>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="admin-sec" id="adm-orders">
+        <h2 class="admin-heading">All Orders</h2>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Address</th><th>Items</th><th>Amount</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="admOrderList"><tr><td colspan="9" style="color:var(--taupe)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="admin-sec" id="adm-users">
+        <h2 class="admin-heading">Registered Users</h2>
+        <p style="font-size:0.82rem;color:var(--taupe);margin-bottom:1.4rem">All users who have created an account on your website</p>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Registered</th><th>Last Login</th><th>Orders</th><th>Total Spent</th></tr></thead>
+            <tbody id="admUserList"><tr><td colspan="7" style="color:var(--taupe)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SUBSCRIBERS -->
+      <div class="admin-sec" id="adm-subs">
+        <h2 class="admin-heading">Email Subscribers</h2>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>Email</th><th>Date Subscribed</th></tr></thead>
+            <tbody id="admSubList"><tr><td colspan="2" style="color:var(--taupe)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer id="mainFooter">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">ZYRA CARRY</div>
+      <div class="footer-brand-desc">Luxury handcrafted tote bags for women, made with ethically sourced eco-friendly materials. Each piece carries the warmth of artisan hands and conscious design.</div>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/zyracarry.shop" target="_blank" rel="noopener" class="footer-social" title="Instagram">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="mailto:zyracarry.shop@gmail.com" class="footer-social" title="Email">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </a>
+        <a href="tel:+918867572282" class="footer-social" title="Phone">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Company</div>
+      <a onclick="goTo('about')">About Us</a>
+      <a onclick="goTo('shop')">Shop</a>
+      <a>Sustainability</a>
+      <a>Careers</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Customer Care</div>
+      <a>FAQ</a>
+      <a>Shipping Policy</a>
+      <a>Return Policy (3 days)</a>
+      <a onclick="goTo('track')">Track Order</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Contact</div>
+      <a href="mailto:zyracarry.shop@gmail.com">zyracarry.shop@gmail.com</a>
+      <a href="tel:+918867572282">+91 8867 572282</a>
+      <a href="https://www.instagram.com/zyracarry.shop" target="_blank">Instagram</a>
+      <a href="https://razorpay.me/@zyracarry" target="_blank">Pay via Razorpay</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ZYRA CARRY. All rights reserved.</span>
+    <span>Designed with ♥ for conscious luxury</span>
+    <span onclick="openAdmin()" style="cursor:pointer;opacity:0.3;font-size:0.65rem;transition:opacity 0.2s" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='0.3'">Admin</span>
+  </div>
+</footer>
+<script>
+// ══════════════════════════════════════════════
+// CONSTANTS
+// ══════════════════════════════════════════════
+const ADMIN_EMAIL   = 'zyracarry.shop@gmail.com';
+const RZP_KEY       = 'rzp_live_SjP8SrbVhm8PeG';
+const EJS_KEY       = 'xoiHVVCCT-AYP5GhD';
+const EJS_SERVICE   = 'zyracarry_orders';
+const EJS_TEMPLATE  = 'template_somzjho';
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let curUser   = null;
+let cart      = JSON.parse(localStorage.getItem('zc_cart')  || '[]');
+let wishlist  = JSON.parse(localStorage.getItem('zc_wl')    || '[]');
+let allProds  = [];
+let heroIdx   = 0;
+let heroTimer = null;
+let selPay_   = 'cod';
+let prodImgs  = [];  // array of filename strings
+
+// ══════════════════════════════════════════════
+// NAVIGATION — CORE FIX
+// ══════════════════════════════════════════════
+function goTo(page) {
+  // Hide every page
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+  const el = document.getElementById('page-' + page);
+  if (!el) return;
+  el.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Footer visibility
+  document.getElementById('mainFooter').style.display = page === 'admin' ? 'none' : '';
+
+  // Close menus
+  closeAcc();
+
+  // Init page
+  switch(page) {
+    case 'home':     loadHomeProds(); initReveal(); break;
+    case 'shop':     loadShopProds(); break;
+    case 'cart':     renderCart(); break;
+    case 'checkout': renderCheckout(); break;
+    case 'profile':  loadProfile(); break;
+    case 'wishlist': renderWishlist(); break;
+    case 'admin':    loadAdminDash(); break;
+    case 'orders':   loadOrdersPage(); break;
+  }
+  setTimeout(initReveal, 100);
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+window.addEventListener('load', () => {
+  // Show warning if opened as local file
+  if (location.protocol !== 'https:' && location.protocol !== 'http:') {
+    const w = document.getElementById('localWarning');
+    if (w) w.style.display = 'block';
+  }
+  setTimeout(() => document.getElementById('loading').classList.add('hide'), 1800);
+  updateBadge();
+  initReveal();
+  initNavScroll();
+  startHero();
+  loadEmailJS();
+  listenAuth();
+  loadHomeProds();
+});
+
+function listenAuth() {
+  if (!window._fb) return;
+  window._fb.onAuthStateChanged(window._fb.auth, u => {
+    curUser = u;
+    const txt = document.getElementById('authNavTxt');
+    const da  = document.getElementById('drawer-auth');
+    if (u) {
+      if (txt) txt.textContent = 'Logout';
+      if (da)  da.textContent  = 'Logout';
+    } else {
+      if (txt) txt.textContent = 'Sign In';
+      if (da)  da.textContent  = 'Sign In';
+    }
+  });
+}
+
+function initNavScroll() {
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+  });
+}
+
+function initReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.rev:not(.visible)').forEach(el => obs.observe(el));
+}
+
+// ══════════════════════════════════════════════
+// HERO SLIDER
+// ══════════════════════════════════════════════
+function startHero() {
+  clearInterval(heroTimer);
+  heroTimer = setInterval(() => slideHero(1), 5000);
+}
+
+function slideHero(dir) {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots   = document.querySelectorAll('.hero-dot');
+  if (!slides.length) return;
+  slides[heroIdx].classList.remove('active');
+  if (dots[heroIdx]) dots[heroIdx].classList.remove('active');
+  heroIdx = (heroIdx + dir + slides.length) % slides.length;
+  slides[heroIdx].classList.add('active');
+  if (dots[heroIdx]) dots[heroIdx].classList.add('active');
+  document.getElementById('heroSlides').style.transform = `translateX(-${heroIdx * 100}%)`;
+  startHero();
+}
+
+function goSlide(i) {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots   = document.querySelectorAll('.hero-dot');
+  if (!slides.length) return;
+  slides[heroIdx].classList.remove('active');
+  if (dots[heroIdx]) dots[heroIdx].classList.remove('active');
+  heroIdx = i;
+  slides[heroIdx].classList.add('active');
+  if (dots[heroIdx]) dots[heroIdx].classList.add('active');
+  document.getElementById('heroSlides').style.transform = `translateX(-${heroIdx * 100}%)`;
+  startHero();
+}
+
+// ══════════════════════════════════════════════
+// EMAILJS
+// ══════════════════════════════════════════════
+function loadEmailJS() {
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+  s.onload = () => {
+    if (window.emailjs) {
+      emailjs.init({ publicKey: EJS_KEY });
+      console.log('✅ EmailJS ready');
+    }
+  };
+  document.head.appendChild(s);
+}
+
+function sendEmail(to, subject, msg, d) {
+  d = d || {};
+  const params = {
+    to_email:       to,
+    subject:        subject,
+    message:        msg,
+    from_name:      'ZYRA CARRY',
+    reply_to:       ADMIN_EMAIL,
+    order_id:       d.order_id       || '',
+    customer_name:  d.customer_name  || '',
+    customer_phone: d.customer_phone || '',
+    address:        d.address        || '',
+    items:          d.items          || '',
+    total:          d.total          || '',
+    payment:        d.payment        || '',
+    date:           d.date           || new Date().toLocaleDateString('en-IN')
+  };
+  function attempt() {
+    if (!window.emailjs) { setTimeout(attempt, 2500); return; }
+    emailjs.send(EJS_SERVICE, EJS_TEMPLATE, params)
+      .then(r  => console.log('✅ Email sent to', to, r.status))
+      .catch(e => {
+        console.error('❌ Email error:', e);
+        setTimeout(() => emailjs.send(EJS_SERVICE, EJS_TEMPLATE, params).catch(() => {}), 4000);
+      });
+  }
+  attempt();
+}
+
+// ══════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════
+function authNavClick()  { curUser ? doLogout() : openMod('authModal'); }
+function drawerAuth()    { curUser ? doLogout() : openMod('authModal'); }
+
+function authTab(t, el) {
+  document.querySelectorAll('.modal-tab').forEach(x => x.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('loginForm').style.display = t === 'login' ? 'block' : 'none';
+  document.getElementById('regForm').style.display   = t === 'reg'   ? 'block' : 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('lEmail').value.trim();
+  const pass  = document.getElementById('lPass').value;
+  if (!email || !pass) { toast('Please fill in all fields', 'error'); return; }
+  // Check if running locally - Firebase Auth won't work
+  if (location.protocol !== 'https:' && location.protocol !== 'http:') {
+    toast('Please open the website at zyracarry.shop — sign in does not work when file is opened directly', 'error');
+    return;
+  }
+  try {
+    const cred = await window._fb.signInWithEmailAndPassword(window._fb.auth, email, pass);
+    // Update lastLogin
+    try {
+      await window._fb.setDoc(
+        window._fb.doc(window._fb.db, 'users', cred.user.uid),
+        { lastLogin: window._fb.serverTimestamp() },
+        { merge: true }
+      );
+    } catch(e) {}
+    toast('Welcome back! 👋', 'success');
+    closeMod('authModal');
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function doReg() {
+  const name  = document.getElementById('rName').value.trim();
+  const email = document.getElementById('rEmail').value.trim();
+  const phone = document.getElementById('rPhone').value.trim();
+  const pass  = document.getElementById('rPass').value;
+  if (!name || !email || !pass) { toast('Please fill in all fields', 'error'); return; }
+  if (pass.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+  if (location.protocol !== 'https:' && location.protocol !== 'http:') {
+    toast('Please open zyracarry.shop to create an account', 'error');
+    return;
+  }
+  try {
+    const cred = await window._fb.createUserWithEmailAndPassword(window._fb.auth, email, pass);
+    await window._fb.updateProfile(cred.user, { displayName: name });
+    await window._fb.setDoc(window._fb.doc(window._fb.db, 'users', cred.user.uid), {
+      name, email, phone,
+      createdAt:   window._fb.serverTimestamp(),
+      lastLogin:   window._fb.serverTimestamp()
+    });
+    sendEmail(email, 'Welcome to ZYRA CARRY', 
+      `Hi ${name},\n\nWelcome to ZYRA CARRY! We're thrilled to have you.\n\nExplore our handcrafted eco-friendly tote bags at zyracarry.shop\n\nWith love,\nZYRA CARRY Team`,
+      { order_id: 'WELCOME', customer_name: name, customer_phone: phone, items: 'New Account', date: new Date().toLocaleDateString('en-IN') }
+    );
+    toast('Account created! Welcome 🎉', 'success');
+    closeMod('authModal');
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function doLogout() {
+  try {
+    await window._fb.signOut(window._fb.auth);
+    toast('Signed out successfully', 'info');
+    goTo('home');
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ══════════════════════════════════════════════
+// PRODUCTS
+// ══════════════════════════════════════════════
+const SAMPLE_PRODUCTS = [
+  {
+    id: 'sample1',
+    name: 'The Ivory Tote',
+    price: 1499,
+    originalPrice: null,
+    shortDesc: 'Natural cotton canvas, spacious & structured',
+    description: 'The Ivory Tote is your perfect everyday companion. Crafted from natural cotton canvas with reinforced stitching, it carries everything you need while keeping you effortlessly elegant. Roomy enough for your laptop, essentials, and more.',
+    images: ['product1.png'],
+    badge: 'new',
+    stock: 20,
+    material: 'Organic Cotton Canvas',
+    care: 'Spot clean, air dry'
+  },
+  {
+    id: 'sample2',
+    name: 'The Garden Carry',
+    price: 1299,
+    originalPrice: 1799,
+    shortDesc: 'Floral jute with cotton lining',
+    description: 'Inspired by blooming gardens, this tote weaves together jute and cotton in a timeless floral pattern. Lightweight yet sturdy, it moves with you from morning errands to evening strolls.',
+    images: ['product2.png'],
+    badge: 'sale',
+    stock: 15,
+    material: 'Natural Jute & Cotton',
+    care: 'Spot clean only'
+  }
+];
+
+async function fetchProds() {
+  if (!window._fb) return SAMPLE_PRODUCTS;
+  try {
+    const q    = window._fb.query(window._fb.collection(window._fb.db, 'products'), window._fb.orderBy('createdAt', 'desc'));
+    const snap = await window._fb.getDocs(q);
+    if (snap.empty) return SAMPLE_PRODUCTS;
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) { return SAMPLE_PRODUCTS; }
+}
+
+function buildCard(p) {
+  const img   = (p.images && p.images[0]) || 'product1.png';
+  const inWL  = wishlist.includes(p.id);
+  const price = Number(p.price).toLocaleString('en-IN');
+  const orig  = p.originalPrice ? `<span class="orig">₹${Number(p.originalPrice).toLocaleString('en-IN')}</span>` : '';
+  return `
+  <div class="pcard" onclick="openProd('${p.id}')">
+    <div class="pcard-img">
+      <img src="${img}" alt="${p.name}" loading="lazy" onerror="this.style.background='var(--blush)'">
+      <div class="pcard-badges">
+        ${p.badge === 'new'  ? '<span class="badge badge-new">New</span>'  : ''}
+        ${p.badge === 'sale' ? '<span class="badge badge-sale">Sale</span>' : ''}
+      </div>
+      <button class="wl-btn ${inWL ? 'active' : ''}" onclick="toggleWL(event,'${p.id}')" title="Wishlist">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="${inWL ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+    </div>
+    <div class="pcard-body">
+      <div class="pcard-name">${p.name}</div>
+      <div class="pcard-desc">${p.shortDesc || ''}</div>
+      <div class="pcard-price">₹${price} ${orig}</div>
+      <div class="pcard-actions" onclick="event.stopPropagation()">
+        <button class="btn-add" onclick="addToCart('${p.id}')">Add to Cart</button>
+        <button class="btn-buy" onclick="buyNow('${p.id}')">Buy Now</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function loadHomeProds() {
+  if (!allProds.length) allProds = await fetchProds();
+  const grid = document.getElementById('homeGrid');
+  if (grid) { grid.innerHTML = allProds.slice(0, 8).map(buildCard).join(''); initReveal(); }
+}
+
+async function loadShopProds() {
+  if (!allProds.length) allProds = await fetchProds();
+  let sorted = [...allProds];
+  const s = document.getElementById('sortSel')?.value || 'newest';
+  if (s === 'low')  sorted.sort((a, b) => a.price - b.price);
+  if (s === 'high') sorted.sort((a, b) => b.price - a.price);
+  const grid = document.getElementById('shopGrid');
+  if (grid) { grid.innerHTML = sorted.map(buildCard).join(''); initReveal(); }
+}
+
+function sortProds() { loadShopProds(); }
+
+function openProd(id) {
+  const p = allProds.find(x => x.id === id);
+  if (!p) return;
+  const imgs   = (p.images && p.images.length) ? p.images : ['product1.png'];
+  const thumbs = imgs.map((im, i) => `<div class="pd-thumb ${i===0?'active':''}" onclick="switchThumb(this,'${im}')"><img src="${im}" alt="" onerror="this.parentElement.style.background='var(--blush)'"></div>`).join('');
+  const price  = `₹${Number(p.price).toLocaleString('en-IN')}`;
+  const orig   = p.originalPrice ? `<span style="font-size:1rem;color:var(--sand);text-decoration:line-through;font-weight:400">₹${Number(p.originalPrice).toLocaleString('en-IN')}</span>` : '';
+
+  document.getElementById('pdLayout').innerHTML = `
+    <div class="pd-gallery">
+      <div class="pd-main-img"><img src="${imgs[0]}" id="pdMainImg" alt="${p.name}" onerror="this.parentElement.style.background='var(--blush)'"></div>
+      <div class="pd-thumbs">${thumbs}</div>
+    </div>
+    <div>
+      <p style="font-size:0.68rem;color:var(--taupe);letter-spacing:0.1em;margin-bottom:1.4rem">
+        <span onclick="goTo('home')" style="cursor:pointer">Home</span> /
+        <span onclick="goTo('shop')" style="cursor:pointer">Shop</span> / ${p.name}
+      </p>
+      <h1 class="pd-name">${p.name}</h1>
+      <div class="pd-price">${price} ${orig}</div>
+      <div class="pd-stock">
+        <span class="${p.stock > 0 ? 'in-stock' : ''}">${p.stock > 0 ? '✓ In Stock (' + p.stock + ' left)' : 'Out of Stock'}</span>
+      </div>
+      <div class="pd-desc">${p.description || 'Handcrafted with premium eco-friendly materials.'}</div>
+      <div class="qty-wrap">
+        <span class="qty-label">Quantity</span>
+        <div class="qty-ctrl">
+          <div class="qty-btn" onclick="adjQty(-1)">−</div>
+          <input class="qty-val" type="number" id="pdQty" value="1" min="1" max="${p.stock}">
+          <div class="qty-btn" onclick="adjQty(1)">+</div>
+        </div>
+      </div>
+      <div class="pd-btns">
+        <button class="pd-btn pd-btn-p" onclick="addToCart('${p.id}', +document.getElementById('pdQty').value)">Add to Cart</button>
+        <button class="pd-btn pd-btn-o" onclick="buyNow('${p.id}', +document.getElementById('pdQty').value)">Buy Now</button>
+      </div>
+      <div style="background:#E8F5E9;border-radius:var(--rs);padding:0.6rem 0.9rem;font-size:0.75rem;color:#2E7D32;margin-bottom:1rem;display:flex;align-items:center;gap:0.4rem">
+        🎁 Delivery: <s style="opacity:0.6">₹70</s> → <strong>FREE</strong> on this order
+      </div>
+      <div class="pd-meta" style="font-size:0.75rem;color:var(--taupe);line-height:2.2">
+        ${p.material  ? `<div>Material: <strong style="color:var(--charcoal)">${p.material}</strong></div>` : ''}
+        ${p.care      ? `<div>Care: <strong style="color:var(--charcoal)">${p.care}</strong></div>` : ''}
+      </div>
+    </div>`;
+
+  // Reviews
+  const reviews = [
+    { author: 'Priya M.',  text: 'Absolutely stunning quality! The bag is even more beautiful in person. Gets compliments everywhere.',        stars: 5, date: '2025-03-15' },
+    { author: 'Aisha K.',  text: 'My third ZYRA CARRY purchase and I keep coming back. Worth every rupee. The eco-friendly packaging too!',  stars: 5, date: '2025-02-28' },
+    { author: 'Meera S.',  text: 'The craftsmanship is truly exceptional. So spacious and structured — fits my laptop and everything else.', stars: 5, date: '2025-04-01' },
+  ];
+  document.getElementById('reviewsGrid').innerHTML = reviews.map(r => `
+    <div class="review-card">
+      <div class="review-stars">${'★'.repeat(r.stars)}</div>
+      <p class="review-text">"${r.text}"</p>
+      <div class="review-author">
+        <div class="review-av">${r.author[0]}</div>
+        <div><div class="review-name">${r.author}</div><div class="review-date">${r.date}</div></div>
+      </div>
+    </div>`).join('');
+
+  goTo('product');
+}
+
+function switchThumb(el, src) {
+  document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const mi = document.getElementById('pdMainImg');
+  if (mi) mi.src = src;
+}
+
+function adjQty(d) {
+  const inp = document.getElementById('pdQty');
+  if (inp) inp.value = Math.max(1, parseInt(inp.value) + d);
+}
+
+// ══════════════════════════════════════════════
+// CART
+// ══════════════════════════════════════════════
+function saveCart()    { localStorage.setItem('zc_cart', JSON.stringify(cart)); updateBadge(); }
+function saveWishlist(){ localStorage.setItem('zc_wl',   JSON.stringify(wishlist)); }
+
+function updateBadge() {
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  const b = document.getElementById('cartBadge');
+  if (b) { b.textContent = total; b.classList.toggle('show', total > 0); }
+}
+
+function addToCart(id, qty = 1) {
+  const p = allProds.find(x => x.id === id);
+  if (!p) return;
+  const ex = cart.find(i => i.id === id);
+  if (ex) { ex.qty += qty; } else { cart.push({ id, qty, name: p.name, price: p.price, image: (p.images && p.images[0]) || '' }); }
+  saveCart();
+  toast(`"${p.name}" added to cart 🛍`, 'success');
+}
+
+function buyNow(id, qty = 1) { addToCart(id, qty); goTo('checkout'); }
+
+function removeFromCart(id)    { cart = cart.filter(i => i.id !== id); saveCart(); renderCart(); }
+function updateCartQty(id, q)  { const it = cart.find(i => i.id === id); if (it) { it.qty = Math.max(1, q); saveCart(); renderCart(); } }
+
+function renderCart() {
+  const con = document.getElementById('cartLayout');
+  if (!con) return;
+  if (!cart.length) {
+    con.innerHTML = `<div style="text-align:center;padding:5rem 1rem;grid-column:1/-1">
+      <div style="font-size:3.5rem;margin-bottom:1.5rem;opacity:0.25">🛍</div>
+      <h2 style="font-family:var(--fd);font-size:1.6rem;color:var(--charcoal);margin-bottom:1rem">Your cart is empty</h2>
+      <p style="color:var(--taupe);margin-bottom:2rem;font-size:0.85rem">Discover our handcrafted tote bags</p>
+      <button class="btn-primary" onclick="goTo('shop')" style="padding:0.9rem 2.5rem">Shop Now</button>
+    </div>`;
+    return;
+  }
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  con.innerHTML = `
+    <div>
+      <h2 style="font-family:var(--fd);font-size:1.75rem;color:var(--charcoal);margin-bottom:1.5rem">Your Cart (${cart.length} item${cart.length !== 1 ? 's' : ''})</h2>
+      ${cart.map(i => `
+        <div class="cart-item">
+          <div class="cart-item-img">
+            <img src="${i.image || 'product1.png'}" alt="${i.name}" onerror="this.parentElement.style.background='var(--blush)'">
+          </div>
+          <div>
+            <div class="cart-item-name">${i.name}</div>
+            <div class="cart-item-price">₹${Number(i.price).toLocaleString('en-IN')} each</div>
+            <div class="cart-qty">
+              <div class="cart-qty-btn" onclick="updateCartQty('${i.id}', ${i.qty - 1})">−</div>
+              <span style="font-size:0.9rem;min-width:24px;text-align:center;font-weight:500">${i.qty}</span>
+              <div class="cart-qty-btn" onclick="updateCartQty('${i.id}', ${i.qty + 1})">+</div>
+            </div>
+          </div>
+          <div>
+            <div class="cart-item-total">₹${(i.price * i.qty).toLocaleString('en-IN')}</div>
+            <span class="cart-remove" onclick="removeFromCart('${i.id}')">Remove</span>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="cart-summary">
+      <div class="cart-summary-title">Order Summary</div>
+      <div class="sum-row"><span>Subtotal (${cart.reduce((s,i)=>s+i.qty,0)} items)</span><span>₹${subtotal.toLocaleString('en-IN')}</span></div>
+      <div class="sum-row"><span>Delivery Charges</span><span><s style="color:var(--sand);font-size:0.78rem">₹70</s></span></div>
+      <div class="delivery-note">🎁 FREE Delivery — We're covering ₹70 for you!</div>
+      <div class="sum-row total"><span>Total</span><span>₹${subtotal.toLocaleString('en-IN')}</span></div>
+      <button class="cart-checkout-btn" onclick="goTo('checkout')">Proceed to Checkout →</button>
+      <button class="btn-outline" onclick="goTo('shop')" style="width:100%;margin-top:0.75rem;padding:0.75rem">Continue Shopping</button>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+// CHECKOUT
+// ══════════════════════════════════════════════
+function renderCheckout() {
+  const alert = document.getElementById('loginAlert');
+  if (alert) alert.style.display = curUser ? 'none' : 'block';
+  if (curUser) {
+    const ne = document.getElementById('coName');
+    const em = document.getElementById('coEmail');
+    if (ne && !ne.value) ne.value = curUser.displayName || '';
+    if (em && !em.value) em.value = curUser.email || '';
+  }
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const items = document.getElementById('coItemsList');
+  if (items) {
+    items.innerHTML = cart.map(i => `
+      <div style="display:flex;gap:0.75rem;margin-bottom:0.85rem;align-items:center">
+        <div style="width:52px;height:65px;border-radius:6px;overflow:hidden;background:var(--blush);flex-shrink:0">
+          <img src="${i.image || 'product1.png'}" alt="${i.name}" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div style="flex:1">
+          <div style="font-size:0.83rem;font-weight:500">${i.name}</div>
+          <div style="font-size:0.73rem;color:var(--taupe)">Qty: ${i.qty}</div>
+        </div>
+        <div style="font-size:0.83rem;font-weight:500">₹${(i.price*i.qty).toLocaleString('en-IN')}</div>
+      </div>`).join('');
+  }
+  const cst = document.getElementById('coSubtotal');
+  const ct  = document.getElementById('coTotal');
+  if (cst) cst.textContent = '₹' + subtotal.toLocaleString('en-IN');
+  if (ct)  ct.textContent  = '₹' + subtotal.toLocaleString('en-IN');
+}
+
+function selPay(m) {
+  selPay_ = m;
+  document.getElementById('payCOD')?.classList.toggle('sel', m === 'cod');
+  document.getElementById('payOnline')?.classList.toggle('sel', m === 'online');
+}
+
+async function placeOrder() {
+  if (!curUser) { toast('Please sign in to place your order', 'error'); openMod('authModal'); return; }
+  const name  = document.getElementById('coName').value.trim();
+  const email = document.getElementById('coEmail').value.trim();
+  const phone = document.getElementById('coPhone').value.trim();
+  const addr  = document.getElementById('coAddr').value.trim();
+  const land  = document.getElementById('coLand').value.trim();
+  const city  = document.getElementById('coCity').value.trim();
+  const state = document.getElementById('coState').value.trim();
+  const pin   = document.getElementById('coPin').value.trim();
+  if (!name || !email || !phone || !addr || !city || !state || !pin) { toast('Please fill in all required fields', 'error'); return; }
+  if (!cart.length) { toast('Your cart is empty', 'error'); return; }
+  if (pin.length !== 6) { toast('Please enter a valid 6-digit pincode', 'error'); return; }
+
+  const total    = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const orderDat = { name, email, phone, addr, land, city, state, pin, total };
+
+  if (selPay_ === 'online') {
+    // Load Razorpay
+    if (!window.Razorpay) {
+      const s  = document.createElement('script');
+      s.src    = 'https://checkout.razorpay.com/v1/checkout.js';
+      s.onload = () => initRazorpay(orderDat);
+      document.head.appendChild(s);
+    } else {
+      initRazorpay(orderDat);
+    }
+    return;
+  }
+  await saveOrder(orderDat, 'COD', null);
+}
+
+function initRazorpay(od) {
+  const rzp = new Razorpay({
+    key:         RZP_KEY,
+    amount:      od.total * 100,
+    currency:    'INR',
+    name:        'ZYRA CARRY',
+    description: 'Handcrafted Tote Bag',
+    prefill:     { name: od.name, email: od.email, contact: od.phone },
+    theme:       { color: '#2A2421' },
+    handler: async (res) => {
+      await saveOrder(od, 'Online - Razorpay', res.razorpay_payment_id);
+    },
+    modal: { ondismiss: () => toast('Payment cancelled', 'info') }
+  });
+  rzp.open();
+}
+
+async function saveOrder(od, payMethod, payId) {
+  const orderId   = 'ZC' + Date.now();
+  const itemsStr  = cart.map(i => `${i.name} x${i.qty} = Rs.${(i.price*i.qty).toLocaleString('en-IN')}`).join(' | ');
+  const fullAddr  = `${od.addr}${od.land ? ', Near ' + od.land : ''}, ${od.city}, ${od.state} - ${od.pin}`;
+  const orderDate = new Date().toLocaleDateString('en-IN');
+
+  const doc = {
+    orderId,
+    userId:        curUser.uid,
+    userEmail:     curUser.email,
+    name:          od.name,
+    email:         od.email,
+    phone:         od.phone,
+    address:       od.addr,
+    landmark:      od.land || '',
+    city:          od.city,
+    state:         od.state,
+    pin:           od.pin,
+    fullAddress:   fullAddr,
+    total:         od.total,
+    paymentMethod: payMethod,
+    paymentId:     payId || '',
+    status:        payMethod === 'COD' ? 'pending' : 'processing',
+    items:         [...cart],
+    createdAt:     window._fb ? window._fb.serverTimestamp() : new Date().toISOString()
+  };
+
+  // Save to Firestore
+  try {
+    if (window._fb) {
+      await window._fb.addDoc(window._fb.collection(window._fb.db, 'orders'), doc);
+      console.log('✅ Order saved:', orderId);
+    }
+  } catch(e) { console.error('Firestore error:', e); }
+
+  // Email data
+  const eData = {
+    order_id:       orderId,
+    customer_name:  od.name,
+    customer_phone: od.phone,
+    address:        fullAddr,
+    items:          itemsStr,
+    total:          'Rs.' + od.total.toLocaleString('en-IN'),
+    payment:        payMethod,
+    date:           orderDate
+  };
+
+  // Customer email
+  sendEmail(od.email,
+    `Order Confirmed #${orderId} – ZYRA CARRY`,
+    `Hi ${od.name},\n\nThank you for your order!\n\nOrder ID: ${orderId}\nTotal: Rs.${od.total}\nDelivery: FREE (We covered ₹70 for you!)\nPayment: ${payMethod}\n\nItems:\n${itemsStr}\n\nDelivery Address:\n${fullAddr}\n\nTrack your order at zyracarry.shop → My Orders\n\nWith love,\nZYRA CARRY Team`,
+    eData
+  );
+
+  // Admin email
+  sendEmail(ADMIN_EMAIL,
+    `🛍 New Order #${orderId} – ZYRA CARRY`,
+    `New order received!\n\nOrder: ${orderId}\nCustomer: ${od.name}\nPhone: ${od.phone}\nEmail: ${od.email}\nTotal: Rs.${od.total}\nPayment: ${payMethod}${payId ? '\nPayment ID: '+payId : ''}\nAddress: ${fullAddr}\n\nItems:\n${itemsStr}`,
+    eData
+  );
+
+  // Clear cart & show success
+  cart = [];
+  saveCart();
+
+  document.getElementById('sucOid').textContent   = orderId;
+  document.getElementById('sucName').textContent  = od.name;
+  document.getElementById('sucTotal').textContent = '₹' + od.total.toLocaleString('en-IN');
+  document.getElementById('sucPay').textContent   = payMethod;
+
+  goTo('success');
+  toast('Order placed successfully! 🎉', 'success');
+}
+
+// ══════════════════════════════════════════════
+// WISHLIST
+// ══════════════════════════════════════════════
+function toggleWL(e, id) {
+  e.stopPropagation();
+  if (wishlist.includes(id)) {
+    wishlist = wishlist.filter(x => x !== id);
+    toast('Removed from wishlist', 'info');
+  } else {
+    wishlist.push(id);
+    toast('Added to wishlist ❤️', 'success');
+  }
+  saveWishlist();
+  const btn = e.currentTarget;
+  const inWL = wishlist.includes(id);
+  btn.classList.toggle('active', inWL);
+  const path = btn.querySelector('svg path, svg use');
+  if (path) path.setAttribute('fill', inWL ? 'currentColor' : 'none');
+}
+
+function renderWishlist() {
+  const grid = document.getElementById('wlGrid');
+  if (!grid) return;
+  if (!allProds.length) { fetchProds().then(p => { allProds = p; renderWishlist(); }); return; }
+  const items = allProds.filter(p => wishlist.includes(p.id));
+  grid.innerHTML = items.length
+    ? items.map(buildCard).join('')
+    : '<p style="color:var(--taupe);font-size:0.85rem;grid-column:1/-1">Your wishlist is empty. Start adding products you love!</p>';
+}
+
+// ══════════════════════════════════════════════
+// SUBSCRIBE
+// ══════════════════════════════════════════════
+async function doSubscribe() {
+  const email = document.getElementById('subEmail').value.trim();
+  if (!email || !email.includes('@')) { toast('Please enter a valid email', 'error'); return; }
+  try {
+    if (window._fb) {
+      await window._fb.addDoc(window._fb.collection(window._fb.db, 'subscribers'), {
+        email,
+        createdAt: window._fb.serverTimestamp()
+      });
+    }
+    sendEmail(email,
+      'Welcome to ZYRA CARRY Inner Circle 💌',
+      `Thank you for subscribing!\n\nYou're now part of the ZYRA CARRY Inner Circle. You'll be the first to know about new collections, exclusive offers, and stories behind each creation.\n\nShop at zyracarry.shop\n\nWith love,\nZYRA CARRY Team`,
+      { order_id: 'SUB', customer_name: email, items: 'Newsletter Subscription', date: new Date().toLocaleDateString('en-IN') }
+    );
+    document.getElementById('subEmail').value = '';
+    toast('Subscribed! Thank you 💌', 'success');
+  } catch(e) { toast('Thank you for subscribing! 💌', 'success'); }
+}
+
+// ══════════════════════════════════════════════
+// PROFILE
+// ══════════════════════════════════════════════
+async function loadProfile() {
+  if (!curUser) { openMod('authModal'); return; }
+  const av  = document.getElementById('profAv');
+  const nm  = document.getElementById('profName');
+  const em  = document.getElementById('profEmail');
+  const pn  = document.getElementById('pName');
+  const pe  = document.getElementById('pEmail');
+  const pp  = document.getElementById('pPhone');
+  if (av) av.textContent = (curUser.displayName || curUser.email || 'U')[0].toUpperCase();
+  if (nm) nm.textContent = curUser.displayName || '—';
+  if (em) em.textContent = curUser.email || '—';
+  if (pn) pn.value = curUser.displayName || '';
+  if (pe) pe.value = curUser.email || '';
+  if (window._fb && pp) {
+    try {
+      const snap = await window._fb.getDoc(window._fb.doc(window._fb.db, 'users', curUser.uid));
+      if (snap.exists()) pp.value = snap.data().phone || '';
+    } catch(e) {}
+  }
+}
+
+async function saveProfile() {
+  if (!curUser) return;
+  const name  = document.getElementById('pName').value.trim();
+  const phone = document.getElementById('pPhone').value.trim();
+  try {
+    if (window._fb) {
+      await window._fb.updateProfile(curUser, { displayName: name });
+      await window._fb.setDoc(window._fb.doc(window._fb.db, 'users', curUser.uid), { name, phone }, { merge: true });
+    }
+    toast('Profile updated!', 'success');
+  } catch(e) { toast('Profile saved!', 'success'); }
+}
+
+function profTab(t, el) {
+  ['info', 'orders', 'track'].forEach(x => {
+    const el2 = document.getElementById('ptab-' + x);
+    if (el2) el2.style.display = x === t ? 'block' : 'none';
+  });
+  document.querySelectorAll('.profile-nav a').forEach(a => a.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (t === 'orders') loadProfOrders();
+}
+
+async function loadProfOrders() {
+  const list = document.getElementById('profOrdersList');
+  if (!list) return;
+  if (!curUser || !window._fb) { list.innerHTML = '<p style="color:var(--taupe);font-size:0.85rem">No orders yet.</p>'; return; }
+  list.innerHTML = '<p style="color:var(--taupe);font-size:0.85rem">Loading…</p>';
+  try {
+    const q    = window._fb.query(window._fb.collection(window._fb.db, 'orders'), window._fb.where('userId', '==', curUser.uid), window._fb.orderBy('createdAt', 'desc'));
+    const snap = await window._fb.getDocs(q);
+    if (snap.empty) { list.innerHTML = '<p style="color:var(--taupe);font-size:0.85rem">No orders yet.</p>'; return; }
+    list.innerHTML = snap.docs.map(d => buildOrderRow(d.id, d.data())).join('');
+  } catch(e) {
+    // Fallback query if index not ready
+    try {
+      const q2   = window._fb.query(window._fb.collection(window._fb.db, 'orders'), window._fb.where('userEmail', '==', curUser.email));
+      const snap2 = await window._fb.getDocs(q2);
+      if (snap2.empty) { list.innerHTML = '<p style="color:var(--taupe);font-size:0.85rem">No orders yet.</p>'; return; }
+      list.innerHTML = snap2.docs.map(d => buildOrderRow(d.id, d.data())).join('');
+    } catch(e2) { list.innerHTML = '<p style="color:var(--taupe);font-size:0.85rem">Could not load orders.</p>'; }
+  }
+}
+
+function buildOrderRow(docId, o) {
+  const isDelivered = o.status === 'delivered';
+  let canReturn = false;
+  if (isDelivered && o.deliveredAt) {
+    const dd   = o.deliveredAt.toDate ? o.deliveredAt.toDate() : new Date(o.deliveredAt);
+    canReturn  = (Date.now() - dd.getTime()) / (1000 * 60 * 60 * 24) <= 3;
+  }
+  return `<div class="order-row">
+    <div class="order-top">
+      <span class="order-id-txt">#${o.orderId}</span>
+      <span class="order-items-txt">${(o.items||[]).map(i=>i.name).slice(0,2).join(', ')}${(o.items||[]).length>2?'…':''}</span>
+      <span class="order-amt">₹${(o.total||0).toLocaleString('en-IN')}</span>
+      <span class="ostatus os-${o.status||'pending'}">${o.status||'Pending'}</span>
+    </div>
+    <div style="font-size:0.72rem;color:var(--taupe)">
+      Payment: ${o.paymentMethod||'—'} &nbsp;•&nbsp; Delivery: <s style="opacity:0.6">₹70</s> <span style="color:#7DAA6B;font-weight:600">FREE</span> &nbsp;•&nbsp; Date: ${o.createdAt?.toDate?.()?.toLocaleDateString('en-IN')||'—'}
+    </div>
+    ${canReturn ? `<button class="return-btn" onclick="reqReturn('${docId}','${o.orderId}')">↩ Request Return (within 3 days)</button>` : ''}
+    ${isDelivered && !canReturn ? '<span style="font-size:0.7rem;color:var(--sand)">Return window closed (3 days from delivery)</span>' : ''}
+  </div>`;
+}
+
+async function loadOrdersPage() {
+  if (!curUser) { goTo('profile'); return; }
+  const list = document.getElementById('ordersListMain');
+  if (!list) return;
+  list.innerHTML = '<p style="color:var(--taupe)">Loading…</p>';
+  if (!window._fb) { list.innerHTML = '<p style="color:var(--taupe)">Please configure Firebase.</p>'; return; }
+  try {
+    const q    = window._fb.query(window._fb.collection(window._fb.db, 'orders'), window._fb.where('userId', '==', curUser.uid), window._fb.orderBy('createdAt', 'desc'));
+    const snap = await window._fb.getDocs(q);
+    if (snap.empty) {
+      list.innerHTML = `<div style="text-align:center;padding:3rem 1rem">
+        <p style="color:var(--taupe);font-size:0.85rem;margin-bottom:1.5rem">No orders yet. Start shopping!</p>
+        <button class="btn-primary" onclick="goTo('shop')" style="padding:0.85rem 2rem">Shop Now</button>
+      </div>`;
+      return;
+    }
+    list.innerHTML = snap.docs.map(d => buildOrderRow(d.id, d.data())).join('');
+  } catch(e) {
+    try {
+      const q2    = window._fb.query(window._fb.collection(window._fb.db, 'orders'), window._fb.where('userEmail', '==', curUser.email));
+      const snap2 = await window._fb.getDocs(q2);
+      list.innerHTML = snap2.empty
+        ? '<p style="color:var(--taupe)">No orders yet.</p>'
+        : snap2.docs.map(d => buildOrderRow(d.id, d.data())).join('');
+    } catch(e2) { list.innerHTML = '<p style="color:var(--taupe)">Could not load orders.</p>'; }
+  }
+}
+
+async function reqReturn(docId, orderId) {
+  const reason = prompt(`Return reason for order #${orderId}:\n\n1. Wrong product received\n2. Damaged / defective\n3. Not as described\n4. Changed my mind\n\nType your reason:`);
+  if (!reason) return;
+  try {
+    if (window._fb) {
+      await window._fb.updateDoc(window._fb.doc(window._fb.db, 'orders', docId), {
+        status:          'return_requested',
+        returnReason:    reason,
+        returnRequestedAt: window._fb.serverTimestamp()
+      });
+    }
+    const eData = { order_id: orderId, customer_name: curUser.displayName||'', customer_phone: '', address: '', items: reason, total: '', payment: 'Return Request', date: new Date().toLocaleDateString('en-IN') };
+    sendEmail(ADMIN_EMAIL, `↩ Return Request: #${orderId}`, `Return requested for order #${orderId}.\nCustomer: ${curUser.email}\nReason: ${reason}\n\nPlease process within 24-48 hours.`, eData);
+    sendEmail(curUser.email, `Return Request Received – ZYRA CARRY`, `Hi,\n\nWe've received your return request for Order #${orderId}.\nReason: ${reason}\n\nWe'll process it within 24-48 hours and contact you.\n\nZYRA CARRY Team`, eData);
+    toast('Return request submitted! We will contact you within 24 hours.', 'success');
+  } catch(e) { toast('Return request sent!', 'success'); }
+}
+
+// ══════════════════════════════════════════════
+// ORDER TRACKING
+// ══════════════════════════════════════════════
+async function doTrack()  { const id = document.getElementById('trkId').value; document.getElementById('trkResult').innerHTML = await getTrackHTML(id); }
+async function pubTrack() { const id = document.getElementById('pubTrkId').value; document.getElementById('pubTrkRes').innerHTML = await getTrackHTML(id); }
+
+async function getTrackHTML(orderId) {
+  if (!orderId) return '<p style="color:var(--taupe)">Please enter an Order ID.</p>';
+  if (!window._fb) return '<p style="color:var(--taupe)">Firebase not connected.</p>';
+  try {
+    const q    = window._fb.query(window._fb.collection(window._fb.db, 'orders'), window._fb.where('orderId', '==', orderId.trim()));
+    const snap = await window._fb.getDocs(q);
+    if (snap.empty) return '<p style="color:var(--taupe)">Order not found. Please check your Order ID.</p>';
+    const o     = snap.docs[0].data();
+    const steps = ['pending', 'processing', 'shipped', 'delivered'];
+    const cur   = steps.indexOf(o.status || 'pending');
+    return `<div style="background:var(--blush);border-radius:var(--r);padding:1.5rem">
+      <p style="font-size:0.72rem;color:var(--taupe);letter-spacing:0.12em;margin-bottom:1.5rem;text-transform:uppercase">Order #${o.orderId}</p>
+      <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem">
+        ${steps.map((s, i) => `
+          <div style="flex:1;text-align:center">
+            <div style="width:30px;height:30px;border-radius:50%;margin:0 auto 0.4rem;display:flex;align-items:center;justify-content:center;font-size:0.7rem;background:${i<=cur?'var(--charcoal)':'var(--sand)'};color:white">✓</div>
+            <div style="font-size:0.63rem;letter-spacing:0.07em;text-transform:capitalize;color:${i<=cur?'var(--charcoal)':'var(--sand)'}">${s}</div>
+          </div>`).join('')}
+      </div>
+      <p style="font-size:0.8rem;color:var(--taupe)">Total: ₹${(o.total||0).toLocaleString('en-IN')} • Payment: ${o.paymentMethod} • Delivery: <s style="opacity:0.6">₹70</s> FREE</p>
+    </div>`;
+  } catch(e) { return '<p style="color:var(--taupe)">Could not fetch order status.</p>'; }
+}
+
+// ══════════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════════
+function openSearch()  { document.getElementById('searchOv').classList.add('open'); setTimeout(() => document.getElementById('searchInput').focus(), 100); }
+function closeSearch() { document.getElementById('searchOv').classList.remove('open'); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('searchInput');
+  if (inp) {
+    inp.addEventListener('input', async () => {
+      const q   = inp.value.toLowerCase().trim();
+      const res = document.getElementById('searchResults');
+      if (!q) { res.innerHTML = ''; return; }
+      if (!allProds.length) allProds = await fetchProds();
+      const matches = allProds.filter(p => p.name.toLowerCase().includes(q) || (p.shortDesc||'').toLowerCase().includes(q));
+      res.innerHTML = matches.slice(0, 6).map(p => `
+        <div style="cursor:pointer" onclick="closeSearch();openProd('${p.id}')">
+          <img src="${(p.images&&p.images[0])||'product1.png'}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:var(--rs);background:var(--blush)" alt="${p.name}">
+          <p style="font-size:0.8rem;margin-top:0.4rem;color:var(--charcoal)">${p.name}</p>
+          <p style="font-size:0.73rem;color:var(--taupe)">₹${Number(p.price).toLocaleString('en-IN')}</p>
+        </div>`).join('')
+        || '<p style="color:var(--taupe);font-size:0.85rem;grid-column:1/-1">No products found.</p>';
+    });
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeSearch(); closeMod('authModal'); }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  });
+});
+
+// ══════════════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════════════
+function openAdmin() {
+  if (!curUser) { openMod('authModal'); toast('Please sign in as admin first.', 'info'); return; }
+  if (curUser.email !== ADMIN_EMAIL) { toast('Access denied. Admin only.', 'error'); return; }
+  goTo('admin');
+}
+
+function admTab(t, el) {
+  document.querySelectorAll('.admin-sec').forEach(s => s.classList.remove('active'));
+  const sec = document.getElementById('adm-' + t);
+  if (sec) sec.classList.add('active');
+  document.querySelectorAll('.admin-nav a').forEach(a => a.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (t === 'dash')     loadAdminDash();
+  if (t === 'products') loadAdminProds();
+  if (t === 'orders')   loadAdminOrders();
+  if (t === 'users')    loadAdminUsers();
+  if (t === 'subs')     loadAdminSubs();
+  if (t === 'addprod')  resetProdForm();
+}
+
+async function loadAdminDash() {
+  if (!window._fb) return;
+  try {
+    const [oSnap, pSnap, uSnap, sSnap] = await Promise.all([
+      window._fb.getDocs(window._fb.collection(window._fb.db, 'orders')),
+      window._fb.getDocs(window._fb.collection(window._fb.db, 'products')),
+      window._fb.getDocs(window._fb.collection(window._fb.db, 'users')),
+      window._fb.getDocs(window._fb.collection(window._fb.db, 'subscribers'))
+    ]);
+    const orders  = oSnap.docs.map(d => d.data());
+    const revenue = orders.reduce((s, o) => s + (o.total || 0), 0);
+    document.getElementById('stOrders').textContent = oSnap.size;
+    document.getElementById('stRev').textContent    = '₹' + revenue.toLocaleString('en-IN');
+    document.getElementById('stProds').textContent  = pSnap.size || SAMPLE_PRODUCTS.length;
+    document.getElementById('stUsers').textContent  = uSnap.size;
+    document.getElementById('stSubs').textContent   = sSnap.size;
+
+    document.getElementById('dashOrders').innerHTML = orders.slice(0, 10).map(o => `
+      <tr>
+        <td><strong>#${o.orderId}</strong></td>
+        <td>${o.name}<br><span style="font-size:0.7rem;color:var(--taupe)">${o.email}</span></td>
+        <td>${o.phone || '—'}</td>
+        <td>₹${(o.total||0).toLocaleString('en-IN')}</td>
+        <td>${o.paymentMethod || '—'}</td>
+        <td><span class="ostatus os-${o.status||'pending'}">${o.status||'pending'}</span></td>
+        <td>—</td>
+      </tr>`).join('') || '<tr><td colspan="7" style="color:var(--taupe)">No orders yet</td></tr>';
+  } catch(e) { console.error('Dashboard error:', e); }
+}
+
+async function loadAdminProds() {
+  const tb = document.getElementById('admProdList');
+  if (!tb) return;
+  const prods = await fetchProds();
+  tb.innerHTML = prods.map(p => `
+    <tr>
+      <td><img src="${(p.images&&p.images[0])||'product1.png'}" style="width:48px;height:58px;object-fit:cover;border-radius:6px;background:var(--blush)" onerror="this.style.background='var(--blush)'"></td>
+      <td><strong>${p.name}</strong><br><span style="font-size:0.72rem;color:var(--taupe)">${p.shortDesc||''}</span></td>
+      <td>₹${Number(p.price).toLocaleString('en-IN')}${p.originalPrice?`<br><s style="color:var(--sand);font-size:0.72rem">₹${Number(p.originalPrice).toLocaleString('en-IN')}</s>`:''}</td>
+      <td>${p.stock}</td>
+      <td style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+        <button class="adm-btn adm-btn-p" onclick="editProd('${p.id}')">Edit</button>
+        <button class="adm-btn adm-btn-d" onclick="delProd('${p.id}')">Delete</button>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="5" style="color:var(--taupe)">No products yet</td></tr>';
+}
+
+async function loadAdminOrders() {
+  const tb = document.getElementById('admOrderList');
+  if (!tb) return;
+  if (!window._fb) { tb.innerHTML = '<tr><td colspan="9" style="color:var(--taupe)">Configure Firebase</td></tr>'; return; }
+  try {
+    const snap = await window._fb.getDocs(window._fb.query(window._fb.collection(window._fb.db, 'orders'), window._fb.orderBy('createdAt', 'desc')));
+    tb.innerHTML = snap.docs.map(d => {
+      const o = d.data();
+      return `<tr>
+        <td><strong>#${o.orderId}</strong></td>
+        <td>${o.name}<br><span style="font-size:0.7rem;color:var(--taupe)">${o.email}</span></td>
+        <td>${o.phone||'—'}</td>
+        <td style="max-width:180px;font-size:0.75rem">${o.fullAddress||o.address||'—'}</td>
+        <td style="max-width:160px;font-size:0.75rem">${(o.items||[]).map(i=>`${i.name}×${i.qty}`).join(', ')}</td>
+        <td>₹${(o.total||0).toLocaleString('en-IN')}</td>
+        <td>${o.paymentMethod||'—'}</td>
+        <td><span class="ostatus os-${o.status||'pending'}">${o.status||'pending'}</span></td>
+        <td>
+          <select style="padding:0.3rem 0.5rem;border:1px solid var(--sand);border-radius:6px;font-size:0.72rem;outline:none;margin-bottom:0.3rem" onchange="updateOrderStatus('${d.id}',this.value)">
+            <option ${o.status==='pending'     ?'selected':''} value="pending">Pending</option>
+            <option ${o.status==='processing'  ?'selected':''} value="processing">Processing</option>
+            <option ${o.status==='shipped'     ?'selected':''} value="shipped">Shipped</option>
+            <option ${o.status==='delivered'   ?'selected':''} value="delivered">Delivered</option>
+          </select><br>
+          <button class="adm-btn adm-btn-p" style="padding:0.3rem 0.6rem;font-size:0.65rem" onclick="printInvoice('${d.id}')">🧾 Invoice</button>
+        </td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="9" style="color:var(--taupe)">No orders yet</td></tr>';
+  } catch(e) { tb.innerHTML = `<tr><td colspan="9" style="color:var(--taupe)">Error: ${e.message}</td></tr>`; }
+}
+
+async function updateOrderStatus(docId, status) {
+  if (!window._fb) return;
+  const upd = { status };
+  if (status === 'delivered') upd.deliveredAt = window._fb.serverTimestamp();
+  try {
+    await window._fb.updateDoc(window._fb.doc(window._fb.db, 'orders', docId), upd);
+    toast('Order status updated!', 'success');
+    loadAdminOrders();
+  } catch(e) { toast('Error updating status', 'error'); }
+}
+
+async function printInvoice(docId) {
+  if (!window._fb) return;
+  try {
+    const snap = await window._fb.getDoc(window._fb.doc(window._fb.db, 'orders', docId));
+    if (!snap.exists()) return;
+    const o = snap.data();
+    const w = window.open('', '_blank');
+    w.document.write(`<!DOCTYPE html><html><head><title>Invoice #${o.orderId}</title>
+    <style>
+      body{font-family:Georgia,serif;padding:3rem;max-width:700px;margin:0 auto;color:#2A2421}
+      h1{font-size:2rem;letter-spacing:0.1em;margin-bottom:0.25rem}
+      .sub{color:#7A6A5A;font-size:0.82rem;margin-bottom:2rem}
+      table{width:100%;border-collapse:collapse;margin:2rem 0}
+      th{text-align:left;padding:0.5rem;background:#F2E8E0;font-size:0.73rem;letter-spacing:0.1em;text-transform:uppercase}
+      td{padding:0.7rem 0.5rem;border-bottom:1px solid #F2E8E0;font-size:0.88rem}
+      .total-box{text-align:right;margin-top:1rem;font-size:1rem}
+      .foot{margin-top:3rem;padding-top:1rem;border-top:1px solid #C8B09A;font-size:0.73rem;color:#9E7B6C;text-align:center}
+      @media print{body{padding:1rem}}
+    </style></head><body>
+    <h1>ZYRA CARRY</h1>
+    <div class="sub">Handcrafted Luxury Totes — zyracarry.shop</div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <strong>Billed To:</strong><br>
+        ${o.name}<br>${o.email}<br>${o.phone}<br>
+        ${o.fullAddress||o.address}<br>
+      </div>
+      <div style="text-align:right">
+        <strong>Invoice #</strong>${o.orderId}<br>
+        <strong>Date:</strong> ${new Date().toLocaleDateString('en-IN')}<br>
+        <strong>Payment:</strong> ${o.paymentMethod}<br>
+        <strong>Status:</strong> ${o.status||'Pending'}
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead>
+      <tbody>
+        ${(o.items||[]).map(i=>`<tr><td>${i.name}</td><td>${i.qty}</td><td>₹${Number(i.price).toLocaleString('en-IN')}</td><td>₹${(i.price*i.qty).toLocaleString('en-IN')}</td></tr>`).join('')}
+      </tbody>
+    </table>
+    <div class="total-box">
+      Subtotal: ₹${Number(o.total).toLocaleString('en-IN')}<br>
+      Delivery Charges: <s style="opacity:0.6">₹70</s> → <strong>FREE</strong><br><br>
+      <strong style="font-size:1.2rem">Total: ₹${Number(o.total).toLocaleString('en-IN')}</strong>
+    </div>
+    <div class="foot">
+      Thank you for shopping with ZYRA CARRY<br>
+      zyracarry.shop@gmail.com &nbsp;|&nbsp; +91 8867 572282 &nbsp;|&nbsp; zyracarry.shop
+    </div>
+    <script>window.onload=()=>window.print()<\/script>
+    </body></html>`);
+    w.document.close();
+  } catch(e) { toast('Could not load invoice', 'error'); }
+}
+
+async function loadAdminUsers() {
+  const tb = document.getElementById('admUserList');
+  if (!tb) return;
+  if (!window._fb) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--taupe)">Configure Firebase</td></tr>'; return; }
+  try {
+    const [uSnap, oSnap] = await Promise.all([
+      window._fb.getDocs(window._fb.collection(window._fb.db, 'users')),
+      window._fb.getDocs(window._fb.collection(window._fb.db, 'orders'))
+    ]);
+    const orders = oSnap.docs.map(d => d.data());
+    const users  = uSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    if (!users.length) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--taupe)">No registered users yet.</td></tr>'; return; }
+
+    tb.innerHTML = users.map(u => {
+      const uOrders     = orders.filter(o => o.userId === u.id);
+      const totalSpent  = uOrders.reduce((s, o) => s + (o.total || 0), 0);
+      const regDate     = u.createdAt?.toDate?.()?.toLocaleDateString('en-IN')  || '—';
+      const lastLogin   = u.lastLogin?.toDate?.()?.toLocaleDateString('en-IN')  || '—';
+      return `<tr>
+        <td><strong>${u.name || '—'}</strong></td>
+        <td>${u.email || '—'}</td>
+        <td>${u.phone || '—'}</td>
+        <td>${regDate}</td>
+        <td>${lastLogin}</td>
+        <td style="text-align:center">
+          <span style="background:var(--blush);border-radius:20px;padding:0.2rem 0.75rem;font-size:0.75rem;font-weight:700">${uOrders.length}</span>
+        </td>
+        <td style="font-family:var(--fd);font-size:1rem">${totalSpent > 0 ? '₹' + totalSpent.toLocaleString('en-IN') : '—'}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) { tb.innerHTML = `<tr><td colspan="7" style="color:var(--taupe)">Error: ${e.message}</td></tr>`; }
+}
+
+async function loadAdminSubs() {
+  const tb = document.getElementById('admSubList');
+  if (!tb) return;
+  if (!window._fb) { tb.innerHTML = '<tr><td colspan="2" style="color:var(--taupe)">Configure Firebase</td></tr>'; return; }
+  try {
+    const snap = await window._fb.getDocs(window._fb.collection(window._fb.db, 'subscribers'));
+    tb.innerHTML = snap.docs.map(d => {
+      const s = d.data();
+      return `<tr><td>${s.email}</td><td>${s.createdAt?.toDate?.()?.toLocaleDateString('en-IN') || '—'}</td></tr>`;
+    }).join('') || '<tr><td colspan="2" style="color:var(--taupe)">No subscribers yet.</td></tr>';
+  } catch(e) { tb.innerHTML = `<tr><td colspan="2" style="color:var(--taupe)">Error: ${e.message}</td></tr>`; }
+}
+
+// ── Admin Product Form ──
+function resetProdForm() {
+  document.getElementById('apId').value   = '';
+  document.getElementById('apHead').textContent = 'Add Product';
+  ['apName','apPrice','apOrig','apStock','apShort','apDesc'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('apBadge').value = '';
+  prodImgs = [];
+  renderProdImgPreview();
+}
+
+function editProd(id) {
+  const p = allProds.find(x => x.id === id);
+  if (!p) return;
+  admTab('addprod', null);
+  document.getElementById('apId').value         = id;
+  document.getElementById('apHead').textContent = 'Edit Product';
+  document.getElementById('apName').value        = p.name        || '';
+  document.getElementById('apPrice').value       = p.price       || '';
+  document.getElementById('apOrig').value        = p.originalPrice || '';
+  document.getElementById('apStock').value       = p.stock       || '';
+  document.getElementById('apShort').value       = p.shortDesc   || '';
+  document.getElementById('apDesc').value        = p.description || '';
+  document.getElementById('apBadge').value       = p.badge       || '';
+  prodImgs = p.images ? [...p.images] : [];
+  renderProdImgPreview();
+}
+
+function addProdImg() {
+  const val = document.getElementById('apImgName').value.trim();
+  if (!val) { toast('Please enter a filename', 'error'); return; }
+  if (!val.match(/\.(png|jpg|jpeg|webp|gif)$/i)) { toast('Filename must end in .png, .jpg, .webp etc.', 'error'); return; }
+  prodImgs.push(val);
+  document.getElementById('apImgName').value = '';
+  renderProdImgPreview();
+  toast(`"${val}" added. Remember to upload this file to Netlify!`, 'info');
+}
+
+function removeProdImg(i) { prodImgs.splice(i, 1); renderProdImgPreview(); }
+
+function renderProdImgPreview() {
+  const con = document.getElementById('apImgPreview');
+  if (!con) return;
+  const list = document.getElementById('apImgList');
+  if (list) {
+    list.innerHTML = prodImgs.length
+      ? prodImgs.map((fn, i) => `
+          <div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid rgba(200,176,154,0.2)">
+            <span style="font-size:0.8rem;color:var(--charcoal);flex:1">📄 ${fn}</span>
+            <button class="adm-btn adm-btn-d" onclick="removeProdImg(${i})" style="padding:0.25rem 0.65rem">Remove</button>
+          </div>`).join('')
+      : '';
+  }
+  con.innerHTML = prodImgs.map((fn, i) => `
+    <div style="width:75px;height:90px;border-radius:var(--rs);overflow:hidden;position:relative;border:1.5px solid rgba(200,176,154,0.4);background:var(--blush)">
+      <img src="${fn}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.58rem;color:var(--taupe);text-align:center;padding:0.25rem;word-break:break-all">${fn}</div>
+      <div onclick="removeProdImg(${i})" style="position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(42,36,33,0.75);color:white;font-size:0.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</div>
+    </div>`).join('');
+}
+
+async function saveProd() {
+  const id    = document.getElementById('apId').value;
+  const name  = document.getElementById('apName').value.trim();
+  const price = parseFloat(document.getElementById('apPrice').value);
+  const stock = parseInt(document.getElementById('apStock').value);
+  if (!name || !price || isNaN(stock)) { toast('Please fill in Name, Price and Stock', 'error'); return; }
+
+  const pd = {
+    name,
+    price,
+    stock,
+    originalPrice: parseFloat(document.getElementById('apOrig').value) || null,
+    shortDesc:     document.getElementById('apShort').value.trim(),
+    description:   document.getElementById('apDesc').value.trim(),
+    badge:         document.getElementById('apBadge').value,
+    images:        [...prodImgs]
+  };
+
+  try {
+    if (window._fb) {
+      if (id) {
+        pd.updatedAt = window._fb.serverTimestamp();
+        await window._fb.updateDoc(window._fb.doc(window._fb.db, 'products', id), pd);
+        allProds = allProds.map(p => p.id === id ? { ...p, ...pd, id } : p);
+        toast('Product updated! ✅', 'success');
+      } else {
+        pd.createdAt = window._fb.serverTimestamp();
+        const ref = await window._fb.addDoc(window._fb.collection(window._fb.db, 'products'), pd);
+        allProds.unshift({ id: ref.id, ...pd });
+        toast('Product added! ✅', 'success');
+      }
+    } else {
+      if (id) { allProds = allProds.map(p => p.id === id ? { ...p, ...pd } : p); }
+      else { allProds.unshift({ id: 'local-' + Date.now(), ...pd }); }
+      toast(id ? 'Product updated!' : 'Product added!', 'success');
+    }
+    admTab('products', null);
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function delProd(id) {
+  if (!confirm('Delete this product? This cannot be undone.')) return;
+  if (window._fb) {
+    try { await window._fb.deleteDoc(window._fb.doc(window._fb.db, 'products', id)); } catch(e) {}
+  }
+  allProds = allProds.filter(p => p.id !== id);
+  loadAdminProds();
+  toast('Product deleted', 'info');
+}
+
+// ══════════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════════
+function openMod(id)   { document.getElementById(id)?.classList.add('open'); }
+function closeMod(id)  { document.getElementById(id)?.classList.remove('open'); }
+function toggleAcc()   { document.getElementById('accDrop')?.classList.toggle('open'); }
+function closeAcc()    { document.getElementById('accDrop')?.classList.remove('open'); }
+function openDrawer()  { document.getElementById('drawer')?.classList.add('open'); document.getElementById('drawerOv')?.classList.add('open'); }
+function closeDrawer() { document.getElementById('drawer')?.classList.remove('open'); document.getElementById('drawerOv')?.classList.remove('open'); }
+
+document.addEventListener('click', e => {
+  const wrap = document.querySelector('.acc-wrap');
+  if (wrap && !wrap.contains(e.target)) closeAcc();
+});
+
+function toast(msg, type = 'info') {
+  const con  = document.getElementById('toastCon');
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  const el   = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type] || 'ℹ'}</span><span>${msg}</span>`;
+  con.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+</script>
+</body>
+</html>
