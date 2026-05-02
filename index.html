@@ -1142,28 +1142,75 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
         </div>
 
         <div class="adm-card">
-          <div class="adm-card-title">🖼 Product Images</div>
+          <div class="adm-card-title">🖼 Product Images (Upload up to 4)</div>
 
-          <div class="img-hint" style="border-left:3px solid var(--rose-deep)">
-            <strong>How images work:</strong><br>
-            1. Enter the filename below (e.g. <strong>sahara-tote.png</strong>)<br>
-            2. Rename your actual photo to that exact name<br>
-            3. When uploading to Netlify — add the image file <strong>in the same folder as index.html</strong><br>
-            4. Image appears on website automatically ✅<br><br>
-            <strong>Tip:</strong> First image added = main product image shown on cards
+          <div class="img-hint" style="border-left:3px solid var(--rose-deep);background:#FFF8F5">
+            📱 <strong>Upload directly from your phone!</strong><br>
+            Images upload to <strong>imgbb.com</strong> (free, no limit) and save to Firebase.<br>
+            Add up to <strong>4 images</strong> per product. First image = shown on product card.<br>
+            All 4 shown as slides on the product detail page.
           </div>
 
-          <div id="apImgList" style="margin-bottom:0.75rem"></div>
-
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:flex-end">
-            <div style="flex:1;min-width:200px">
-              <label class="fl">Image Filename</label>
-              <input class="fi" id="apImgName" type="text" placeholder="e.g. sahara-tote-front.png">
+          <!-- 4 Upload Slots -->
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1rem" id="imgSlots">
+            <!-- Slot 1 -->
+            <div class="img-slot" id="slot-0">
+              <div class="slot-label" style="font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--taupe);margin-bottom:0.4rem">Image 1 — Main (Card)</div>
+              <div class="slot-box" onclick="triggerImgPick(0)" style="border:2px dashed var(--sand);border-radius:var(--rs);height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;background:var(--cream);position:relative;overflow:hidden" id="slot-box-0">
+                <img id="slot-img-0" src="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none">
+                <div id="slot-placeholder-0" style="text-align:center;padding:0.5rem">
+                  <div style="font-size:1.5rem;margin-bottom:0.3rem">📷</div>
+                  <div style="font-size:0.72rem;color:var(--taupe)">Tap to upload</div>
+                </div>
+                <div id="slot-del-0" onclick="event.stopPropagation();removeSlotImg(0)" style="display:none;position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(42,36,33,0.8);color:white;font-size:0.7rem;cursor:pointer;align-items:center;justify-content:center">✕</div>
+                <div id="slot-loading-0" style="display:none;position:absolute;inset:0;background:rgba(255,255,255,0.85);align-items:center;justify-content:center;font-size:0.75rem;color:var(--taupe)">Uploading…</div>
+              </div>
+              <input type="file" id="slot-input-0" accept="image/*" style="display:none" onchange="uploadSlotImg(0,this)">
             </div>
-            <button class="adm-btn adm-btn-p" onclick="addProdImg()" style="padding:0.65rem 1.25rem;flex-shrink:0">+ Add Image</button>
+            <!-- Slot 2 -->
+            <div class="img-slot" id="slot-1">
+              <div class="slot-label" style="font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--taupe);margin-bottom:0.4rem">Image 2</div>
+              <div class="slot-box" onclick="triggerImgPick(1)" style="border:2px dashed var(--sand);border-radius:var(--rs);height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;background:var(--cream);position:relative;overflow:hidden" id="slot-box-1">
+                <img id="slot-img-1" src="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none">
+                <div id="slot-placeholder-1" style="text-align:center;padding:0.5rem">
+                  <div style="font-size:1.5rem;margin-bottom:0.3rem">📷</div>
+                  <div style="font-size:0.72rem;color:var(--taupe)">Tap to upload</div>
+                </div>
+                <div id="slot-del-1" onclick="event.stopPropagation();removeSlotImg(1)" style="display:none;position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(42,36,33,0.8);color:white;font-size:0.7rem;cursor:pointer;align-items:center;justify-content:center">✕</div>
+                <div id="slot-loading-1" style="display:none;position:absolute;inset:0;background:rgba(255,255,255,0.85);align-items:center;justify-content:center;font-size:0.75rem;color:var(--taupe)">Uploading…</div>
+              </div>
+              <input type="file" id="slot-input-1" accept="image/*" style="display:none" onchange="uploadSlotImg(1,this)">
+            </div>
+            <!-- Slot 3 -->
+            <div class="img-slot" id="slot-2">
+              <div class="slot-label" style="font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--taupe);margin-bottom:0.4rem">Image 3</div>
+              <div class="slot-box" onclick="triggerImgPick(2)" style="border:2px dashed var(--sand);border-radius:var(--rs);height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;background:var(--cream);position:relative;overflow:hidden" id="slot-box-2">
+                <img id="slot-img-2" src="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none">
+                <div id="slot-placeholder-2" style="text-align:center;padding:0.5rem">
+                  <div style="font-size:1.5rem;margin-bottom:0.3rem">📷</div>
+                  <div style="font-size:0.72rem;color:var(--taupe)">Tap to upload</div>
+                </div>
+                <div id="slot-del-2" onclick="event.stopPropagation();removeSlotImg(2)" style="display:none;position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(42,36,33,0.8);color:white;font-size:0.7rem;cursor:pointer;align-items:center;justify-content:center">✕</div>
+                <div id="slot-loading-2" style="display:none;position:absolute;inset:0;background:rgba(255,255,255,0.85);align-items:center;justify-content:center;font-size:0.75rem;color:var(--taupe)">Uploading…</div>
+              </div>
+              <input type="file" id="slot-input-2" accept="image/*" style="display:none" onchange="uploadSlotImg(2,this)">
+            </div>
+            <!-- Slot 4 -->
+            <div class="img-slot" id="slot-3">
+              <div class="slot-label" style="font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--taupe);margin-bottom:0.4rem">Image 4</div>
+              <div class="slot-box" onclick="triggerImgPick(3)" style="border:2px dashed var(--sand);border-radius:var(--rs);height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;background:var(--cream);position:relative;overflow:hidden" id="slot-box-3">
+                <img id="slot-img-3" src="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none">
+                <div id="slot-placeholder-3" style="text-align:center;padding:0.5rem">
+                  <div style="font-size:1.5rem;margin-bottom:0.3rem">📷</div>
+                  <div style="font-size:0.72rem;color:var(--taupe)">Tap to upload</div>
+                </div>
+                <div id="slot-del-3" onclick="event.stopPropagation();removeSlotImg(3)" style="display:none;position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(42,36,33,0.8);color:white;font-size:0.7rem;cursor:pointer;align-items:center;justify-content:center">✕</div>
+                <div id="slot-loading-3" style="display:none;position:absolute;inset:0;background:rgba(255,255,255,0.85);align-items:center;justify-content:center;font-size:0.75rem;color:var(--taupe)">Uploading…</div>
+              </div>
+              <input type="file" id="slot-input-3" accept="image/*" style="display:none" onchange="uploadSlotImg(3,this)">
+            </div>
           </div>
-
-          <div id="apImgPreview" style="margin-top:1rem;display:flex;flex-wrap:wrap;gap:0.75rem"></div>
+          <p style="font-size:0.72rem;color:var(--taupe);margin-top:0.75rem">💡 Tap any slot to choose a photo from your phone. It uploads instantly to Firebase.</p>
         </div>
 
         <div style="display:flex;gap:1rem;flex-wrap:wrap">
@@ -1617,13 +1664,31 @@ function openProd(id) {
   const p = allProds.find(x => x.id === id);
   if (!p) return;
   const imgs   = (p.images && p.images.length) ? p.images : ['product1.png'];
-  const thumbs = imgs.map((im, i) => `<div class="pd-thumb ${i===0?'active':''}" onclick="switchThumb(this,'${im}')"><img src="${im}" alt="" onerror="this.parentElement.style.background='var(--blush)'"></div>`).join('');
+  const thumbs = imgs.map((im, i) => `<div class="pd-thumb ${i===0?'active':''}" onclick="switchThumb(this,'${im}',${i})"><img src="${im}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>`).join('');
   const price  = `₹${Number(p.price).toLocaleString('en-IN')}`;
   const orig   = p.originalPrice ? `<span style="font-size:1rem;color:var(--sand);text-decoration:line-through;font-weight:400">₹${Number(p.originalPrice).toLocaleString('en-IN')}</span>` : '';
 
   document.getElementById('pdLayout').innerHTML = `
     <div class="pd-gallery">
-      <div class="pd-main-img"><img src="${imgs[0]}" id="pdMainImg" alt="${p.name}" onerror="this.parentElement.style.background='var(--blush)'"></div>
+      <!-- Product Image Slider -->
+      <div style="position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:3/4;background:var(--blush);margin-bottom:0.7rem" id="pdSliderWrap">
+        <div style="display:flex;height:100%;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94)" id="pdSliderTrack">
+          ${imgs.map((im,i) => `
+            <div style="min-width:100%;height:100%;flex-shrink:0;position:relative">
+              <img src="${im}" alt="${p.name} - view ${i+1}" loading="${i===0?'eager':'lazy'}"
+                style="width:100%;height:100%;object-fit:cover;display:block"
+                onerror="this.parentElement.style.background='var(--blush)'">
+            </div>`).join('')}
+        </div>
+        ${imgs.length > 1 ? `
+        <button onclick="pdSlide(-1)" style="position:absolute;left:0.6rem;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.85);border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:var(--charcoal);z-index:5">‹</button>
+        <button onclick="pdSlide(1)"  style="position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.85);border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:var(--charcoal);z-index:5">›</button>
+        <div style="position:absolute;bottom:0.75rem;left:50%;transform:translateX(-50%);display:flex;gap:0.4rem;z-index:5">
+          ${imgs.map((_,i)=>`<div class="pd-dot ${i===0?'active':''}" onclick="pdGoSlide(${i})" style="width:${i===0?'18px':'6px'};height:6px;border-radius:3px;background:${i===0?'white':'rgba(255,255,255,0.5)'};cursor:pointer;transition:all 0.3s"></div>`).join('')}
+        </div>` : ''}
+        <div style="position:absolute;top:0.75rem;right:0.75rem;background:rgba(42,36,33,0.55);color:white;font-size:0.65rem;padding:0.25rem 0.65rem;border-radius:20px;z-index:5" id="pdImgCounter">${imgs.length > 1 ? '1 / '+imgs.length : ''}</div>
+      </div>
+      <!-- Thumbnails -->
       <div class="pd-thumbs">${thumbs}</div>
     </div>
     <div>
@@ -1677,11 +1742,41 @@ function openProd(id) {
   goTo('product');
 }
 
-function switchThumb(el, src) {
+let pdSlideIdx = 0;
+let pdTotalSlides = 0;
+
+function switchThumb(el, src, idx) {
   document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  const mi = document.getElementById('pdMainImg');
-  if (mi) mi.src = src;
+  pdGoSlide(idx || 0);
+}
+
+function pdSlide(dir) {
+  const track = document.getElementById('pdSliderTrack');
+  if (!track) return;
+  const slides = track.children.length;
+  pdSlideIdx = (pdSlideIdx + dir + slides) % slides;
+  pdGoSlide(pdSlideIdx);
+}
+
+function pdGoSlide(idx) {
+  const track = document.getElementById('pdSliderTrack');
+  if (!track) return;
+  const slides = track.children.length;
+  pdSlideIdx = idx;
+  track.style.transform = `translateX(-${idx * 100}%)`;
+  // Sync dots
+  document.querySelectorAll('.pd-dot').forEach((d, i) => {
+    d.style.width = i === idx ? '18px' : '6px';
+    d.style.background = i === idx ? 'white' : 'rgba(255,255,255,0.5)';
+  });
+  // Sync thumbs
+  document.querySelectorAll('.pd-thumb').forEach((t, i) => {
+    t.classList.toggle('active', i === idx);
+  });
+  // Update counter
+  const counter = document.getElementById('pdImgCounter');
+  if (counter && slides > 1) counter.textContent = `${idx + 1} / ${slides}`;
 }
 
 function adjQty(d) {
@@ -2391,13 +2486,13 @@ async function loadAdminSubs() {
 function resetProdForm() {
   document.getElementById('apId').value   = '';
   document.getElementById('apHead').textContent = 'Add Product';
-  ['apName','apPrice','apOrig','apStock','apShort','apDesc'].forEach(id => {
+  ['apName','apPrice','apOrig','apStock','apShort','apDesc','apMaterial','apCare'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   document.getElementById('apBadge').value = '';
   prodImgs = [];
-  renderProdImgPreview();
+  loadSlotsFromUrls([]);
 }
 
 function editProd(id) {
@@ -2417,42 +2512,96 @@ function editProd(id) {
   const careEl = document.getElementById('apCare');
   if (matEl)  matEl.value  = p.material || '';
   if (careEl) careEl.value = p.care     || '';
-  prodImgs = p.images ? [...p.images] : [];
-  renderProdImgPreview();
+  // Load existing images into the 4 slots
+  loadSlotsFromUrls(p.images || []);
 }
 
-function addProdImg() {
-  const val = document.getElementById('apImgName').value.trim();
-  if (!val) { toast('Please enter a filename', 'error'); return; }
-  if (!val.match(/\.(png|jpg|jpeg|webp|gif)$/i)) { toast('Filename must end in .png, .jpg, .webp etc.', 'error'); return; }
-  prodImgs.push(val);
-  document.getElementById('apImgName').value = '';
-  renderProdImgPreview();
-  toast(`"${val}" added. Remember to upload this file to Netlify!`, 'info');
+// ── Firebase Storage Image Upload (4 slots per product) ──
+let slotUrls = ['','','','']; // holds Firebase URLs for each slot
+
+function triggerImgPick(slot) {
+  document.getElementById('slot-input-' + slot).click();
 }
 
-function removeProdImg(i) { prodImgs.splice(i, 1); renderProdImgPreview(); }
+async function uploadSlotImg(slot, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('Please select an image file', 'error'); return; }
+  if (file.size > 8 * 1024 * 1024) { toast('Image must be under 8MB', 'error'); return; }
 
-function renderProdImgPreview() {
-  const con = document.getElementById('apImgPreview');
-  if (!con) return;
-  const list = document.getElementById('apImgList');
-  if (list) {
-    list.innerHTML = prodImgs.length
-      ? prodImgs.map((fn, i) => `
-          <div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid rgba(200,176,154,0.2)">
-            <span style="font-size:0.8rem;color:var(--charcoal);flex:1">📄 ${fn}</span>
-            <button class="adm-btn adm-btn-d" onclick="removeProdImg(${i})" style="padding:0.25rem 0.65rem">Remove</button>
-          </div>`).join('')
-      : '';
+  // Show loading
+  const loadEl = document.getElementById('slot-loading-' + slot);
+  const boxEl  = document.getElementById('slot-box-' + slot);
+  if (loadEl) { loadEl.style.display = 'flex'; }
+
+  try {
+    if (!window._fb) throw new Error('Firebase not connected');
+    const prodId  = document.getElementById('apId').value || 'new_' + Date.now();
+    const ext     = file.name.split('.').pop();
+    const path    = \`products/\${prodId}/img_\${slot}_\${Date.now()}.\${ext}\`;
+    const storRef = window._fb.ref(window._fb.storage, path);
+    await window._fb.uploadBytes(storRef, file);
+    const url = await window._fb.getDownloadURL(storRef);
+
+    // Store URL
+    slotUrls[slot] = url;
+    prodImgs = slotUrls.filter(u => u);
+
+    // Show preview
+    const imgEl  = document.getElementById('slot-img-' + slot);
+    const phEl   = document.getElementById('slot-placeholder-' + slot);
+    const delEl  = document.getElementById('slot-del-' + slot);
+    if (imgEl)  { imgEl.src = url; imgEl.style.display = 'block'; }
+    if (phEl)   { phEl.style.display = 'none'; }
+    if (delEl)  { delEl.style.display = 'flex'; }
+    if (boxEl)  { boxEl.style.borderColor = 'var(--rose-deep)'; boxEl.style.borderStyle = 'solid'; }
+
+    toast(\`Image \${slot+1} uploaded! ✅\`, 'success');
+  } catch(e) {
+    toast('Upload failed: ' + e.message, 'error');
+    console.error(e);
+  } finally {
+    if (loadEl) loadEl.style.display = 'none';
+    input.value = '';
   }
-  con.innerHTML = prodImgs.map((fn, i) => `
-    <div style="width:75px;height:90px;border-radius:var(--rs);overflow:hidden;position:relative;border:1.5px solid rgba(200,176,154,0.4);background:var(--blush)">
-      <img src="${fn}" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
-      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.58rem;color:var(--taupe);text-align:center;padding:0.25rem;word-break:break-all">${fn}</div>
-      <div onclick="removeProdImg(${i})" style="position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(42,36,33,0.75);color:white;font-size:0.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</div>
-    </div>`).join('');
 }
+
+function removeSlotImg(slot) {
+  slotUrls[slot] = '';
+  prodImgs = slotUrls.filter(u => u);
+  const imgEl  = document.getElementById('slot-img-' + slot);
+  const phEl   = document.getElementById('slot-placeholder-' + slot);
+  const delEl  = document.getElementById('slot-del-' + slot);
+  const boxEl  = document.getElementById('slot-box-' + slot);
+  if (imgEl)  { imgEl.src = ''; imgEl.style.display = 'none'; }
+  if (phEl)   { phEl.style.display = 'block'; }
+  if (delEl)  { delEl.style.display = 'none'; }
+  if (boxEl)  { boxEl.style.borderColor = 'var(--sand)'; boxEl.style.borderStyle = 'dashed'; }
+  toast('Image removed', 'info');
+}
+
+function loadSlotsFromUrls(urls) {
+  // Reset all slots
+  slotUrls = ['','','',''];
+  for (let i = 0; i < 4; i++) {
+    const imgEl  = document.getElementById('slot-img-' + i);
+    const phEl   = document.getElementById('slot-placeholder-' + i);
+    const delEl  = document.getElementById('slot-del-' + i);
+    const boxEl  = document.getElementById('slot-box-' + i);
+    const url    = urls && urls[i] ? urls[i] : '';
+    slotUrls[i]  = url;
+    if (imgEl)  { imgEl.src = url; imgEl.style.display = url ? 'block' : 'none'; }
+    if (phEl)   { phEl.style.display = url ? 'none' : 'block'; }
+    if (delEl)  { delEl.style.display = url ? 'flex' : 'none'; }
+    if (boxEl)  { boxEl.style.borderColor = url ? 'var(--rose-deep)' : 'var(--sand)'; boxEl.style.borderStyle = url ? 'solid' : 'dashed'; }
+  }
+  prodImgs = slotUrls.filter(u => u);
+}
+
+// Keep old functions as no-ops so nothing breaks
+function addProdImg() {}
+function removeProdImg(i) {}
+function renderProdImgPreview() {}
 
 async function saveProd() {
   const id    = document.getElementById('apId').value;
