@@ -470,10 +470,11 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
   .checkout-layout{grid-template-columns:1fr}
   .profile-layout{grid-template-columns:1fr}
   .admin-layout{flex-direction:column}
-  .admin-sidebar{width:100%;display:flex;flex-wrap:wrap;padding:0.5rem}
+  .admin-sidebar{width:100%;display:flex;flex-direction:column;padding:0;max-height:52px;overflow:hidden}
   .admin-logo-txt{display:none}
-  .admin-nav{display:flex;flex-wrap:wrap;width:100%}
-  .admin-nav a{padding:0.5rem 0.75rem;font-size:0.7rem;border-left:none!important}
+  .admin-nav{display:flex;flex-wrap:nowrap;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .admin-nav::-webkit-scrollbar{display:none}
+  .admin-nav a{padding:0.5rem 0.9rem;font-size:0.68rem;border-left:none!important;white-space:nowrap;flex-shrink:0}
   .story-block{grid-template-columns:1fr;gap:2rem}
   .story-block.rev{direction:ltr}
   .pd-layout{grid-template-columns:1fr} .pd-gallery{position:static}
@@ -493,7 +494,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
   .hero-content{left:1.5rem;bottom:4rem;max-width:88vw}
   .hero-title{font-size:clamp(1.8rem,6vw,2.8rem)}
   .toast-con{left:1rem;right:1rem} .toast{max-width:100%}
-  .admin-main{padding:1rem}
+  .admin-main{padding:0.75rem}
 }
 @media(max-width:480px){
   .products-grid{grid-template-columns:repeat(2,1fr);gap:0.6rem}
@@ -1027,12 +1028,12 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
     <aside class="admin-sidebar">
       <div class="admin-logo-txt">⬡ ZYRA Admin</div>
       <nav class="admin-nav">
-        <a class="active" onclick="admTab('dash',this)">📊 Dashboard</a>
+        <a class="active" onclick="admTab('dash',this)">📊 Dash</a>
         <a onclick="admTab('products',this)">🛍 Products</a>
-        <a onclick="admTab('addprod',this)">➕ Add Product</a>
+        <a onclick="admTab('addprod',this)">➕ Add</a>
         <a onclick="admTab('orders',this)">📦 Orders</a>
         <a onclick="admTab('users',this)">👥 Users</a>
-        <a onclick="admTab('subs',this)">📧 Subscribers</a>
+        <a onclick="admTab('subs',this)">📧 Subs</a>
         <a onclick="goTo('home')" style="color:rgba(255,255,255,0.28);margin-top:1rem">← Back to Site</a>
       </nav>
     </aside>
@@ -1052,7 +1053,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
           <div class="adm-card-title">Recent Orders</div>
           <div style="overflow-x:auto">
             <table class="admin-table">
-              <thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Amount</th><th>Payment</th><th>Status</th><th>Action</th></tr></thead>
+              <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead>
               <tbody id="dashOrders"><tr><td colspan="7" style="color:var(--taupe)">Loading…</td></tr></tbody>
             </table>
           </div>
@@ -1226,11 +1227,8 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
       <!-- ORDERS -->
       <div class="admin-sec" id="adm-orders">
         <h2 class="admin-heading">All Orders</h2>
-        <div style="overflow-x:auto">
-          <table class="admin-table">
-            <thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Address</th><th>Items</th><th>Amount</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="admOrderList"><tr><td colspan="9" style="color:var(--taupe)">Loading…</td></tr></tbody>
-          </table>
+        <div id="admOrderCards" style="display:flex;flex-direction:column;gap:1rem">
+          <p style="color:var(--taupe);font-size:0.85rem">Loading…</p>
         </div>
       </div>
 
@@ -1673,87 +1671,126 @@ function sortProds() { loadShopProds(); }
 function openProd(id) {
   const p = allProds.find(x => x.id === id);
   if (!p) return;
-  const imgs   = (p.images && p.images.length) ? p.images : ['product1.png'];
-  const thumbs = imgs.map((im, i) => `<div class="pd-thumb ${i===0?'active':''}" onclick="switchThumb(this,'${im}',${i})"><img src="${im}" alt="${p.name}" loading="lazy" onerror="this.parentElement.style.background='var(--blush)'"></div>`).join('');
-  const price  = `₹${Number(p.price).toLocaleString('en-IN')}`;
-  const orig   = p.originalPrice ? `<span style="font-size:1rem;color:var(--sand);text-decoration:line-through;font-weight:400">₹${Number(p.originalPrice).toLocaleString('en-IN')}</span>` : '';
+  const imgs = (p.images && p.images.filter(u=>u).length) ? p.images.filter(u=>u) : ['product1.jpg'];
 
-  document.getElementById('pdLayout').innerHTML = `
-    <div class="pd-gallery">
-      <!-- Product Image Slider -->
-      <div style="position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:3/4;background:var(--blush);margin-bottom:0.7rem" id="pdSliderWrap">
-        <div style="display:flex;height:100%;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94)" id="pdSliderTrack">
-          ${imgs.map((im,i) => `
-            <div style="min-width:100%;height:100%;flex-shrink:0;position:relative">
-              <img src="${im}" alt="${p.name} - view ${i+1}" loading="${i===0?'eager':'lazy'}"
-                style="width:100%;height:100%;object-fit:cover;display:block"
-                onerror="this.parentElement.style.background='var(--blush)'">
-            </div>`).join('')}
-        </div>
-        ${imgs.length > 1 ? `
-        <button onclick="pdSlide(-1)" style="position:absolute;left:0.6rem;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.85);border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:var(--charcoal);z-index:5">‹</button>
-        <button onclick="pdSlide(1)"  style="position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.85);border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:var(--charcoal);z-index:5">›</button>
-        <div style="position:absolute;bottom:0.75rem;left:50%;transform:translateX(-50%);display:flex;gap:0.4rem;z-index:5">
-          ${imgs.map((_,i)=>`<div class="pd-dot ${i===0?'active':''}" onclick="pdGoSlide(${i})" style="width:${i===0?'18px':'6px'};height:6px;border-radius:3px;background:${i===0?'white':'rgba(255,255,255,0.5)'};cursor:pointer;transition:all 0.3s"></div>`).join('')}
-        </div>` : ''}
-        <div style="position:absolute;top:0.75rem;right:0.75rem;background:rgba(42,36,33,0.55);color:white;font-size:0.65rem;padding:0.25rem 0.65rem;border-radius:20px;z-index:5" id="pdImgCounter">${imgs.length > 1 ? '1 / '+imgs.length : ''}</div>
-      </div>
-      <!-- Thumbnails -->
-      <div class="pd-thumbs">${thumbs}</div>
-    </div>
-    <div>
-      <p style="font-size:0.68rem;color:var(--taupe);letter-spacing:0.1em;margin-bottom:1.4rem">
-        <span onclick="goTo('home')" style="cursor:pointer">Home</span> /
-        <span onclick="goTo('shop')" style="cursor:pointer">Shop</span> / ${p.name}
-      </p>
-      <h1 class="pd-name">${p.name}</h1>
-      <div class="pd-price">${price} ${orig}</div>
-      <div class="pd-stock">
-        <span class="${p.stock > 0 ? 'in-stock' : ''}">${p.stock > 0 ? '✓ In Stock (' + p.stock + ' left)' : 'Out of Stock'}</span>
-      </div>
-      <div class="pd-desc">${p.description || 'Handcrafted with premium eco-friendly materials.'}</div>
-      <div class="qty-wrap">
-        <span class="qty-label">Quantity</span>
-        <div class="qty-ctrl">
-          <div class="qty-btn" onclick="adjQty(-1)">−</div>
-          <input class="qty-val" type="number" id="pdQty" value="1" min="1" max="${p.stock}">
-          <div class="qty-btn" onclick="adjQty(1)">+</div>
-        </div>
-      </div>
-      <div class="pd-btns">
-        <button class="pd-btn pd-btn-p" onclick="addToCart('${p.id}', +document.getElementById('pdQty').value)">Add to Cart</button>
-        <button class="pd-btn pd-btn-o" onclick="buyNow('${p.id}', +document.getElementById('pdQty').value)">Buy Now</button>
-      </div>
-      <div style="background:#E8F5E9;border-radius:var(--rs);padding:0.6rem 0.9rem;font-size:0.75rem;color:#2E7D32;margin-bottom:1rem;display:flex;align-items:center;gap:0.4rem">
-        🎁 Delivery: <s style="opacity:0.6">₹70</s> → <strong>FREE</strong> on this order
-      </div>
-      <div class="pd-meta" style="font-size:0.75rem;color:var(--taupe);line-height:2.2">
-        ${p.material  ? `<div>Material: <strong style="color:var(--charcoal)">${p.material}</strong></div>` : ''}
-        ${p.care      ? `<div>Care: <strong style="color:var(--charcoal)">${p.care}</strong></div>` : ''}
-      </div>
-    </div>`;
+  // Build thumbnails HTML
+  let thumbsHtml = '';
+  imgs.forEach(function(im, i) {
+    thumbsHtml += '<div class="pd-thumb ' + (i===0?'active':'') + '" onclick="switchThumb(this,\'' + im + '\',' + i + ')">' +
+      '<img src="' + im + '" alt="" loading="lazy" onerror="this.parentElement.style.background=\'var(--blush)\'">' +
+      '</div>';
+  });
+
+  // Build slider slides HTML
+  let slidesHtml = '';
+  imgs.forEach(function(im, i) {
+    slidesHtml += '<div style="min-width:100%;height:100%;flex-shrink:0;position:relative">' +
+      '<img src="' + im + '" alt="' + p.name + ' - view ' + (i+1) + '" loading="' + (i===0?'eager':'lazy') + '"' +
+      ' style="width:100%;height:100%;object-fit:cover;display:block"' +
+      ' onerror="this.parentElement.style.background=\'var(--blush)\'">' +
+      '</div>';
+  });
+
+  // Build dots HTML
+  let dotsHtml = '';
+  if (imgs.length > 1) {
+    imgs.forEach(function(_, i) {
+      dotsHtml += '<div class="pd-dot ' + (i===0?'active':'') + '" onclick="pdGoSlide(' + i + ')"' +
+        ' style="width:' + (i===0?'18':'6') + 'px;height:6px;border-radius:3px;' +
+        'background:' + (i===0?'white':'rgba(255,255,255,0.5)') + ';cursor:pointer;transition:all 0.3s"></div>';
+    });
+  }
+
+  // Arrows + dots overlay
+  let controlsHtml = '';
+  if (imgs.length > 1) {
+    controlsHtml =
+      '<button onclick="pdSlide(-1)" style="position:absolute;left:0.6rem;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.85);border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:var(--charcoal);z-index:5">&#8249;</button>' +
+      '<button onclick="pdSlide(1)" style="position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.85);border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:var(--charcoal);z-index:5">&#8250;</button>' +
+      '<div style="position:absolute;bottom:0.75rem;left:50%;transform:translateX(-50%);display:flex;gap:0.4rem;z-index:5">' + dotsHtml + '</div>';
+  }
+
+  const counterHtml = imgs.length > 1
+    ? '<div style="position:absolute;top:0.75rem;right:0.75rem;background:rgba(42,36,33,0.55);color:white;font-size:0.65rem;padding:0.25rem 0.65rem;border-radius:20px;z-index:5" id="pdImgCounter">1 / ' + imgs.length + '</div>'
+    : '';
+
+  const price = '\u20b9' + Number(p.price).toLocaleString('en-IN');
+  const origHtml = p.originalPrice
+    ? '<span style="font-size:1rem;color:var(--sand);text-decoration:line-through;font-weight:400">\u20b9' + Number(p.originalPrice).toLocaleString('en-IN') + '</span>'
+    : '';
+
+  const sliderHtml =
+    '<div style="position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:3/4;background:var(--blush);margin-bottom:0.7rem" id="pdSliderWrap">' +
+      '<div style="display:flex;height:100%;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94)" id="pdSliderTrack">' +
+        slidesHtml +
+      '</div>' +
+      controlsHtml +
+      counterHtml +
+    '</div>';
+
+  document.getElementById('pdLayout').innerHTML =
+    '<div class="pd-gallery">' +
+      sliderHtml +
+      '<div class="pd-thumbs">' + thumbsHtml + '</div>' +
+    '</div>' +
+    '<div>' +
+      '<p style="font-size:0.68rem;color:var(--taupe);letter-spacing:0.1em;margin-bottom:1.4rem">' +
+        '<span onclick="goTo(\'home\')" style="cursor:pointer">Home</span> / ' +
+        '<span onclick="goTo(\'shop\')" style="cursor:pointer">Shop</span> / ' + p.name +
+      '</p>' +
+      '<h1 class="pd-name">' + p.name + '</h1>' +
+      '<div class="pd-price">' + price + ' ' + origHtml + '</div>' +
+      '<div class="pd-stock">' +
+        '<span class="' + (p.stock > 0 ? 'in-stock' : '') + '">' +
+          (p.stock > 0 ? '\u2713 In Stock (' + p.stock + ' left)' : 'Out of Stock') +
+        '</span>' +
+      '</div>' +
+      '<div class="pd-desc">' + (p.description || 'Handcrafted with premium eco-friendly materials.') + '</div>' +
+      '<div class="qty-wrap">' +
+        '<span class="qty-label">Quantity</span>' +
+        '<div class="qty-ctrl">' +
+          '<div class="qty-btn" onclick="adjQty(-1)">\u2212</div>' +
+          '<input class="qty-val" type="number" id="pdQty" value="1" min="1" max="' + p.stock + '">' +
+          '<div class="qty-btn" onclick="adjQty(1)">+</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pd-btns">' +
+        '<button class="pd-btn pd-btn-p" onclick="addToCart(\'' + p.id + '\', +document.getElementById(\'pdQty\').value)">Add to Cart</button>' +
+        '<button class="pd-btn pd-btn-o" onclick="buyNow(\'' + p.id + '\', +document.getElementById(\'pdQty\').value)">Buy Now</button>' +
+      '</div>' +
+      '<div style="background:#E8F5E9;border-radius:var(--rs);padding:0.6rem 0.9rem;font-size:0.75rem;color:#2E7D32;margin-bottom:1rem;display:flex;align-items:center;gap:0.4rem">' +
+        '\ud83c\udf81 Delivery: <s style="opacity:0.6">\u20b970</s> \u2192 <strong>FREE</strong> on this order' +
+      '</div>' +
+      '<div style="font-size:0.75rem;color:var(--taupe);line-height:2.2">' +
+        (p.material ? '<div>Material: <strong style="color:var(--charcoal)">' + p.material + '</strong></div>' : '') +
+        (p.care ? '<div>Care: <strong style="color:var(--charcoal)">' + p.care + '</strong></div>' : '') +
+      '</div>' +
+    '</div>';
 
   // Reviews
   const reviews = [
-    { author: 'Priya M.',  text: 'Absolutely stunning quality! The bag is even more beautiful in person. Gets compliments everywhere.',        stars: 5, date: '2025-03-15' },
-    { author: 'Aisha K.',  text: 'My third ZYRA CARRY purchase and I keep coming back. Worth every rupee. The eco-friendly packaging too!',  stars: 5, date: '2025-02-28' },
-    { author: 'Meera S.',  text: 'The craftsmanship is truly exceptional. So spacious and structured — fits my laptop and everything else.', stars: 5, date: '2025-04-01' },
+    { author: 'Priya M.',  text: 'Absolutely stunning quality! The bag is even more beautiful in person.',        stars: 5, date: '2025-03-15' },
+    { author: 'Aisha K.',  text: 'My third ZYRA CARRY purchase. Worth every rupee. Eco-friendly packaging too!',  stars: 5, date: '2025-02-28' },
+    { author: 'Meera S.',  text: 'Craftsmanship is truly exceptional. So spacious and structured.',               stars: 5, date: '2025-04-01' },
   ];
-  document.getElementById('reviewsGrid').innerHTML = reviews.map(r => `
-    <div class="review-card">
-      <div class="review-stars">${'★'.repeat(r.stars)}</div>
-      <p class="review-text">"${r.text}"</p>
-      <div class="review-author">
-        <div class="review-av">${r.author[0]}</div>
-        <div><div class="review-name">${r.author}</div><div class="review-date">${r.date}</div></div>
-      </div>
-    </div>`).join('');
+  let reviewsHtml = '';
+  reviews.forEach(function(r) {
+    reviewsHtml +=
+      '<div class="review-card">' +
+        '<div class="review-stars">' + '\u2605'.repeat(r.stars) + '</div>' +
+        '<p class="review-text">"' + r.text + '"</p>' +
+        '<div class="review-author">' +
+          '<div class="review-av">' + r.author[0] + '</div>' +
+          '<div><div class="review-name">' + r.author + '</div><div class="review-date">' + r.date + '</div></div>' +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('reviewsGrid').innerHTML = reviewsHtml;
 
-  pdSlideIdx = 0; goTo('product');
+  pdSlideIdx = 0;
+  goTo('product');
 }
 
-let pdSlideIdx = 0;
-let pdTotalSlides = 0;
 
 function switchThumb(el, src, idx) {
   document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
@@ -2323,16 +2360,18 @@ async function loadAdminDash() {
     document.getElementById('stUsers').textContent  = uSnap.size;
     document.getElementById('stSubs').textContent   = sSnap.size;
 
-    document.getElementById('dashOrders').innerHTML = orders.slice(0, 10).map(o => `
-      <tr>
-        <td><strong>#${o.orderId}</strong></td>
-        <td>${o.name}<br><span style="font-size:0.7rem;color:var(--taupe)">${o.email}</span></td>
-        <td>${o.phone || '—'}</td>
-        <td>₹${(o.total||0).toLocaleString('en-IN')}</td>
-        <td>${o.paymentMethod || '—'}</td>
-        <td><span class="ostatus os-${o.status||'pending'}">${o.status||'pending'}</span></td>
-        <td>—</td>
-      </tr>`).join('') || '<tr><td colspan="7" style="color:var(--taupe)">No orders yet</td></tr>';
+    // Dashboard recent orders - simple table
+    const dashCon = document.getElementById('dashOrders');
+    if (dashCon) {
+      dashCon.innerHTML = orders.slice(0, 8).map(o => `
+        <tr>
+          <td><strong>#${o.orderId}</strong></td>
+          <td>${o.name||'—'}<br><span style="font-size:0.68rem;color:var(--taupe)">${o.email||''}</span></td>
+          <td>₹${(o.total||0).toLocaleString('en-IN')}</td>
+          <td>${o.paymentMethod||'—'}</td>
+          <td><span class="ostatus os-${o.status||'pending'}">${o.status||'pending'}</span></td>
+        </tr>`).join('') || '<tr><td colspan="5" style="color:var(--taupe)">No orders yet</td></tr>';
+    }
   } catch(e) { console.error('Dashboard error:', e); }
 }
 
@@ -2354,34 +2393,70 @@ async function loadAdminProds() {
 }
 
 async function loadAdminOrders() {
-  const tb = document.getElementById('admOrderList');
-  if (!tb) return;
-  if (!window._fb) { tb.innerHTML = '<tr><td colspan="9" style="color:var(--taupe)">Configure Firebase</td></tr>'; return; }
+  const con = document.getElementById('admOrderCards');
+  if (!con) return;
+  con.innerHTML = '<p style="color:var(--taupe);font-size:0.85rem">Loading…</p>';
+  if (!window._fb) { con.innerHTML = '<p style="color:var(--taupe)">Configure Firebase</p>'; return; }
   try {
     const snap = await window._fb.getDocs(window._fb.query(window._fb.collection(window._fb.db, 'orders'), window._fb.orderBy('createdAt', 'desc')));
-    tb.innerHTML = snap.docs.map(d => {
+    if (snap.empty) { con.innerHTML = '<p style="color:var(--taupe);font-size:0.85rem">No orders yet.</p>'; return; }
+    con.innerHTML = snap.docs.map(d => {
       const o = d.data();
-      return `<tr>
-        <td><strong>#${o.orderId}</strong></td>
-        <td>${o.name}<br><span style="font-size:0.7rem;color:var(--taupe)">${o.email}</span></td>
-        <td>${o.phone||'—'}</td>
-        <td style="max-width:180px;font-size:0.75rem">${o.fullAddress||o.address||'—'}</td>
-        <td style="max-width:160px;font-size:0.75rem">${(o.items||[]).map(i=>`${i.name}×${i.qty}`).join(', ')}</td>
-        <td>₹${(o.total||0).toLocaleString('en-IN')}</td>
-        <td>${o.paymentMethod||'—'}</td>
-        <td><span class="ostatus os-${o.status||'pending'}">${o.status||'pending'}</span></td>
-        <td>
-          <select style="padding:0.3rem 0.5rem;border:1px solid var(--sand);border-radius:6px;font-size:0.72rem;outline:none;margin-bottom:0.3rem" onchange="updateOrderStatus('${d.id}',this.value)">
-            <option ${o.status==='pending'     ?'selected':''} value="pending">Pending</option>
-            <option ${o.status==='processing'  ?'selected':''} value="processing">Processing</option>
-            <option ${o.status==='shipped'     ?'selected':''} value="shipped">Shipped</option>
-            <option ${o.status==='delivered'   ?'selected':''} value="delivered">Delivered</option>
-          </select><br>
-          <button class="adm-btn adm-btn-p" style="padding:0.3rem 0.6rem;font-size:0.65rem" onclick="printInvoice('${d.id}')">🧾 Invoice</button>
-        </td>
-      </tr>`;
-    }).join('') || '<tr><td colspan="9" style="color:var(--taupe)">No orders yet</td></tr>';
-  } catch(e) { tb.innerHTML = `<tr><td colspan="9" style="color:var(--taupe)">Error: ${e.message}</td></tr>`; }
+      const items = (o.items||[]).map(i => `${i.name} × ${i.qty}`).join('<br>');
+      const addr  = o.fullAddress || [o.address, o.city, o.state, o.pin].filter(Boolean).join(', ') || '—';
+      return `<div style="background:white;border-radius:var(--r);padding:1.25rem;border:1px solid rgba(200,176,154,0.2);box-shadow:0 2px 12px var(--shadow)">
+        <!-- Top row: ID + Status + Amount -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;padding-bottom:0.85rem;border-bottom:1px solid rgba(200,176,154,0.2)">
+          <div>
+            <div style="font-weight:700;font-size:0.85rem;color:var(--charcoal)">#${o.orderId}</div>
+            <div style="font-size:0.72rem;color:var(--taupe)">${o.createdAt?.toDate?.()?.toLocaleDateString('en-IN')||'—'}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem">
+            <span class="ostatus os-${o.status||'pending'}">${o.status||'pending'}</span>
+            <strong style="font-family:var(--fd);font-size:1.1rem">₹${(o.total||0).toLocaleString('en-IN')}</strong>
+          </div>
+        </div>
+
+        <!-- Customer info -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.85rem">
+          <div>
+            <div style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--taupe);margin-bottom:0.2rem">Customer</div>
+            <div style="font-size:0.82rem;font-weight:600">${o.name||'—'}</div>
+            <div style="font-size:0.75rem;color:var(--taupe)">${o.email||'—'}</div>
+            <div style="font-size:0.75rem;color:var(--taupe)">${o.phone||'—'}</div>
+          </div>
+          <div>
+            <div style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--taupe);margin-bottom:0.2rem">Payment</div>
+            <div style="font-size:0.82rem;font-weight:500">${o.paymentMethod||'—'}</div>
+            ${o.paymentId ? `<div style="font-size:0.7rem;color:var(--taupe)">ID: ${o.paymentId}</div>` : ''}
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div style="margin-bottom:0.85rem">
+          <div style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--taupe);margin-bottom:0.2rem">Delivery Address</div>
+          <div style="font-size:0.8rem;color:var(--charcoal);line-height:1.5">${addr}</div>
+        </div>
+
+        <!-- Items -->
+        <div style="background:var(--cream);border-radius:var(--rs);padding:0.75rem;margin-bottom:0.85rem">
+          <div style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--taupe);margin-bottom:0.4rem">Items Ordered</div>
+          <div style="font-size:0.82rem;color:var(--charcoal);line-height:1.7">${items}</div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+          <select style="flex:1;min-width:130px;padding:0.45rem 0.75rem;border:1.5px solid var(--sand);border-radius:20px;font-size:0.75rem;outline:none;background:white;color:var(--charcoal)" onchange="updateOrderStatus('${d.id}',this.value)">
+            <option ${o.status==='pending'    ?'selected':''} value="pending">⏳ Pending</option>
+            <option ${o.status==='processing' ?'selected':''} value="processing">🔄 Processing</option>
+            <option ${o.status==='shipped'    ?'selected':''} value="shipped">🚚 Shipped</option>
+            <option ${o.status==='delivered'  ?'selected':''} value="delivered">✅ Delivered</option>
+          </select>
+          <button class="adm-btn adm-btn-p" style="padding:0.45rem 1rem" onclick="printInvoice('${d.id}')">🧾 Invoice</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { con.innerHTML = `<p style="color:#B55353;font-size:0.85rem">Error: ${e.message}</p>`; }
 }
 
 async function updateOrderStatus(docId, status) {
