@@ -2726,13 +2726,39 @@ function editProd(id) {
   const careEl = document.getElementById('apCare');
   if (matEl)  matEl.value  = p.material || '';
   if (careEl) careEl.value = p.care     || '';
-  // Load existing images into the 4 slots
   loadSlotsFromUrls(p.images || []);
-  // Load existing reviews directly from product object
-  adminReviews = (p.reviews || []).map(r => ({ author: r.author, stars: r.stars, text: r.text, date: r.date, photos: r.photos || [] }));
+  // Reset review UI first
+  adminReviews = [];
   rvImgUrls = ['', ''];
   renderAdminReviews();
   [0, 1].forEach(removeRvImg);
+  // Always fetch fresh from Firestore to get latest saved reviews
+  if (window._fb && id) {
+    window._fb.getDoc(window._fb.doc(window._fb.db, 'products', id)).then(function(snap) {
+      if (snap.exists()) {
+        var freshReviews = snap.data().reviews || [];
+        adminReviews = freshReviews.map(function(r) {
+          return { author: r.author, stars: r.stars, text: r.text, date: r.date, photos: r.photos || [] };
+        });
+        // Also update allProds cache
+        allProds = allProds.map(function(prod) {
+          return prod.id === id ? Object.assign({}, prod, { reviews: freshReviews }) : prod;
+        });
+        renderAdminReviews();
+      }
+    }).catch(function(e) {
+      // Fallback to cached
+      adminReviews = (p.reviews || []).map(function(r) {
+        return { author: r.author, stars: r.stars, text: r.text, date: r.date, photos: r.photos || [] };
+      });
+      renderAdminReviews();
+    });
+  } else {
+    adminReviews = (p.reviews || []).map(function(r) {
+      return { author: r.author, stars: r.stars, text: r.text, date: r.date, photos: r.photos || [] };
+    });
+    renderAdminReviews();
+  }
 }
 
 // ── Firebase Storage Image Upload (4 slots per product) ──
@@ -3019,16 +3045,19 @@ function renderAdminReviews() {
 }
 
 async function loadProductReviews(productId) {
-  // Reviews stored directly inside the product document — no separate collection, no index needed
-  const prod = allProds.find(p => p.id === productId);
-  if (prod && prod.reviews && prod.reviews.length) return prod.reviews;
-  // Fallback: fetch fresh from Firestore if not in allProds yet
-  if (!window._fb || !productId) return [];
-  try {
-    const snap = await window._fb.getDoc(window._fb.doc(window._fb.db, 'products', productId));
-    if (snap.exists()) return snap.data().reviews || [];
-  } catch(e) {}
-  return [];
+  // Always fetch fresh from Firestore so reviews always reflect latest saved data
+  if (window._fb && productId) {
+    try {
+      const snap = await window._fb.getDoc(window._fb.doc(window._fb.db, 'products', productId));
+      if (snap.exists()) {
+        const revs = snap.data().reviews || [];
+        if (revs.length) return revs;
+      }
+    } catch(e) { console.error('Review fetch error:', e); }
+  }
+  // Fallback: read from in-memory allProds
+  const prod = allProds.find(function(p) { return p.id === productId; });
+  return (prod && prod.reviews) ? prod.reviews : [];
 }
 
 
