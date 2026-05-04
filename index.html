@@ -2877,6 +2877,29 @@ async function saveProd() {
     return;
   }
 
+  // Auto-capture any unsaved review sitting in the form fields
+  var rvNameVal = document.getElementById('rvName') ? document.getElementById('rvName').value.trim() : '';
+  var rvTextVal = document.getElementById('rvText') ? document.getElementById('rvText').value.trim() : '';
+  if (rvNameVal && rvTextVal) {
+    var rvStarsVal = parseInt(document.getElementById('rvStars') ? document.getElementById('rvStars').value : '5') || 5;
+    var rvDateVal  = document.getElementById('rvDate') ? document.getElementById('rvDate').value : new Date().toISOString().slice(0,10);
+    adminReviews.push({
+      author: rvNameVal,
+      stars:  rvStarsVal,
+      text:   rvTextVal,
+      date:   rvDateVal,
+      photos: rvImgUrls.filter(function(u){ return u; })
+    });
+    // Clear review form
+    document.getElementById('rvName').value  = '';
+    document.getElementById('rvText').value  = '';
+    document.getElementById('rvDate').value  = '';
+    document.getElementById('rvStars').value = '5';
+    rvImgUrls = ['', ''];
+    [0, 1].forEach(removeRvImg);
+    renderAdminReviews();
+  }
+
   // Build reviews array from adminReviews global
   var reviewsArr = [];
   for (var ri = 0; ri < adminReviews.length; ri++) {
