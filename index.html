@@ -1840,7 +1840,7 @@ function openProd(id) {
           (p.stock > 0 ? '\u2713 In Stock (' + p.stock + ' left)' : 'Out of Stock') +
         '</span>' +
       '</div>' +
-      '<div class="pd-desc">' + (p.description || 'Handcrafted with premium eco-friendly materials.') + '</div>' +
+      '<div class="pd-desc">' + formatProdDesc(p.description || 'Handcrafted with premium eco-friendly materials.') + '</div>' +
       '<div class="qty-wrap">' +
         '<span class="qty-label">Quantity</span>' +
         '<div class="qty-ctrl">' +
@@ -3288,6 +3288,28 @@ function toggleAcc()   { document.getElementById('accDrop')?.classList.toggle('o
 function closeAcc()    { document.getElementById('accDrop')?.classList.remove('open'); }
 function openDrawer()  { document.getElementById('drawer')?.classList.add('open'); document.getElementById('drawerOv')?.classList.add('open'); }
 function closeDrawer() { document.getElementById('drawer')?.classList.remove('open'); document.getElementById('drawerOv')?.classList.remove('open'); }
+
+function formatProdDesc(text) {
+  if (!text) return '';
+  var lines = text.split('\n');
+  var html = '';
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].trim();
+    if (!line) { html += '<div style="height:0.5rem"></div>'; continue; }
+    // Lines starting with ✔ or • or - treated as bullet items
+    if (/^[✔✓•\-\*]/.test(line)) {
+      var content = line.replace(/^[✔✓•\-\*]\s*/, '');
+      html += '<div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.3rem">' +
+                '<span style="color:var(--rose-deep);font-size:0.9rem;line-height:1.6;flex-shrink:0">✔</span>' +
+                '<span style="font-size:0.88rem;color:var(--charcoal);line-height:1.6">' + content + '</span>' +
+              '</div>';
+    } else {
+      // Regular paragraph line
+      html += '<p style="font-size:0.88rem;color:var(--taupe);line-height:1.8;margin-bottom:0.4rem">' + line + '</p>';
+    }
+  }
+  return html;
+}
 
 function openReviewPhoto(url) {
   const ov = document.getElementById('reviewPhotoOv');
