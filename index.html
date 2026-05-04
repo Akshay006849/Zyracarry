@@ -1871,18 +1871,25 @@ function openProd(id) {
         reviewsGrid.innerHTML = '<p style="color:var(--taupe);font-size:0.85rem;grid-column:1/-1">No reviews yet. Be the first to share your experience!</p>';
         return;
       }
-      reviewsGrid.innerHTML = reviews.map(r => `
-        <div class="review-card">
-          <div class="review-stars">${'★'.repeat(r.stars||5)}</div>
-          <p class="review-text">"${r.text}"</p>
-          ${r.photos && r.photos.length ? `<div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;flex-wrap:wrap">
-            ${r.photos.map(ph => `<img src="${ph}" style="width:70px;height:70px;border-radius:8px;object-fit:cover;border:1px solid rgba(200,176,154,0.3);cursor:pointer" onclick="openReviewPhoto('${ph}')">`).join('')}
-          </div>` : ''}
-          <div class="review-author">
-            <div class="review-av">${(r.author||'?')[0]}</div>
-            <div><div class="review-name">${r.author||'Customer'}</div><div class="review-date">${r.date||''}</div></div>
-          </div>
-        </div>`).join('');
+      reviewsGrid.innerHTML = reviews.map(function(r) {
+        var stars = '★'.repeat(r.stars||5);
+        var photosHtml = '';
+        if (r.photos && r.photos.length) {
+          var imgs = r.photos.map(function(ph) {
+            return '<img src="' + ph + '" style="width:70px;height:70px;border-radius:8px;object-fit:cover;border:1px solid rgba(200,176,154,0.3);cursor:pointer" onclick="openReviewPhoto(\'' + ph + '\')">';
+          }).join('');
+          photosHtml = '<div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;flex-wrap:wrap">' + imgs + '</div>';
+        }
+        return '<div class="review-card">' +
+          '<div class="review-stars">' + stars + '</div>' +
+          '<p class="review-text">"' + (r.text||'') + '"</p>' +
+          photosHtml +
+          '<div class="review-author">' +
+            '<div class="review-av">' + (r.author||'?')[0] + '</div>' +
+            '<div><div class="review-name">' + (r.author||'Customer') + '</div><div class="review-date">' + (r.date||'') + '</div></div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
     });
   }
 
@@ -2721,15 +2728,11 @@ function editProd(id) {
   if (careEl) careEl.value = p.care     || '';
   // Load existing images into the 4 slots
   loadSlotsFromUrls(p.images || []);
-  // Load existing reviews
-  adminReviews = [];
+  // Load existing reviews directly from product object
+  adminReviews = (p.reviews || []).map(r => ({ author: r.author, stars: r.stars, text: r.text, date: r.date, photos: r.photos || [] }));
   rvImgUrls = ['', ''];
   renderAdminReviews();
   [0, 1].forEach(removeRvImg);
-  loadProductReviews(id).then(revs => {
-    adminReviews = revs.map(r => ({ author: r.author, stars: r.stars, text: r.text, date: r.date, photos: r.photos || [], _id: r.id }));
-    renderAdminReviews();
-  });
 }
 
 // ── Firebase Storage Image Upload (4 slots per product) ──
@@ -2854,7 +2857,8 @@ async function saveProd() {
     badge:         document.getElementById('apBadge').value,
     material:      (document.getElementById('apMaterial') || {value:''}).value.trim(),
     care:          (document.getElementById('apCare') || {value:''}).value.trim(),
-    images:        slotUrls.filter(u => u).length > 0 ? slotUrls.filter(u => u) : [...prodImgs]
+    images:        slotUrls.filter(u => u).length > 0 ? slotUrls.filter(u => u) : [...prodImgs],
+    reviews:       adminReviews.map(r => ({ author: r.author, stars: r.stars, text: r.text, date: r.date, photos: r.photos || [] }))
   };
 
   try {
@@ -2871,20 +2875,6 @@ async function saveProd() {
         id = ref.id;
         toast('Product added! ✅', 'success');
       }
-      // Save reviews to Firestore (only new ones without _id)
-      const newReviews = adminReviews.filter(r => !r._id);
-      for (const r of newReviews) {
-        await window._fb.addDoc(window._fb.collection(window._fb.db, 'reviews'), {
-          productId: id,
-          author:    r.author,
-          stars:     r.stars,
-          text:      r.text,
-          date:      r.date,
-          photos:    r.photos || [],
-          createdAt: window._fb.serverTimestamp()
-        });
-      }
-      if (newReviews.length) toast(newReviews.length + ' review(s) saved! ⭐', 'success');
     } else {
       if (id) { allProds = allProds.map(p => p.id === id ? { ...p, ...pd } : p); }
       else { allProds.unshift({ id: 'local-' + Date.now(), ...pd }); }
@@ -3002,33 +2992,43 @@ function renderAdminReviews() {
   const con = document.getElementById('admReviewsList');
   if (!con) return;
   if (!adminReviews.length) { con.innerHTML = '<p style="font-size:0.8rem;color:var(--taupe)">No reviews added yet.</p>'; return; }
-  con.innerHTML = adminReviews.map((r, i) => `
-    <div style="background:white;border-radius:var(--rs);padding:1rem;border:1px solid rgba(200,176,154,0.25);display:flex;gap:0.85rem;align-items:flex-start">
-      <div style="flex:1">
-        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.3rem">
-          <span style="font-weight:700;font-size:0.85rem;color:var(--charcoal)">${r.author}</span>
-          <span style="color:#E8A838;font-size:0.85rem">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span>
-          <span style="font-size:0.7rem;color:var(--taupe)">${r.date}</span>
-        </div>
-        <p style="font-size:0.8rem;color:var(--taupe);line-height:1.6;margin-bottom:${r.photos&&r.photos.length?'0.6rem':'0'}">"${r.text}"</p>
-        ${r.photos && r.photos.length ? `<div style="display:flex;gap:0.4rem">
-          ${r.photos.map(ph => `<img src="${ph}" style="width:52px;height:52px;border-radius:6px;object-fit:cover;border:1px solid rgba(200,176,154,0.3)">`).join('')}
-        </div>` : ''}
-      </div>
-      <button onclick="removeAdminReview(${i})" style="background:#FCE8E8;color:#B55353;border:none;border-radius:8px;padding:0.3rem 0.6rem;font-size:0.72rem;cursor:pointer;flex-shrink:0">✕ Remove</button>
-    </div>`).join('');
+  con.innerHTML = adminReviews.map(function(r, i) {
+    var starsHtml = '★'.repeat(r.stars) + '☆'.repeat(5 - r.stars);
+    var mbVal = (r.photos && r.photos.length) ? '0.6rem' : '0';
+    var photosHtml = '';
+    if (r.photos && r.photos.length) {
+      photosHtml = '<div style="display:flex;gap:0.4rem">' +
+        r.photos.map(function(ph) {
+          return '<img src="' + ph + '" style="width:52px;height:52px;border-radius:6px;object-fit:cover;border:1px solid rgba(200,176,154,0.3)">';
+        }).join('') +
+        '</div>';
+    }
+    return '<div style="background:white;border-radius:var(--rs);padding:1rem;border:1px solid rgba(200,176,154,0.25);display:flex;gap:0.85rem;align-items:flex-start">' +
+      '<div style="flex:1">' +
+        '<div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.3rem">' +
+          '<span style="font-weight:700;font-size:0.85rem;color:var(--charcoal)">' + r.author + '</span>' +
+          '<span style="color:#E8A838;font-size:0.85rem">' + starsHtml + '</span>' +
+          '<span style="font-size:0.7rem;color:var(--taupe)">' + r.date + '</span>' +
+        '</div>' +
+        '<p style="font-size:0.8rem;color:var(--taupe);line-height:1.6;margin-bottom:' + mbVal + '">"' + r.text + '"</p>' +
+        photosHtml +
+      '</div>' +
+      '<button onclick="removeAdminReview(' + i + ')" style="background:#FCE8E8;color:#B55353;border:none;border-radius:8px;padding:0.3rem 0.6rem;font-size:0.72rem;cursor:pointer;flex-shrink:0">✕ Remove</button>' +
+    '</div>';
+  }).join('');
 }
 
 async function loadProductReviews(productId) {
+  // Reviews stored directly inside the product document — no separate collection, no index needed
+  const prod = allProds.find(p => p.id === productId);
+  if (prod && prod.reviews && prod.reviews.length) return prod.reviews;
+  // Fallback: fetch fresh from Firestore if not in allProds yet
   if (!window._fb || !productId) return [];
   try {
-    const snap = await window._fb.getDocs(
-      window._fb.query(window._fb.collection(window._fb.db, 'reviews'),
-        window._fb.where('productId', '==', productId),
-        window._fb.orderBy('createdAt', 'desc'))
-    );
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch(e) { return []; }
+    const snap = await window._fb.getDoc(window._fb.doc(window._fb.db, 'products', productId));
+    if (snap.exists()) return snap.data().reviews || [];
+  } catch(e) {}
+  return [];
 }
 
 
