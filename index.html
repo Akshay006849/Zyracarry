@@ -1220,6 +1220,83 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
           <p style="font-size:0.72rem;color:var(--taupe);margin-top:0.75rem">💡 Tap any slot to choose a photo from your phone. It uploads instantly to Firebase.</p>
         </div>
 
+        <!-- REVIEWS SECTION -->
+        <div class="adm-card" id="reviewsAdminCard">
+          <div class="adm-card-title">⭐ Customer Reviews</div>
+
+          <div class="img-hint" style="border-left:3px solid var(--rose);background:#FFF8F5;margin-bottom:1.2rem">
+            ✍️ Add real customer reviews with their photos. These show on the product page under <strong>Customer Love</strong>.
+          </div>
+
+          <!-- Existing reviews list -->
+          <div id="admReviewsList" style="display:flex;flex-direction:column;gap:0.85rem;margin-bottom:1.2rem"></div>
+
+          <!-- Add new review form -->
+          <div style="background:var(--cream);border-radius:var(--rs);padding:1.2rem;border:1px dashed var(--sand)" id="addReviewBox">
+            <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--taupe);margin-bottom:0.9rem;font-weight:600">+ Add Review</div>
+
+            <div class="fg2">
+              <div class="fg">
+                <label class="fl">Customer Name *</label>
+                <input class="fi" id="rvName" placeholder="e.g. Priya M.">
+              </div>
+              <div class="fg">
+                <label class="fl">Star Rating *</label>
+                <select class="fi" id="rvStars">
+                  <option value="5">★★★★★ — 5 Stars</option>
+                  <option value="4">★★★★☆ — 4 Stars</option>
+                  <option value="3">★★★☆☆ — 3 Stars</option>
+                  <option value="2">★★☆☆☆ — 2 Stars</option>
+                  <option value="1">★☆☆☆☆ — 1 Star</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="fg">
+              <label class="fl">Review Text *</label>
+              <textarea class="fi" id="rvText" rows="3" placeholder="e.g. Absolutely stunning quality! The bag is even more beautiful in person."></textarea>
+            </div>
+
+            <div class="fg">
+              <label class="fl">Review Date</label>
+              <input class="fi" id="rvDate" type="date">
+            </div>
+
+            <!-- Review photo uploads (up to 2) -->
+            <div style="margin-top:0.75rem">
+              <div style="font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--taupe);margin-bottom:0.6rem">Review Photos (optional, up to 2)</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+                <!-- Review Photo 1 -->
+                <div>
+                  <div style="font-size:0.65rem;color:var(--taupe);margin-bottom:0.3rem;letter-spacing:0.08em;text-transform:uppercase">Photo 1</div>
+                  <div onclick="triggerRvImg(0)" id="rv-box-0" style="border:2px dashed var(--sand);border-radius:var(--rs);height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:white;position:relative;overflow:hidden;transition:all 0.2s">
+                    <img id="rv-img-0" src="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none">
+                    <div id="rv-ph-0" style="text-align:center"><div style="font-size:1.3rem">📸</div><div style="font-size:0.68rem;color:var(--taupe)">Tap to upload</div></div>
+                    <div id="rv-del-0" onclick="event.stopPropagation();removeRvImg(0)" style="display:none;position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(42,36,33,0.8);color:white;font-size:0.65rem;cursor:pointer;align-items:center;justify-content:center">✕</div>
+                    <div id="rv-load-0" style="display:none;position:absolute;inset:0;background:rgba(255,255,255,0.88);align-items:center;justify-content:center;font-size:0.72rem;color:var(--taupe)">Uploading…</div>
+                  </div>
+                  <input type="file" id="rv-input-0" accept="image/*" style="display:none" onchange="uploadRvImg(0,this)">
+                </div>
+                <!-- Review Photo 2 -->
+                <div>
+                  <div style="font-size:0.65rem;color:var(--taupe);margin-bottom:0.3rem;letter-spacing:0.08em;text-transform:uppercase">Photo 2</div>
+                  <div onclick="triggerRvImg(1)" id="rv-box-1" style="border:2px dashed var(--sand);border-radius:var(--rs);height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:white;position:relative;overflow:hidden;transition:all 0.2s">
+                    <img id="rv-img-1" src="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none">
+                    <div id="rv-ph-1" style="text-align:center"><div style="font-size:1.3rem">📸</div><div style="font-size:0.68rem;color:var(--taupe)">Tap to upload</div></div>
+                    <div id="rv-del-1" onclick="event.stopPropagation();removeRvImg(1)" style="display:none;position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(42,36,33,0.8);color:white;font-size:0.65rem;cursor:pointer;align-items:center;justify-content:center">✕</div>
+                    <div id="rv-load-1" style="display:none;position:absolute;inset:0;background:rgba(255,255,255,0.88);align-items:center;justify-content:center;font-size:0.72rem;color:var(--taupe)">Uploading…</div>
+                  </div>
+                  <input type="file" id="rv-input-1" accept="image/*" style="display:none" onchange="uploadRvImg(1,this)">
+                </div>
+              </div>
+            </div>
+
+            <button class="adm-btn adm-btn-s" onclick="addReview()" style="margin-top:1rem;padding:0.6rem 1.6rem;font-size:0.78rem">
+              ✅ Add This Review
+            </button>
+          </div>
+        </div>
+
         <div style="display:flex;gap:1rem;flex-wrap:wrap">
           <button class="adm-btn adm-btn-p" onclick="saveProd()" style="padding:0.75rem 2.5rem;font-size:0.82rem">
             💾 Save Product
@@ -1271,6 +1348,14 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
   <div class="modal" style="max-width:600px;width:100%">
     <div class="modal-close" onclick="closeMod('policyModal')">✕</div>
     <div id="policyContent"></div>
+  </div>
+</div>
+
+<!-- REVIEW PHOTO LIGHTBOX -->
+<div class="modal-overlay" id="reviewPhotoOv" onclick="closeMod('reviewPhotoOv')" style="align-items:center;justify-content:center">
+  <div style="position:relative;max-width:90vw;max-height:88vh">
+    <img id="reviewPhotoImg" src="" style="max-width:90vw;max-height:88vh;border-radius:var(--r);display:block;object-fit:contain">
+    <div onclick="closeMod('reviewPhotoOv')" style="position:absolute;top:-14px;right:-14px;width:32px;height:32px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.85rem;box-shadow:0 4px 14px rgba(0,0,0,0.2);color:var(--charcoal)">✕</div>
   </div>
 </div>
 
@@ -1777,25 +1862,29 @@ function openProd(id) {
       '</div>' +
     '</div>';
 
-  // Reviews
-  const reviews = [
-    { author: 'Priya M.',  text: 'Absolutely stunning quality! The bag is even more beautiful in person.',        stars: 5, date: '2025-03-15' },
-    { author: 'Aisha K.',  text: 'My third ZYRA CARRY purchase. Worth every rupee. Eco-friendly packaging too!',  stars: 5, date: '2025-02-28' },
-    { author: 'Meera S.',  text: 'Craftsmanship is truly exceptional. So spacious and structured.',               stars: 5, date: '2025-04-01' },
-  ];
-  let reviewsHtml = '';
-  reviews.forEach(function(r) {
-    reviewsHtml +=
-      '<div class="review-card">' +
-        '<div class="review-stars">' + '\u2605'.repeat(r.stars) + '</div>' +
-        '<p class="review-text">"' + r.text + '"</p>' +
-        '<div class="review-author">' +
-          '<div class="review-av">' + r.author[0] + '</div>' +
-          '<div><div class="review-name">' + r.author + '</div><div class="review-date">' + r.date + '</div></div>' +
-        '</div>' +
-      '</div>';
-  });
-  document.getElementById('reviewsGrid').innerHTML = reviewsHtml;
+  // Reviews — load from Firestore
+  const reviewsGrid = document.getElementById('reviewsGrid');
+  if (reviewsGrid) {
+    reviewsGrid.innerHTML = '<p style="color:var(--taupe);font-size:0.85rem;grid-column:1/-1">Loading reviews…</p>';
+    loadProductReviews(p.id).then(reviews => {
+      if (!reviews.length) {
+        reviewsGrid.innerHTML = '<p style="color:var(--taupe);font-size:0.85rem;grid-column:1/-1">No reviews yet. Be the first to share your experience!</p>';
+        return;
+      }
+      reviewsGrid.innerHTML = reviews.map(r => `
+        <div class="review-card">
+          <div class="review-stars">${'★'.repeat(r.stars||5)}</div>
+          <p class="review-text">"${r.text}"</p>
+          ${r.photos && r.photos.length ? `<div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;flex-wrap:wrap">
+            ${r.photos.map(ph => `<img src="${ph}" style="width:70px;height:70px;border-radius:8px;object-fit:cover;border:1px solid rgba(200,176,154,0.3);cursor:pointer" onclick="openReviewPhoto('${ph}')">`).join('')}
+          </div>` : ''}
+          <div class="review-author">
+            <div class="review-av">${(r.author||'?')[0]}</div>
+            <div><div class="review-name">${r.author||'Customer'}</div><div class="review-date">${r.date||''}</div></div>
+          </div>
+        </div>`).join('');
+    });
+  }
 
   pdSlideIdx = 0;
   goTo('product');
@@ -2606,6 +2695,11 @@ function resetProdForm() {
   document.getElementById('apBadge').value = '';
   prodImgs = [];
   loadSlotsFromUrls([]);
+  // Reset reviews
+  adminReviews = [];
+  rvImgUrls = ['', ''];
+  renderAdminReviews();
+  [0, 1].forEach(removeRvImg);
 }
 
 function editProd(id) {
@@ -2627,6 +2721,15 @@ function editProd(id) {
   if (careEl) careEl.value = p.care     || '';
   // Load existing images into the 4 slots
   loadSlotsFromUrls(p.images || []);
+  // Load existing reviews
+  adminReviews = [];
+  rvImgUrls = ['', ''];
+  renderAdminReviews();
+  [0, 1].forEach(removeRvImg);
+  loadProductReviews(id).then(revs => {
+    adminReviews = revs.map(r => ({ author: r.author, stars: r.stars, text: r.text, date: r.date, photos: r.photos || [], _id: r.id }));
+    renderAdminReviews();
+  });
 }
 
 // ── Firebase Storage Image Upload (4 slots per product) ──
@@ -2765,8 +2868,23 @@ async function saveProd() {
         pd.createdAt = window._fb.serverTimestamp();
         const ref = await window._fb.addDoc(window._fb.collection(window._fb.db, 'products'), pd);
         allProds.unshift({ id: ref.id, ...pd });
+        id = ref.id;
         toast('Product added! ✅', 'success');
       }
+      // Save reviews to Firestore (only new ones without _id)
+      const newReviews = adminReviews.filter(r => !r._id);
+      for (const r of newReviews) {
+        await window._fb.addDoc(window._fb.collection(window._fb.db, 'reviews'), {
+          productId: id,
+          author:    r.author,
+          stars:     r.stars,
+          text:      r.text,
+          date:      r.date,
+          photos:    r.photos || [],
+          createdAt: window._fb.serverTimestamp()
+        });
+      }
+      if (newReviews.length) toast(newReviews.length + ' review(s) saved! ⭐', 'success');
     } else {
       if (id) { allProds = allProds.map(p => p.id === id ? { ...p, ...pd } : p); }
       else { allProds.unshift({ id: 'local-' + Date.now(), ...pd }); }
@@ -2784,6 +2902,133 @@ async function delProd(id) {
   allProds = allProds.filter(p => p.id !== id);
   loadAdminProds();
   toast('Product deleted', 'info');
+}
+
+// ══════════════════════════════════════════════
+// REVIEWS (Admin)
+// ══════════════════════════════════════════════
+let adminReviews = [];   // reviews for current product being edited
+let rvImgUrls   = ['', '']; // up to 2 photos per review being added
+
+function triggerRvImg(slot) { document.getElementById('rv-input-' + slot).click(); }
+
+function removeRvImg(slot) {
+  rvImgUrls[slot] = '';
+  const imgEl = document.getElementById('rv-img-' + slot);
+  const phEl  = document.getElementById('rv-ph-'  + slot);
+  const delEl = document.getElementById('rv-del-' + slot);
+  const boxEl = document.getElementById('rv-box-' + slot);
+  if (imgEl) { imgEl.src = ''; imgEl.style.display = 'none'; }
+  if (phEl)  { phEl.style.display = 'block'; }
+  if (delEl) { delEl.style.display = 'none'; }
+  if (boxEl) { boxEl.style.borderColor = 'var(--sand)'; boxEl.style.borderStyle = 'dashed'; }
+}
+
+async function uploadRvImg(slot, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('Please select an image', 'error'); return; }
+
+  const loadEl = document.getElementById('rv-load-' + slot);
+  if (loadEl) loadEl.style.display = 'flex';
+
+  try {
+    const base64 = await new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload  = () => res(reader.result.split(',')[1]);
+      reader.onerror = rej;
+      reader.readAsDataURL(file);
+    });
+    const form = new FormData();
+    form.append('image', base64);
+    form.append('key', IMGBB_API_KEY);
+    const resp = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: form });
+    if (!resp.ok) throw new Error('Network error');
+    const data = await resp.json();
+    if (!data.success) throw new Error('Upload failed');
+    const url = data.data.url;
+    rvImgUrls[slot] = url;
+
+    const imgEl = document.getElementById('rv-img-' + slot);
+    const phEl  = document.getElementById('rv-ph-'  + slot);
+    const delEl = document.getElementById('rv-del-' + slot);
+    const boxEl = document.getElementById('rv-box-' + slot);
+    if (imgEl) { imgEl.src = url; imgEl.style.display = 'block'; }
+    if (phEl)  { phEl.style.display = 'none'; }
+    if (delEl) { delEl.style.display = 'flex'; }
+    if (boxEl) { boxEl.style.borderColor = 'var(--rose-deep)'; boxEl.style.borderStyle = 'solid'; }
+    toast('Review photo uploaded! ✅', 'success');
+  } catch(e) {
+    toast('Upload failed: ' + e.message, 'error');
+  } finally {
+    if (loadEl) loadEl.style.display = 'none';
+    input.value = '';
+  }
+}
+
+function addReview() {
+  const name  = (document.getElementById('rvName')?.value || '').trim();
+  const stars = parseInt(document.getElementById('rvStars')?.value || '5');
+  const text  = (document.getElementById('rvText')?.value || '').trim();
+  const date  = document.getElementById('rvDate')?.value || new Date().toISOString().slice(0,10);
+  if (!name || !text) { toast('Please enter reviewer name and review text', 'error'); return; }
+
+  const review = {
+    author: name,
+    stars,
+    text,
+    date,
+    photos: rvImgUrls.filter(u => u)
+  };
+  adminReviews.push(review);
+  renderAdminReviews();
+
+  // Clear the form
+  if (document.getElementById('rvName'))  document.getElementById('rvName').value  = '';
+  if (document.getElementById('rvText'))  document.getElementById('rvText').value  = '';
+  if (document.getElementById('rvDate'))  document.getElementById('rvDate').value  = '';
+  if (document.getElementById('rvStars')) document.getElementById('rvStars').value = '5';
+  rvImgUrls = ['', ''];
+  [0, 1].forEach(removeRvImg);
+  toast('Review added! Save the product to keep it. 💬', 'success');
+}
+
+function removeAdminReview(idx) {
+  adminReviews.splice(idx, 1);
+  renderAdminReviews();
+}
+
+function renderAdminReviews() {
+  const con = document.getElementById('admReviewsList');
+  if (!con) return;
+  if (!adminReviews.length) { con.innerHTML = '<p style="font-size:0.8rem;color:var(--taupe)">No reviews added yet.</p>'; return; }
+  con.innerHTML = adminReviews.map((r, i) => `
+    <div style="background:white;border-radius:var(--rs);padding:1rem;border:1px solid rgba(200,176,154,0.25);display:flex;gap:0.85rem;align-items:flex-start">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.3rem">
+          <span style="font-weight:700;font-size:0.85rem;color:var(--charcoal)">${r.author}</span>
+          <span style="color:#E8A838;font-size:0.85rem">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span>
+          <span style="font-size:0.7rem;color:var(--taupe)">${r.date}</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--taupe);line-height:1.6;margin-bottom:${r.photos&&r.photos.length?'0.6rem':'0'}">"${r.text}"</p>
+        ${r.photos && r.photos.length ? `<div style="display:flex;gap:0.4rem">
+          ${r.photos.map(ph => `<img src="${ph}" style="width:52px;height:52px;border-radius:6px;object-fit:cover;border:1px solid rgba(200,176,154,0.3)">`).join('')}
+        </div>` : ''}
+      </div>
+      <button onclick="removeAdminReview(${i})" style="background:#FCE8E8;color:#B55353;border:none;border-radius:8px;padding:0.3rem 0.6rem;font-size:0.72rem;cursor:pointer;flex-shrink:0">✕ Remove</button>
+    </div>`).join('');
+}
+
+async function loadProductReviews(productId) {
+  if (!window._fb || !productId) return [];
+  try {
+    const snap = await window._fb.getDocs(
+      window._fb.query(window._fb.collection(window._fb.db, 'reviews'),
+        window._fb.where('productId', '==', productId),
+        window._fb.orderBy('createdAt', 'desc'))
+    );
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) { return []; }
 }
 
 
@@ -2949,6 +3194,12 @@ function toggleAcc()   { document.getElementById('accDrop')?.classList.toggle('o
 function closeAcc()    { document.getElementById('accDrop')?.classList.remove('open'); }
 function openDrawer()  { document.getElementById('drawer')?.classList.add('open'); document.getElementById('drawerOv')?.classList.add('open'); }
 function closeDrawer() { document.getElementById('drawer')?.classList.remove('open'); document.getElementById('drawerOv')?.classList.remove('open'); }
+
+function openReviewPhoto(url) {
+  const ov = document.getElementById('reviewPhotoOv');
+  const img = document.getElementById('reviewPhotoImg');
+  if (ov && img) { img.src = url; ov.classList.add('open'); }
+}
 
 document.addEventListener('click', e => {
   const wrap = document.querySelector('.acc-wrap');
