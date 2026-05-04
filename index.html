@@ -2867,11 +2867,15 @@ function removeProdImg(i) {}
 function renderProdImgPreview() {}
 
 async function saveProd() {
-  const id    = document.getElementById('apId').value;
+  let id      = document.getElementById('apId').value.trim();
   const name  = document.getElementById('apName').value.trim();
   const price = parseFloat(document.getElementById('apPrice').value);
   const stock = parseInt(document.getElementById('apStock').value);
   if (!name || !price || isNaN(stock)) { toast('Please fill in Name, Price and Stock', 'error'); return; }
+
+  const reviewsToSave = adminReviews.map(function(r) {
+    return { author: r.author || '', stars: r.stars || 5, text: r.text || '', date: r.date || '', photos: r.photos || [] };
+  });
 
   const pd = {
     name,
@@ -2883,8 +2887,8 @@ async function saveProd() {
     badge:         document.getElementById('apBadge').value,
     material:      (document.getElementById('apMaterial') || {value:''}).value.trim(),
     care:          (document.getElementById('apCare') || {value:''}).value.trim(),
-    images:        slotUrls.filter(u => u).length > 0 ? slotUrls.filter(u => u) : [...prodImgs],
-    reviews:       adminReviews.map(r => ({ author: r.author, stars: r.stars, text: r.text, date: r.date, photos: r.photos || [] }))
+    images:        slotUrls.filter(function(u){ return u; }).length > 0 ? slotUrls.filter(function(u){ return u; }) : prodImgs.slice(),
+    reviews:       reviewsToSave
   };
 
   try {
@@ -2892,22 +2896,25 @@ async function saveProd() {
       if (id) {
         pd.updatedAt = window._fb.serverTimestamp();
         await window._fb.updateDoc(window._fb.doc(window._fb.db, 'products', id), pd);
-        allProds = allProds.map(p => p.id === id ? { ...p, ...pd, id } : p);
+        allProds = allProds.map(function(p) { return p.id === id ? Object.assign({}, p, pd, { id: id }) : p; });
         toast('Product updated! ✅', 'success');
       } else {
         pd.createdAt = window._fb.serverTimestamp();
         const ref = await window._fb.addDoc(window._fb.collection(window._fb.db, 'products'), pd);
-        allProds.unshift({ id: ref.id, ...pd });
         id = ref.id;
+        allProds.unshift(Object.assign({ id: id }, pd));
         toast('Product added! ✅', 'success');
       }
     } else {
-      if (id) { allProds = allProds.map(p => p.id === id ? { ...p, ...pd } : p); }
-      else { allProds.unshift({ id: 'local-' + Date.now(), ...pd }); }
+      if (id) { allProds = allProds.map(function(p) { return p.id === id ? Object.assign({}, p, pd) : p; }); }
+      else { allProds.unshift(Object.assign({ id: 'local-' + Date.now() }, pd)); }
       toast(id ? 'Product updated!' : 'Product added!', 'success');
     }
     admTab('products', null);
-  } catch(e) { toast('Error: ' + e.message, 'error'); }
+  } catch(e) {
+    console.error('saveProd error:', e);
+    toast('Error saving: ' + e.message, 'error');
+  }
 }
 
 async function delProd(id) {
