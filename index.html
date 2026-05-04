@@ -1033,12 +1033,12 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
     <aside class="admin-sidebar">
       <div class="admin-logo-txt">⬡ ZYRA Admin</div>
       <nav class="admin-nav">
-        <a class="active" onclick="admTab('dash',this)">📊 Dash</a>
+        <a class="active" onclick="admTab('dash',this)">📊 Dashboard</a>
         <a onclick="admTab('products',this)">🛍 Products</a>
-        <a onclick="admTab('addprod',this)">➕ Add</a>
+        <a onclick="admTab('addprod',this)">➕ Add Product</a>
         <a onclick="admTab('orders',this)">📦 Orders</a>
-        <a onclick="admTab('users',this)">👥 Users</a>
-        <a onclick="admTab('subs',this)">📧 Subs</a>
+        <a onclick="admTab('users',this)">👥 User Info</a>
+        <a onclick="admTab('subs',this)">📧 Subscribers</a>
         <a onclick="goTo('home')" style="color:rgba(255,255,255,0.28);margin-top:1rem">← Back to Site</a>
       </nav>
     </aside>
@@ -1067,7 +1067,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
 
       <!-- PRODUCTS LIST -->
       <div class="admin-sec" id="adm-products">
-        <h2 class="admin-heading">Products</h2>
+        <h2 class="admin-heading">Product Edit</h2>
         <button class="adm-btn adm-btn-p" style="margin-bottom:1.2rem;padding:0.55rem 1.5rem" onclick="admTab('addprod',null);resetProdForm()">+ Add New Product</button>
         <div style="overflow-x:auto">
           <table class="admin-table">
@@ -1239,7 +1239,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
 
       <!-- USERS -->
       <div class="admin-sec" id="adm-users">
-        <h2 class="admin-heading">Registered Users</h2>
+        <h2 class="admin-heading">User Info</h2>
         <p style="font-size:0.82rem;color:var(--taupe);margin-bottom:1.4rem">All users who have created an account on your website</p>
         <div style="overflow-x:auto">
           <table class="admin-table">
