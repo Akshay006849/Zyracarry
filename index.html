@@ -2435,7 +2435,7 @@ function openAdmin() {
   goTo('admin');
 }
 
-function admTab(t, el) {
+function admTab(t, el, skipReset) {
   document.querySelectorAll('.admin-sec').forEach(function(s){ s.classList.remove('active'); });
   var sec = document.getElementById('adm-' + t);
   if (sec) sec.classList.add('active');
@@ -2447,7 +2447,7 @@ function admTab(t, el) {
   if (t === 'orders')   loadAdminOrders();
   if (t === 'users')    loadAdminUsers();
   if (t === 'subs')     loadAdminSubs();
-  if (t === 'addprod')  resetProdForm();
+  if (t === 'addprod' && !skipReset)  resetProdForm();
 }
 
 async function loadAdminDash() {
@@ -2712,7 +2712,7 @@ function resetProdForm() {
 function editProd(id) {
   const p = allProds.find(x => x.id === id);
   if (!p) return;
-  admTab('addprod', null);
+  admTab('addprod', null, true); // true = skipReset so adminReviews isn't wiped
   document.getElementById('apId').value         = id;
   document.getElementById('apHead').textContent = 'Edit Product';
   document.getElementById('apName').value        = p.name        || '';
@@ -2867,52 +2867,87 @@ function removeProdImg(i) {}
 function renderProdImgPreview() {}
 
 async function saveProd() {
-  let id      = document.getElementById('apId').value.trim();
+  let prodId  = document.getElementById('apId').value.trim();
   const name  = document.getElementById('apName').value.trim();
   const price = parseFloat(document.getElementById('apPrice').value);
   const stock = parseInt(document.getElementById('apStock').value);
-  if (!name || !price || isNaN(stock)) { toast('Please fill in Name, Price and Stock', 'error'); return; }
 
-  const reviewsToSave = adminReviews.map(function(r) {
-    return { author: r.author || '', stars: r.stars || 5, text: r.text || '', date: r.date || '', photos: r.photos || [] };
-  });
+  if (!name || !price || isNaN(stock)) {
+    toast('Please fill in Name, Price and Stock', 'error');
+    return;
+  }
 
-  const pd = {
-    name,
-    price,
-    stock,
+  // Build reviews array from adminReviews global
+  var reviewsArr = [];
+  for (var ri = 0; ri < adminReviews.length; ri++) {
+    var rv = adminReviews[ri];
+    reviewsArr.push({
+      author: rv.author || '',
+      stars:  rv.stars  || 5,
+      text:   rv.text   || '',
+      date:   rv.date   || '',
+      photos: rv.photos || []
+    });
+  }
+
+  // Build images array from slotUrls
+  var imagesArr = [];
+  for (var si = 0; si < slotUrls.length; si++) {
+    if (slotUrls[si]) imagesArr.push(slotUrls[si]);
+  }
+  if (!imagesArr.length) imagesArr = prodImgs.slice();
+
+  var pd = {
+    name:          name,
+    price:         price,
+    stock:         stock,
     originalPrice: parseFloat(document.getElementById('apOrig').value) || null,
     shortDesc:     document.getElementById('apShort').value.trim(),
     description:   document.getElementById('apDesc').value.trim(),
     badge:         document.getElementById('apBadge').value,
-    material:      (document.getElementById('apMaterial') || {value:''}).value.trim(),
-    care:          (document.getElementById('apCare') || {value:''}).value.trim(),
-    images:        slotUrls.filter(function(u){ return u; }).length > 0 ? slotUrls.filter(function(u){ return u; }) : prodImgs.slice(),
-    reviews:       reviewsToSave
+    material:      document.getElementById('apMaterial') ? document.getElementById('apMaterial').value.trim() : '',
+    care:          document.getElementById('apCare')     ? document.getElementById('apCare').value.trim()     : '',
+    images:        imagesArr,
+    reviews:       reviewsArr
   };
+
+  console.log('saveProd — prodId:', prodId, '| reviews count:', reviewsArr.length, '| reviews:', JSON.stringify(reviewsArr));
 
   try {
     if (window._fb) {
-      if (id) {
+      if (prodId) {
+        // UPDATE existing product
         pd.updatedAt = window._fb.serverTimestamp();
-        await window._fb.updateDoc(window._fb.doc(window._fb.db, 'products', id), pd);
-        allProds = allProds.map(function(p) { return p.id === id ? Object.assign({}, p, pd, { id: id }) : p; });
+        var docRef = window._fb.doc(window._fb.db, 'products', prodId);
+        await window._fb.updateDoc(docRef, pd);
+        console.log('✅ updateDoc done for', prodId);
+        // Update in-memory cache
+        allProds = allProds.map(function(p) {
+          return p.id === prodId ? Object.assign({}, p, pd, { id: prodId }) : p;
+        });
         toast('Product updated! ✅', 'success');
       } else {
+        // ADD new product
         pd.createdAt = window._fb.serverTimestamp();
-        const ref = await window._fb.addDoc(window._fb.collection(window._fb.db, 'products'), pd);
-        id = ref.id;
-        allProds.unshift(Object.assign({ id: id }, pd));
+        var newRef = await window._fb.addDoc(window._fb.collection(window._fb.db, 'products'), pd);
+        prodId = newRef.id;
+        console.log('✅ addDoc done, new id:', prodId);
+        allProds.unshift(Object.assign({ id: prodId }, pd));
         toast('Product added! ✅', 'success');
       }
     } else {
-      if (id) { allProds = allProds.map(function(p) { return p.id === id ? Object.assign({}, p, pd) : p; }); }
-      else { allProds.unshift(Object.assign({ id: 'local-' + Date.now() }, pd)); }
-      toast(id ? 'Product updated!' : 'Product added!', 'success');
+      // No Firebase — local only
+      if (prodId) {
+        allProds = allProds.map(function(p) { return p.id === prodId ? Object.assign({}, p, pd) : p; });
+      } else {
+        prodId = 'local-' + Date.now();
+        allProds.unshift(Object.assign({ id: prodId }, pd));
+      }
+      toast(prodId ? 'Product updated!' : 'Product added!', 'success');
     }
     admTab('products', null);
   } catch(e) {
-    console.error('saveProd error:', e);
+    console.error('❌ saveProd error:', e);
     toast('Error saving: ' + e.message, 'error');
   }
 }
