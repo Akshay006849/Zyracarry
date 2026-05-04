@@ -8,9 +8,14 @@
 <title>ZYRA CARRY – Handcrafted Luxury Tote Bags</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Performance hints -->
+<link rel="preconnect" href="https://firestore.googleapis.com">
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com">
+<link rel="preconnect" href="https://api.imgbb.com">
+<link rel="dns-prefetch" href="https://www.gstatic.com">
 
 <!-- Firebase -->
-<script type="module">
+<script type="module" defer>
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -419,8 +424,8 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
 .admin-layout { display: flex; flex: 1; min-height: calc(100dvh - 68px); }
 .admin-sidebar { width: 220px; flex-shrink: 0; background: var(--charcoal); overflow-y: auto; }
 .admin-logo-txt { padding: 1.5rem; font-family: var(--fd); font-size: 1rem; letter-spacing: 0.2em; color: var(--sand); border-bottom: 1px solid rgba(255,255,255,0.08); }
-.admin-nav a { display: flex; align-items: center; gap: 0.65rem; padding: 0.7rem 1.4rem; font-size: 0.76rem; letter-spacing: 0.07em; color: rgba(255,255,255,0.5); transition: var(--tr-fast); cursor: pointer; border-left: 2px solid transparent; }
-.admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,0.06); color: white; border-left-color: var(--rose); }
+.admin-nav a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; font-size: 0.74rem; letter-spacing: 0.05em; color: rgba(255,255,255,0.55); transition: var(--tr-fast); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; flex-shrink: 0; }
+.admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,0.08); color: white; border-bottom-color: var(--rose); }
 .admin-main { flex: 1; padding: 2rem; background: #F4F1EE; overflow-x: auto; }
 .admin-sec { display: none; }
 .admin-sec.active { display: block; }
@@ -1374,7 +1379,7 @@ window.addEventListener('load', () => {
     const w = document.getElementById('localWarning');
     if (w) w.style.display = 'block';
   }
-  setTimeout(() => document.getElementById('loading').classList.add('hide'), 1800);
+  setTimeout(() => document.getElementById('loading').classList.add('hide'), 600);
   updateBadge();
   initReveal();
   initNavScroll();
@@ -1645,9 +1650,13 @@ function buildCard(p) {
 }
 
 async function loadHomeProds() {
-  if (!allProds.length) allProds = await fetchProds();
   const grid = document.getElementById('homeGrid');
   if (!grid) return;
+  if (!allProds.length) {
+    // Show skeleton while loading
+    grid.innerHTML = Array(4).fill('<div class="pcard"><div class="pcard-img skeleton" style="aspect-ratio:3/4"></div><div style="padding:1.2rem"><div class="skeleton" style="height:18px;margin-bottom:0.5rem;border-radius:4px"></div><div class="skeleton" style="height:12px;width:65%;border-radius:4px"></div></div></div>').join('');
+    allProds = await fetchProds();
+  }
   if (allProds.length) {
     grid.innerHTML = allProds.slice(0, 8).map(buildCard).join('');
     initReveal();
@@ -2330,11 +2339,12 @@ function openAdmin() {
 }
 
 function admTab(t, el) {
-  document.querySelectorAll('.admin-sec').forEach(s => s.classList.remove('active'));
-  const sec = document.getElementById('adm-' + t);
+  document.querySelectorAll('.admin-sec').forEach(function(s){ s.classList.remove('active'); });
+  var sec = document.getElementById('adm-' + t);
   if (sec) sec.classList.add('active');
-  document.querySelectorAll('.admin-nav a').forEach(a => a.classList.remove('active'));
+  document.querySelectorAll('.admin-nav a').forEach(function(a){ a.classList.remove('active'); });
   if (el) el.classList.add('active');
+  // Always reload fresh data
   if (t === 'dash')     loadAdminDash();
   if (t === 'products') loadAdminProds();
   if (t === 'orders')   loadAdminOrders();
@@ -2528,7 +2538,8 @@ async function printInvoice(docId) {
 async function loadAdminUsers() {
   const tb = document.getElementById('admUserList');
   if (!tb) return;
-  if (!window._fb) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--taupe)">Configure Firebase</td></tr>'; return; }
+  tb.innerHTML = '<tr><td colspan="7" style="color:var(--taupe);text-align:center;padding:1rem">Loading users…</td></tr>';
+  if (!window._fb) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--taupe)">Firebase not connected</td></tr>'; return; }
   try {
     const [uSnap, oSnap] = await Promise.all([
       window._fb.getDocs(window._fb.collection(window._fb.db, 'users')),
@@ -2536,40 +2547,51 @@ async function loadAdminUsers() {
     ]);
     const orders = oSnap.docs.map(d => d.data());
     const users  = uSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-    if (!users.length) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--taupe)">No registered users yet.</td></tr>'; return; }
-
-    tb.innerHTML = users.map(u => {
-      const uOrders     = orders.filter(o => o.userId === u.id);
-      const totalSpent  = uOrders.reduce((s, o) => s + (o.total || 0), 0);
-      const regDate     = u.createdAt?.toDate?.()?.toLocaleDateString('en-IN')  || '—';
-      const lastLogin   = u.lastLogin?.toDate?.()?.toLocaleDateString('en-IN')  || '—';
-      return `<tr>
-        <td><strong>${u.name || '—'}</strong></td>
-        <td>${u.email || '—'}</td>
-        <td>${u.phone || '—'}</td>
-        <td>${regDate}</td>
-        <td>${lastLogin}</td>
-        <td style="text-align:center">
-          <span style="background:var(--blush);border-radius:20px;padding:0.2rem 0.75rem;font-size:0.75rem;font-weight:700">${uOrders.length}</span>
-        </td>
-        <td style="font-family:var(--fd);font-size:1rem">${totalSpent > 0 ? '₹' + totalSpent.toLocaleString('en-IN') : '—'}</td>
-      </tr>`;
-    }).join('');
-  } catch(e) { tb.innerHTML = `<tr><td colspan="7" style="color:var(--taupe)">Error: ${e.message}</td></tr>`; }
+    if (!users.length) {
+      tb.innerHTML = '<tr><td colspan="7" style="color:var(--taupe);text-align:center;padding:2rem">No registered users yet. Users appear here when they create an account.</td></tr>';
+      return;
+    }
+    tb.innerHTML = users.map(function(u) {
+      const uOrders    = orders.filter(function(o){ return o.userId === u.id || o.userEmail === u.email; });
+      const totalSpent = uOrders.reduce(function(s,o){ return s + (o.total||0); }, 0);
+      const regDate    = u.createdAt && u.createdAt.toDate ? u.createdAt.toDate().toLocaleDateString("en-IN") : "—";
+      const lastLogin  = u.lastLogin && u.lastLogin.toDate ? u.lastLogin.toDate().toLocaleDateString("en-IN") : "—";
+      return "<tr>" +
+        "<td><strong>" + (u.name||"—") + "</strong></td>" +
+        "<td style='font-size:0.78rem'>" + (u.email||"—") + "</td>" +
+        "<td>" + (u.phone||"—") + "</td>" +
+        "<td>" + regDate + "</td>" +
+        "<td>" + lastLogin + "</td>" +
+        "<td style='text-align:center'><span style='background:var(--blush);border-radius:20px;padding:0.2rem 0.75rem;font-size:0.78rem;font-weight:700'>" + uOrders.length + "</span></td>" +
+        "<td style='font-family:var(--fd);font-size:1rem'>" + (totalSpent > 0 ? "₹" + totalSpent.toLocaleString("en-IN") : "—") + "</td>" +
+        "</tr>";
+    }).join("");
+  } catch(e) {
+    tb.innerHTML = "<tr><td colspan='7' style='color:#B55353;padding:1rem'>Error loading users: " + e.message + "</td></tr>";
+    console.error("loadAdminUsers error:", e);
+  }
 }
 
 async function loadAdminSubs() {
   const tb = document.getElementById('admSubList');
   if (!tb) return;
-  if (!window._fb) { tb.innerHTML = '<tr><td colspan="2" style="color:var(--taupe)">Configure Firebase</td></tr>'; return; }
+  tb.innerHTML = '<tr><td colspan="2" style="color:var(--taupe);text-align:center;padding:1rem">Loading subscribers…</td></tr>';
+  if (!window._fb) { tb.innerHTML = '<tr><td colspan="2" style="color:var(--taupe)">Firebase not connected</td></tr>'; return; }
   try {
     const snap = await window._fb.getDocs(window._fb.collection(window._fb.db, 'subscribers'));
-    tb.innerHTML = snap.docs.map(d => {
-      const s = d.data();
-      return `<tr><td>${s.email}</td><td>${s.createdAt?.toDate?.()?.toLocaleDateString('en-IN') || '—'}</td></tr>`;
-    }).join('') || '<tr><td colspan="2" style="color:var(--taupe)">No subscribers yet.</td></tr>';
-  } catch(e) { tb.innerHTML = `<tr><td colspan="2" style="color:var(--taupe)">Error: ${e.message}</td></tr>`; }
+    if (snap.empty) {
+      tb.innerHTML = '<tr><td colspan="2" style="color:var(--taupe);text-align:center;padding:2rem">No subscribers yet. They appear here when users subscribe from the website.</td></tr>';
+      return;
+    }
+    tb.innerHTML = snap.docs.map(function(d) {
+      var s = d.data();
+      var dt = s.createdAt && s.createdAt.toDate ? s.createdAt.toDate().toLocaleDateString("en-IN") : "—";
+      return "<tr><td>" + (s.email||"—") + "</td><td>" + dt + "</td></tr>";
+    }).join("");
+  } catch(e) {
+    tb.innerHTML = "<tr><td colspan='2' style='color:#B55353'>Error: " + e.message + "</td></tr>";
+    console.error("loadAdminSubs error:", e);
+  }
 }
 
 // ── Admin Product Form ──
