@@ -418,7 +418,11 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
 .os-processing { background: #CCE5FF; color: #004085; }
 .os-shipped { background: #D1ECF1; color: #0C5460; }
 .os-delivered { background: #D4EDDA; color: #155724; }
-.os-return_requested { background: #F8D7DA; color: #721c24; }
+.os-return_requested  { background: #F8D7DA; color: #721C24; }
+.os-return_processing { background: #D1ECF1; color: #0C5460; }
+.os-return_shipped    { background: #CCE5FF; color: #004085; }
+.os-return_completed  { background: #D4EDDA; color: #155724; }
+.os-exchange_requested{ background: #E2D9F3; color: #4A235A; }
 .return-btn { padding: 0.35rem 0.9rem; border: 1.5px solid #B55353; border-radius: 20px; font-size: 0.68rem; color: #B55353; background: none; cursor: pointer; letter-spacing: 0.08em; transition: var(--tr-fast); }
 .return-btn:hover { background: #B55353; color: white; }
 
@@ -1371,6 +1375,49 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
   </div>
 </div>
 
+<!-- RETURN / EXCHANGE MODAL -->
+<div class="modal-overlay" id="returnModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-close" onclick="closeMod('returnModal')">✕</div>
+    <div class="modal-title" id="returnTypeLabel">↩ Request Return</div>
+    <div class="modal-sub">Please provide details so we can process your request quickly</div>
+
+    <input type="hidden" id="returnDocId">
+    <input type="hidden" id="returnOrderId">
+    <input type="hidden" id="returnType">
+
+    <div class="fg">
+      <label class="fl">Reason *</label>
+      <select class="fi" id="returnReasonSel" onchange="onReturnReasonChange()">
+        <option value="">— Select a reason —</option>
+        <option value="Wrong product received">Wrong product received</option>
+        <option value="Damaged or defective product">Damaged or defective product</option>
+        <option value="Product not as described">Product not as described</option>
+        <option value="Size or fit issue">Size or fit issue</option>
+        <option value="Quality not satisfactory">Quality not satisfactory</option>
+        <option value="Changed my mind">Changed my mind</option>
+        <option value="other">Other (please specify)</option>
+      </select>
+    </div>
+
+    <div class="fg" id="returnOtherBox" style="display:none">
+      <label class="fl">Please specify</label>
+      <textarea class="fi" id="returnReasonOther" rows="2" placeholder="Describe your reason..."></textarea>
+    </div>
+
+    <div class="fg" id="returnExchangeBox" style="display:none">
+      <label class="fl">Exchange note (optional)</label>
+      <textarea class="fi" id="returnExchangeNote" rows="2" placeholder="e.g. Would like same bag in brown color..."></textarea>
+    </div>
+
+    <div style="background:#FDF8F4;border-radius:var(--rs);padding:0.85rem;margin-bottom:1rem;font-size:0.75rem;color:var(--taupe);line-height:1.6">
+      📦 Once submitted, our team will contact you within <strong>24-48 hours</strong> with pickup details. Please keep the product in its original condition.
+    </div>
+
+    <button class="btn-primary" onclick="submitReturn()" style="width:100%;padding:0.9rem">Submit Request</button>
+  </div>
+</div>
+
 <!-- REVIEW PHOTO LIGHTBOX -->
 <div class="modal-overlay" id="reviewPhotoOv" onclick="closeMod('reviewPhotoOv')" style="align-items:center;justify-content:center">
   <div style="position:relative;max-width:90vw;max-height:88vh">
@@ -1430,6 +1477,8 @@ const ADMIN_EMAIL   = 'zyracarry.shop@gmail.com';
 const RZP_KEY       = 'rzp_live_SjP8SrbVhm8PeG';
 const BREVO_KEY     = window.BREVO_API_KEY || '';
 const BREVO_URL     = 'https://api.brevo.com/v3/smtp/email';
+const TG_TOKEN      = '8273816828:AAEW8Ous6djKQ0IFJrXG5i2fk-xj0_InHOM';
+const TG_CHAT_ID    = '1319324567';
 
 // ══════════════════════════════════════════════
 // STATE
@@ -1572,7 +1621,22 @@ function goSlide(i) {
 }
 
 // ══════════════════════════════════════════════
-// BREVO EMAIL via Netlify Function
+async function sendTelegram(msg) {
+  try {
+    await fetch('https://api.telegram.org/bot' + TG_TOKEN + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id:    TG_CHAT_ID,
+        text:       msg,
+        parse_mode: 'HTML'
+      })
+    });
+    console.log('✅ Telegram notification sent');
+  } catch(e) {
+    console.error('❌ Telegram error:', e.message);
+  }
+}
 // ══════════════════════════════════════════════
 function loadEmailJS() {} // no-op
 
@@ -2210,6 +2274,18 @@ async function saveOrder(od, payMethod, payId) {
     eData
   );
 
+  // Telegram instant notification
+  sendTelegram(
+    '🛍 <b>New Order Received!</b>\n\n' +
+    '📦 Order: <b>#' + orderId + '</b>\n' +
+    '👤 Customer: <b>' + od.name + '</b>\n' +
+    '📞 Phone: ' + od.phone + '\n' +
+    '💳 Payment: <b>' + payMethod + '</b>\n' +
+    '💰 Total: <b>₹' + od.total.toLocaleString('en-IN') + '</b>\n' +
+    '📍 Address: ' + fullAddr + '\n\n' +
+    '🛒 Items:\n' + cart.map(function(i){ return '• ' + i.name + ' × ' + i.qty; }).join('\n')
+  );
+
   // Clear cart & show success
   cart = [];
   saveCart();
@@ -2346,24 +2422,58 @@ async function loadProfOrders() {
 
 function buildOrderRow(docId, o) {
   const isDelivered = o.status === 'delivered';
-  let canReturn = false;
+  const isReturned  = ['return_requested','return_processing','return_shipped','return_completed','exchange_requested'].includes(o.status);
+
+  // Calculate days since delivery
+  var daysSinceDelivery = 999;
   if (isDelivered && o.deliveredAt) {
-    const dd   = o.deliveredAt.toDate ? o.deliveredAt.toDate() : new Date(o.deliveredAt);
-    canReturn  = (Date.now() - dd.getTime()) / (1000 * 60 * 60 * 24) <= 3;
+    var dd = o.deliveredAt.toDate ? o.deliveredAt.toDate() : new Date(o.deliveredAt);
+    daysSinceDelivery = (Date.now() - dd.getTime()) / (1000 * 60 * 60 * 24);
   }
-  return `<div class="order-row">
-    <div class="order-top">
-      <span class="order-id-txt">#${o.orderId}</span>
-      <span class="order-items-txt">${(o.items||[]).map(i=>i.name).slice(0,2).join(', ')}${(o.items||[]).length>2?'…':''}</span>
-      <span class="order-amt">₹${(o.total||0).toLocaleString('en-IN')}</span>
-      <span class="ostatus os-${o.status||'pending'}">${o.status||'Pending'}</span>
-    </div>
-    <div style="font-size:0.72rem;color:var(--taupe)">
-      Payment: ${o.paymentMethod||'—'} &nbsp;•&nbsp; Delivery: <s style="opacity:0.6">₹70</s> <span style="color:#7DAA6B;font-weight:600">FREE</span> &nbsp;•&nbsp; Date: ${o.createdAt?.toDate?.()?.toLocaleDateString('en-IN')||'—'}
-    </div>
-    ${canReturn ? `<button class="return-btn" onclick="reqReturn('${docId}','${o.orderId}')">↩ Request Return (within 3 days)</button>` : ''}
-    ${isDelivered && !canReturn ? '<span style="font-size:0.7rem;color:var(--sand)">Return window closed (3 days from delivery)</span>' : ''}
-  </div>`;
+  var canReturn = isDelivered && !isReturned && daysSinceDelivery <= 3;
+  var returnExpired = isDelivered && !isReturned && daysSinceDelivery > 3;
+
+  // Return status badge
+  var returnBadge = '';
+  if (o.status === 'return_requested')   returnBadge = '<span style="display:inline-block;margin-top:0.5rem;padding:0.25rem 0.75rem;background:#FFF3CD;color:#856404;border-radius:20px;font-size:0.7rem;font-weight:600">↩ Return Requested</span>';
+  if (o.status === 'return_processing')  returnBadge = '<span style="display:inline-block;margin-top:0.5rem;padding:0.25rem 0.75rem;background:#D1ECF1;color:#0C5460;border-radius:20px;font-size:0.7rem;font-weight:600">🔄 Return Processing</span>';
+  if (o.status === 'return_shipped')     returnBadge = '<span style="display:inline-block;margin-top:0.5rem;padding:0.25rem 0.75rem;background:#CCE5FF;color:#004085;border-radius:20px;font-size:0.7rem;font-weight:600">🚚 Return Shipped</span>';
+  if (o.status === 'return_completed')   returnBadge = '<span style="display:inline-block;margin-top:0.5rem;padding:0.25rem 0.75rem;background:#D4EDDA;color:#155724;border-radius:20px;font-size:0.7rem;font-weight:600">✅ Return Completed</span>';
+  if (o.status === 'exchange_requested') returnBadge = '<span style="display:inline-block;margin-top:0.5rem;padding:0.25rem 0.75rem;background:#E2D9F3;color:#4A235A;border-radius:20px;font-size:0.7rem;font-weight:600">🔁 Exchange Requested</span>';
+
+  var returnSection = '';
+  if (canReturn) {
+    returnSection =
+      '<div style="margin-top:0.85rem;padding:0.85rem;background:#FDF8F4;border-radius:var(--rs);border:1px solid rgba(200,176,154,0.3)">' +
+        '<div style="font-size:0.72rem;color:var(--taupe);margin-bottom:0.6rem;letter-spacing:0.05em">Return/Exchange window: <strong style="color:#7DAA6B">' + Math.ceil(3 - daysSinceDelivery) + ' day(s) left</strong></div>' +
+        '<div style="display:flex;gap:0.5rem;flex-wrap:wrap">' +
+          '<button onclick="openReturnModal(\'' + docId + '\',\'' + o.orderId + '\',\'return\')" style="padding:0.45rem 1.1rem;border:1.5px solid #B55353;border-radius:20px;background:white;color:#B55353;font-size:0.75rem;font-weight:600;cursor:pointer">↩ Return</button>' +
+          '<button onclick="openReturnModal(\'' + docId + '\',\'' + o.orderId + '\',\'exchange\')" style="padding:0.45rem 1.1rem;border:1.5px solid var(--rose-deep);border-radius:20px;background:white;color:var(--rose-deep);font-size:0.75rem;font-weight:600;cursor:pointer">🔁 Exchange</button>' +
+        '</div>' +
+      '</div>';
+  } else if (returnExpired) {
+    returnSection = '<div style="margin-top:0.6rem;font-size:0.72rem;color:var(--sand);padding:0.4rem 0.75rem;background:rgba(200,176,154,0.1);border-radius:12px;display:inline-block">⏰ Return window closed (3 days from delivery)</div>';
+  } else if (returnBadge) {
+    returnSection = '<div style="margin-top:0.5rem">' + returnBadge;
+    if (o.returnReason) returnSection += '<div style="font-size:0.72rem;color:var(--taupe);margin-top:0.4rem">Reason: ' + o.returnReason + '</div>';
+    returnSection += '</div>';
+  }
+
+  return '<div class="order-row">' +
+    '<div class="order-top">' +
+      '<span class="order-id-txt">#' + o.orderId + '</span>' +
+      '<span class="order-items-txt">' + (o.items||[]).map(function(i){return i.name;}).slice(0,2).join(', ') + ((o.items||[]).length>2?'…':'') + '</span>' +
+      '<span class="order-amt">₹' + (o.total||0).toLocaleString('en-IN') + '</span>' +
+      '<span class="ostatus os-' + (o.status||'pending') + '">' + (o.status||'Pending') + '</span>' +
+    '</div>' +
+    '<div style="font-size:0.72rem;color:var(--taupe);margin-top:0.3rem">' +
+      'Payment: ' + (o.paymentMethod||'—') + ' &nbsp;•&nbsp; Date: ' + (o.createdAt&&o.createdAt.toDate?o.createdAt.toDate().toLocaleDateString('en-IN'):'—') +
+    '</div>' +
+    '<div style="margin-top:0.6rem">' +
+      '<button onclick="viewUserInvoice(\'' + docId + '\')" style="padding:0.35rem 1rem;border:1.5px solid var(--sand);border-radius:20px;background:white;color:var(--taupe);font-size:0.72rem;font-weight:600;cursor:pointer">🧾 View Invoice</button>' +
+    '</div>' +
+    returnSection +
+  '</div>';
 }
 
 async function loadOrdersPage() {
@@ -2394,22 +2504,71 @@ async function loadOrdersPage() {
   }
 }
 
-async function reqReturn(docId, orderId) {
-  const reason = prompt(`Return reason for order #${orderId}:\n\n1. Wrong product received\n2. Damaged / defective\n3. Not as described\n4. Changed my mind\n\nType your reason:`);
-  if (!reason) return;
+function openReturnModal(docId, orderId, type) {
+  document.getElementById('returnDocId').value  = docId;
+  document.getElementById('returnOrderId').value = orderId;
+  document.getElementById('returnType').value   = type;
+  document.getElementById('returnTypeLabel').textContent = type === 'exchange' ? '🔁 Request Exchange' : '↩ Request Return';
+  document.getElementById('returnReasonSel').value = '';
+  document.getElementById('returnReasonOther').value = '';
+  document.getElementById('returnOtherBox').style.display = 'none';
+  document.getElementById('returnExchangeBox').style.display = type === 'exchange' ? 'block' : 'none';
+  openMod('returnModal');
+}
+
+function onReturnReasonChange() {
+  var sel = document.getElementById('returnReasonSel').value;
+  document.getElementById('returnOtherBox').style.display = sel === 'other' ? 'block' : 'none';
+}
+
+async function submitReturn() {
+  var docId   = document.getElementById('returnDocId').value;
+  var orderId = document.getElementById('returnOrderId').value;
+  var type    = document.getElementById('returnType').value;
+  var reason  = document.getElementById('returnReasonSel').value;
+  var other   = document.getElementById('returnReasonOther').value.trim();
+  var exchange = document.getElementById('returnExchangeNote').value.trim();
+
+  if (!reason) { toast('Please select a reason', 'error'); return; }
+  var finalReason = reason === 'other' ? (other || 'Other') : reason;
+
+  var newStatus = type === 'exchange' ? 'exchange_requested' : 'return_requested';
+
   try {
     if (window._fb) {
       await window._fb.updateDoc(window._fb.doc(window._fb.db, 'orders', docId), {
-        status:          'return_requested',
-        returnReason:    reason,
+        status:            newStatus,
+        returnType:        type,
+        returnReason:      finalReason,
+        exchangeNote:      exchange || '',
         returnRequestedAt: window._fb.serverTimestamp()
       });
     }
-    const eData = { order_id: orderId, customer_name: curUser.displayName||'', customer_phone: '', address: '', items: reason, total: '', payment: 'Return Request', date: new Date().toLocaleDateString('en-IN') };
-    sendEmail(ADMIN_EMAIL, `↩ Return Request: #${orderId}`, `Return requested for order #${orderId}.\nCustomer: ${curUser.email}\nReason: ${reason}\n\nPlease process within 24-48 hours.`, eData);
-    sendEmail(curUser.email, `Return Request Received – ZYRA CARRY`, `Hi,\n\nWe've received your return request for Order #${orderId}.\nReason: ${reason}\n\nWe'll process it within 24-48 hours and contact you.\n\nZYRA CARRY Team`, eData);
-    toast('Return request submitted! We will contact you within 24 hours.', 'success');
-  } catch(e) { toast('Return request sent!', 'success'); }
+    var typeLabel = type === 'exchange' ? 'Exchange' : 'Return';
+    var msgAdmin = typeLabel + ' request for order #' + orderId + '\nCustomer: ' + (curUser.displayName||'') + ' (' + curUser.email + ')\nReason: ' + finalReason + (exchange ? '\nExchange note: ' + exchange : '') + '\n\nPlease process within 24-48 hours.';
+    var msgUser  = 'Hi ' + (curUser.displayName||'there') + ',\n\nWe\'ve received your ' + typeLabel.toLowerCase() + ' request for Order #' + orderId + '.\nReason: ' + finalReason + '\n\nWe\'ll process it within 24-48 hours and contact you.\n\nZYRA CARRY Team';
+    sendEmail(ADMIN_EMAIL, typeLabel + ' Request: #' + orderId, msgAdmin, {});
+    sendEmail(curUser.email, typeLabel + ' Request Received – ZYRA CARRY', msgUser, {});
+    sendTelegram(
+      '↩ <b>' + typeLabel + ' Request!</b>\n\n' +
+      '📦 Order: <b>#' + orderId + '</b>\n' +
+      '👤 Customer: ' + (curUser.displayName||curUser.email) + '\n' +
+      '📝 Reason: ' + finalReason +
+      (exchange ? '\n💬 Note: ' + exchange : '')
+    );
+    closeMod('returnModal');
+    toast(typeLabel + ' request submitted! We\'ll contact you within 24 hours. ✅', 'success');
+    loadProfOrders();
+  } catch(e) { toast('Request submitted!', 'success'); closeMod('returnModal'); }
+}
+
+async function viewUserInvoice(docId) {
+  if (!window._fb) return;
+  try {
+    const snap = await window._fb.getDoc(window._fb.doc(window._fb.db, 'orders', docId));
+    if (!snap.exists()) return;
+    printInvoice(docId);
+  } catch(e) { toast('Could not load invoice', 'error'); }
 }
 
 // ══════════════════════════════════════════════
@@ -2598,14 +2757,24 @@ async function loadAdminOrders() {
 
         <!-- Actions -->
         <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
-          <select style="flex:1;min-width:130px;padding:0.45rem 0.75rem;border:1.5px solid var(--sand);border-radius:20px;font-size:0.75rem;outline:none;background:white;color:var(--charcoal)" onchange="updateOrderStatus('${d.id}',this.value)">
-            <option ${o.status==='pending'    ?'selected':''} value="pending">⏳ Pending</option>
-            <option ${o.status==='processing' ?'selected':''} value="processing">🔄 Processing</option>
-            <option ${o.status==='shipped'    ?'selected':''} value="shipped">🚚 Shipped</option>
-            <option ${o.status==='delivered'  ?'selected':''} value="delivered">✅ Delivered</option>
+          <select style="flex:1;min-width:160px;padding:0.45rem 0.75rem;border:1.5px solid var(--sand);border-radius:20px;font-size:0.75rem;outline:none;background:white;color:var(--charcoal)" onchange="updateOrderStatus('${d.id}',this.value)">
+            <optgroup label="Order Status">
+              <option ${o.status==='pending'    ?'selected':''} value="pending">⏳ Pending</option>
+              <option ${o.status==='processing' ?'selected':''} value="processing">🔄 Processing</option>
+              <option ${o.status==='shipped'    ?'selected':''} value="shipped">🚚 Shipped</option>
+              <option ${o.status==='delivered'  ?'selected':''} value="delivered">✅ Delivered</option>
+            </optgroup>
+            <optgroup label="Return / Exchange">
+              <option ${o.status==='return_requested'  ?'selected':''} value="return_requested">↩ Return Requested</option>
+              <option ${o.status==='return_processing' ?'selected':''} value="return_processing">🔄 Return Processing</option>
+              <option ${o.status==='return_shipped'    ?'selected':''} value="return_shipped">🚚 Return Shipped</option>
+              <option ${o.status==='return_completed'  ?'selected':''} value="return_completed">✅ Return Completed</option>
+              <option ${o.status==='exchange_requested'?'selected':''} value="exchange_requested">🔁 Exchange Requested</option>
+            </optgroup>
           </select>
           <button class="adm-btn adm-btn-p" style="padding:0.45rem 1rem" onclick="printInvoice('${d.id}')">🧾 Invoice</button>
         </div>
+        ${o.returnReason ? `<div style="margin-top:0.6rem;padding:0.6rem 0.85rem;background:#FFF8F5;border-radius:var(--rs);border-left:3px solid var(--rose);font-size:0.78rem;color:var(--taupe)"><strong>${o.returnType==='exchange'?'🔁 Exchange':'↩ Return'} reason:</strong> ${o.returnReason}${o.exchangeNote?'<br><strong>Note:</strong> '+o.exchangeNote:''}</div>` : ''}
       </div>`;
     }).join('');
   } catch(e) { con.innerHTML = `<p style="color:#B55353;font-size:0.85rem">Error: ${e.message}</p>`; }
