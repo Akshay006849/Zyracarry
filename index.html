@@ -307,6 +307,8 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
 .footer-col a { display: block; font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-bottom: 0.6rem; transition: var(--tr-fast); cursor: pointer; }
 .footer-col a:hover { color: var(--rose); }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.4rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: 0.68rem; color: rgba(255,255,255,0.3); max-width: 1400px; margin: 0 auto; }
+#adminLink { display: none !important; }
+#adminLink.admin-visible { display: inline !important; }
 
 /* ── CART ── */
 .cart-layout { max-width: 1100px; margin: 0 auto; padding: 2rem clamp(1rem,4vw,3rem); display: grid; grid-template-columns: 1fr 320px; gap: 2rem; align-items: start; }
@@ -1417,7 +1419,7 @@ footer { background: var(--charcoal); color: rgba(255,255,255,0.65); padding: cl
   <div class="footer-bottom">
     <span>© 2025 ZYRA CARRY. All rights reserved.</span>
     <span>Designed with ♥ for conscious luxury</span>
-    <span onclick="openAdmin()" style="cursor:pointer;opacity:0.3;font-size:0.65rem;transition:opacity 0.2s" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='0.3'">Admin</span>
+    <span id="adminLink" onclick="openAdmin()" style="cursor:pointer;font-size:0.65rem;transition:opacity 0.2s;display:none;opacity:0.3" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='0.3'">Admin</span>
   </div>
 </footer>
 <script>
@@ -1501,9 +1503,14 @@ function listenAuth() {
     if (u) {
       if (txt) txt.textContent = 'Logout';
       if (da)  da.textContent  = 'Logout (' + (u.displayName || u.email) + ')';
+      // Show admin link only for admin
+      const adminLink = document.getElementById('adminLink');
+      if (adminLink) adminLink.classList.toggle('admin-visible', u.email === ADMIN_EMAIL);
     } else {
       if (txt) txt.textContent = 'Sign In';
       if (da)  da.textContent  = 'Sign In';
+      const adminLink = document.getElementById('adminLink');
+      if (adminLink) adminLink.classList.remove('admin-visible');
     }
     // Reload products after auth change
     if (document.getElementById('page-home').classList.contains('active')) {
@@ -2469,8 +2476,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ADMIN
 // ══════════════════════════════════════════════
 function openAdmin() {
-  if (!curUser) { openMod('authModal'); toast('Please sign in as admin first.', 'info'); return; }
-  if (curUser.email !== ADMIN_EMAIL) { toast('Access denied. Admin only.', 'error'); return; }
+  if (!curUser || curUser.email !== ADMIN_EMAIL) return;
   goTo('admin');
 }
 
